@@ -18,8 +18,8 @@ public:
     Reactor &operator=(const Reactor &other);
 
 private:
-    EventDemultiplexer &mDemultiplexer;
-    std::map<reactor::Socket, EventHandler &> mHandlerMap;
+    IEventDemultiplexer *mDemultiplexer;
+    std::map<reactor::Socket, reactor::EventHandler &> mHandleMap;
 
 };
 
