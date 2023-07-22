@@ -10,10 +10,10 @@ namespace reactor {
     ///////////////////////////////////////////////////////////////////////////////////
 
     typedef enum eEventType {
-        READ = 0x01,
-        WRITE = 0x02,
-        ERROR = 0x04,
-        MASK = 0xff,
+        EVENT_READ = 0x01,
+        EVENT_WRITE = 0x02,
+        EVENT_ERROR = 0x04,
+        EVENT_MASK = 0xff,
     } eEventType;
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -21,12 +21,12 @@ namespace reactor {
     class EventHandler {
 
     public:
-        virtual Socket GetSocket() const = 0;
-        virtual void HandleRead();
-        virtual void HandleWrite();
-        virtual void HandleError();
+        virtual Socket GetSocket() const {}
+        virtual void HandleRead() {}
+        virtual void HandleWrite() {}
+        virtual void HandleError() {}
 
-    protected:
+    public:
         virtual ~EventHandler() {}
 
     };
@@ -36,12 +36,12 @@ namespace reactor {
     class IEventDemultiplexer {
 
     public:
-        virtual void WaitEvent(std::map<Socket, EventHandler &> &handlerMap) = 0;
+        virtual void WaitEvent(std::map<Socket, EventHandler *> &handlerMap) = 0;
         virtual void RequestEvent(Socket socket, eEventType eventType) = 0;
-        virtual void DeleteEvent(Socket socket) = 0;
+        virtual void DeleteEvent(Socket socket, eEventType eventType) = 0;
 
-    protected:
-        virtual ~IEventDemultiplexer();
+    public:
+        virtual ~IEventDemultiplexer() {}
 
     };
 
@@ -50,11 +50,11 @@ namespace reactor {
     class IReactor {
 
     public:
-        virtual void RegisterHandler(EventHandler &handler, eEventType eventType) = 0;
-        virtual void RemoveHandler(EventHandler &handler) = 0;
+        virtual void RegisterHandler(EventHandler *handler, eEventType eventType) = 0;
+        virtual void RemoveHandler(EventHandler *handler, eEventType eventType) = 0;
         virtual void HandleEvents() = 0;
 
-    protected:
+    public:
         virtual ~IReactor() {}
 
     };

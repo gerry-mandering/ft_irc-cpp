@@ -3,13 +3,9 @@
 
 #include "SingletonTemplate.hpp"
 #include "ReactorPattern.h"
+#include "KqueueDemultiplexer.hpp"
 
 class Reactor : public TSingleton<Reactor>, public reactor::IReactor {
-
-public:
-    void RegisterHandler(EventHandler &handler, eEventType eventType);
-    void RemoveHandler(EventHandler &handler);
-    void HandleEvents();
 
 public:
     Reactor();
@@ -17,9 +13,14 @@ public:
     Reactor(const Reactor &other);
     Reactor &operator=(const Reactor &other);
 
+public:
+    void RegisterHandler(reactor::EventHandler *handler, reactor::eEventType eventType);
+    void RemoveHandler(reactor::EventHandler *handler, reactor::eEventType eventType);
+    void HandleEvents();
+
 private:
-    IEventDemultiplexer *mDemultiplexer;
-    std::map<reactor::Socket, reactor::EventHandler &> mHandleMap;
+    reactor::IEventDemultiplexer *mDemultiplexer;
+    std::map<reactor::Socket, reactor::EventHandler *> mHandleMap;
 
 };
 

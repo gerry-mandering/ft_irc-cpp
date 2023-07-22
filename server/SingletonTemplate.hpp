@@ -1,6 +1,8 @@
 #ifndef SINGLETON_TEMPLATE_H
 #define SINGLETON_TEMPLATE_H
 
+#include <cstddef>
+
 template<class T>
 class TSingleton {
 

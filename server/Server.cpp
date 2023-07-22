@@ -2,7 +2,18 @@
 
 const std::string Server::PORT_NUMBER = "6667";
 
-Server::Server() {}
+Server::Server() {
+    initServerAddress();
+    initConnectionRequestSocket();
+    if (bind(mListeningSocket, mServerAddress->ai_addr, mServerAddress->ai_addrlen) == -1) {
+        std::cerr << "Fail to bind socket" << std::endl;
+        return;
+    }
+    if (listen(mListeningSocket, Server::BACKLOG_QUEUE_SIZE) == -1) {
+        std::cerr << "Fail to listen for connections" << std::endl;
+        return;
+    }
+}
 
 Server::~Server() {}
 
@@ -10,35 +21,21 @@ Server::Server(const Server &other) {}
 
 Server &Server::operator=(const Server &server) {}
 
-// 이부분 맘에 안듬
-void Server::Init() {
-    initConnectionRequestSocket();
-    initServerAddress();
-    if (bind(mConnectionRequestSocket, mServerAddress->ai_addr, mServerAddress->ai_addrlen) == -1) {
-        std::cerr << "Fail to bind socket" << std::endl;
-        return;
-    }
-    if (listen(mConnectionRequestSocket, Server::BACKLOG_QUEUE_SIZE) == -1) {
-        std::cerr << "Fail to listen for connections" << std::endl;
-        return;
-    }
-}
-
 reactor::Socket Server::GetSocket() const {
-    return mConnectionRequestSocket;
+    return mListeningSocket;
 }
 
 void Server::HandleRead() {
-    reactor::Socket newConnectionSocket = accept(mConnectionRequestSocket, NULL, NULL);
-    if (newConnectionSocket == -1) {
+    reactor::Socket clientSocket = accept(mListeningSocket, NULL, NULL);
+    if (clientSocket == -1) {
         std::cerr << "Fail to accept client connection" << std::endl;
         return;
     }
 
-    RequestHandler *requestHandler = new RequestHandler(newConnectionSocket);
+    reactor::EventHandler *requestHandler = new RequestHandler(clientSocket);
 
     Reactor *reactor = Reactor::GetInstance();
-    reactor.RegisterHandler(requestHandler, reactor::READ);
+    reactor->RegisterHandler(requestHandler, reactor::EVENT_READ);
 }
 
 void Server::initServerAddress() {
@@ -57,11 +54,11 @@ void Server::initServerAddress() {
 }
 
 void Server::initConnectionRequestSocket() {
-    mConnectionRequestSocket = socket(mServerAddress->ai_family,
+    mListeningSocket = socket(mServerAddress->ai_family,
                                       mServerAddress->ai_socktype,
                                       mServerAddress->ai_protocol);
-    if (mConnectionRequestSocket == -1) {
-        std::err << "Fail to initialize connection request socket" << std::endl;
+    if (mListeningSocket == -1) {
+        std::cerr << "Fail to initialize connection request socket" << std::endl;
         return;
     }
 }
