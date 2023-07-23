@@ -10,8 +10,6 @@ class Reactor : public TSingleton<Reactor>, public reactor::IReactor {
 public:
     Reactor();
     ~Reactor();
-    Reactor(const Reactor &other);
-    Reactor &operator=(const Reactor &other);
 
 public:
     void RegisterHandler(reactor::EventHandler *handler, reactor::eEventType eventType);

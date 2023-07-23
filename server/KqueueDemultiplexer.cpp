@@ -6,10 +6,6 @@ KqueueDemultiplexer::KqueueDemultiplexer() {
 
 KqueueDemultiplexer::~KqueueDemultiplexer() {}
 
-KqueueDemultiplexer::KqueueDemultiplexer(const KqueueDemultiplexer &other) {}
-
-KqueueDemultiplexer &KqueueDemultiplexer::operator=(const KqueueDemultiplexer &other) {}
-
 void KqueueDemultiplexer::WaitEvent(std::map<reactor::Socket, reactor::EventHandler *> &handlerMap) {
     const int MAX_EVENT_SIZE = 10;
     std::vector<struct kevent> eventlist(MAX_EVENT_SIZE);   //C++ 98 아닐 수도?

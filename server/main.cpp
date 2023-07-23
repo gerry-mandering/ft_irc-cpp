@@ -1,12 +1,12 @@
-#include "Server.hpp"
+#include "ConnectionInitializer.hpp"
 #include "Reactor.hpp"
 
 int main(void) {
 
-    Server *server = Server::GetInstance();
+    ConnectionInitializer *connectionInitializer = ConnectionInitializer::GetInstance();
     Reactor *reactor = Reactor::GetInstance();
 
-    reactor->RegisterHandler(server, reactor::EVENT_READ);
+    reactor->RegisterHandler(connectionInitializer, reactor::EVENT_READ);
 
     while (true)
         reactor->HandleEvents();

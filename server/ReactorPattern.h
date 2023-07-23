@@ -21,7 +21,7 @@ namespace reactor {
     class EventHandler {
 
     public:
-        virtual Socket GetSocket() const {}
+        virtual Socket GetSocket() const = 0;
         virtual void HandleRead() {}
         virtual void HandleWrite() {}
         virtual void HandleError() {}

@@ -11,8 +11,6 @@ class KqueueDemultiplexer : public reactor::IEventDemultiplexer {
 public:
     KqueueDemultiplexer();
     ~KqueueDemultiplexer();
-    KqueueDemultiplexer(const KqueueDemultiplexer &other);
-    KqueueDemultiplexer &operator=(const KqueueDemultiplexer &other);
 
 public:
     void WaitEvent(std::map<reactor::Socket, reactor::EventHandler *> &handlerMap);

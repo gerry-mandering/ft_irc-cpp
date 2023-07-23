@@ -4,10 +4,6 @@ RequestHandler::RequestHandler() {}
 
 RequestHandler::~RequestHandler() {}
 
-RequestHandler::RequestHandler(const RequestHandler &other) {}
-
-RequestHandler &RequestHandler::operator=(const RequestHandler &other) {}
-
 RequestHandler::RequestHandler(const reactor::Socket clientSocket) : mClientSocket(clientSocket) {}
 
 reactor::Socket RequestHandler::GetSocket() const {
@@ -16,6 +12,8 @@ reactor::Socket RequestHandler::GetSocket() const {
 
 void RequestHandler::HandleRead() {
     char buffer[1024];
+
+    std::memset(buffer, 0, sizeof(buffer));
 
     //Kernel buffer size 수정?
     int length = recv(mClientSocket, buffer, 1024, 0);

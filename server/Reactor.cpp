@@ -9,10 +9,6 @@ Reactor::~Reactor() {
     delete mDemultiplexer;
 }
 
-Reactor::Reactor(const Reactor &other) {}
-
-Reactor &Reactor::operator=(const Reactor &other) {}
-
 void Reactor::RegisterHandler(reactor::EventHandler *handler, reactor::eEventType eventType) {
     reactor::Socket socket = handler->GetSocket();
 

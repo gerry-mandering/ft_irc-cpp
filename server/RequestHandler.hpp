@@ -10,8 +10,6 @@ class RequestHandler : public reactor::EventHandler {
 public:
     RequestHandler();
     ~RequestHandler();
-    RequestHandler(const RequestHandler &other);
-    RequestHandler &operator=(const RequestHandler &other);
 
     RequestHandler(const reactor::Socket clientSocket);
 

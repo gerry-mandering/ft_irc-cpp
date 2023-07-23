@@ -2,14 +2,17 @@
 #define SINGLETON_TEMPLATE_H
 
 #include <cstddef>
+#include <cstdlib>
 
 template<class T>
 class TSingleton {
 
 public:
     static T *GetInstance() {
-        if (mInstance == NULL)
+        if (mInstance == NULL) {
             mInstance = new T;
+            std::atexit(DeleteInstance);
+        }
         return mInstance;
     }
     static void DeleteInstance() {
