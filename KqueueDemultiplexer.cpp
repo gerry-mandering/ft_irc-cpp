@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+// TODO: fd 생성후 전부 nonblocking에 넣기
 KqueueDemultiplexer::KqueueDemultiplexer()
     : m_kEventList(8), m_changeList(16), m_changePos(0)
 {
@@ -83,5 +84,6 @@ int KqueueDemultiplexer::waitEvents(
         std::cerr << "in event\n";
     }
     (void)handlers;
+    std::cerr << "nEvents: " << nEvents << std::endl;
     return (nEvents);
 }
