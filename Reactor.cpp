@@ -1,9 +1,5 @@
-#pragma once
-
 #include "Reactor.hpp"
 #include "KqueueDemultiplexer.hpp"
-
-DECLARE_SINGLETON_MEMBER(Reactor)
 
 Reactor::Reactor() : m_numHandlers(0) {}
 
@@ -26,9 +22,9 @@ int Reactor::registerHandler(EventHandler *handler, eventType type)
     {
         m_handlers[handle] = handler;
         ++m_numHandlers;
-        m_demultiplexer->setnumHandlers(m_numHandlers);
+        m_demultiplexer->setNumHandlers(m_numHandlers);
     }
-    return (registerEvent(handle, type));
+    return (registerEvent(handler, type));
 }
 
 int Reactor::unregisterHandler(EventHandler *handler)
@@ -41,21 +37,21 @@ int Reactor::unregisterHandler(EventHandler *handler)
     {
         m_handlers.erase(it);
         --m_numHandlers;
-        m_demultiplexer->setnumHandlers(m_numHandlers);
+        m_demultiplexer->setNumHandlers(m_numHandlers);
     }
-    stat |= unregisterEvent(handle, READ_EVENT);
-    stat |= unregisterEvent(handle, WRITE_EVENT);
+    stat |= unregisterEvent(handler, READ_EVENT);
+    stat |= unregisterEvent(handler, WRITE_EVENT);
     return (stat);
 }
 
-int Reactor::registerEvent(handle_t handle, eventType type)
+int Reactor::registerEvent(EventHandler *handler, eventType type)
 {
-    return (m_demultiplexer->registerEvent(handle, type));
+    return (m_demultiplexer->registerEvent(handler, type));
 }
 
-int Reactor::unregisterEvent(handle_t handle, eventType type)
+int Reactor::unregisterEvent(EventHandler *handler, eventType type)
 {
-    return (m_demultiplexer->unregisterEvent(handle, type));
+    return (m_demultiplexer->unregisterEvent(handler, type));
 }
 
 int Reactor::handleEvents(void)

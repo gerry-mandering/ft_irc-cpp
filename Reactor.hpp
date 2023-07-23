@@ -17,11 +17,11 @@ class Reactor : public Singleton<Reactor>
     ~Reactor();
 
     void setDemultiplexer(Demultiplexer *demultiplexer);
-    std::map<handle_t, EventHandler *> Reactor::getHandlers();
+    std::map<handle_t, EventHandler *> getHandlers();
 
     int registerHandler(EventHandler *handler, eventType type);
     int unregisterHandler(EventHandler *handler);
-    int registerEvent(handle_t handle, eventType type);
-    int unregisterEvent(handle_t handle, eventType type);
+    int registerEvent(EventHandler *handler, eventType type);
+    int unregisterEvent(EventHandler *handler, eventType type);
     int handleEvents(void);
 };

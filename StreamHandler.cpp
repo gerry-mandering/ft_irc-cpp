@@ -20,7 +20,7 @@ int StreamHandler::handleRead(void)
     }
     std::cout << "received data from " << m_handle << ": " << buf << std::endl;
     m_buf += buf;
-    return (g_reactor->registerEvent(m_handle, WRITE_EVENT));
+    return (g_reactor().registerEvent(this, WRITE_EVENT));
 }
 
 int StreamHandler::handleWrite(void)
@@ -31,5 +31,10 @@ int StreamHandler::handleWrite(void)
         exit(EXIT_FAILURE);
     }
     m_buf.clear();
-    return (g_reactor->unregisterEvent(m_handle, WRITE_EVENT));
+    return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+}
+
+int StreamHandler::handleError(void)
+{
+    return (0);
 }

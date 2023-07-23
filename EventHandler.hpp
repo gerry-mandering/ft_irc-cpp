@@ -22,8 +22,9 @@ class EventHandler
     EventHandler(handle_t hadle);
     virtual ~EventHandler();
 
-    handle_t getHandle() const { return m_handle; }
-    virtual int handleRead() = 0;
-    virtual int handleWrite();
-    virtual int hadnleError();
+    handle_t getHandle() const;
+    virtual int handleRead(void) = 0;
+    virtual int handleWrite(void) = 0;
+    // TODO: Error 처리 구현
+    virtual int handleError(void) = 0;
 };

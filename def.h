@@ -9,4 +9,7 @@ enum
     ERROR_IO
 };
 
-#define g_reactor Reactor::instance()
+inline Reactor &g_reactor()
+{
+    return Singleton<Reactor>::instance();
+}

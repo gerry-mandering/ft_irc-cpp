@@ -15,5 +15,5 @@ class StreamHandler : public EventHandler
 
     virtual int handleRead(void);
     virtual int handleWrite(void);
-    virtual int hadnleError(void);
+    virtual int handleError(void);
 };
