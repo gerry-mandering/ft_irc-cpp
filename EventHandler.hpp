@@ -13,15 +13,17 @@ typedef int handle_t;
 class EventHandler
 {
   private:
+    EventHandler();
+
+  protected:
     handle_t m_handle;
-    int eventMast;
 
   public:
-    EventHandler(handle_t handle);
+    EventHandler(handle_t hadle);
     virtual ~EventHandler();
 
-    handle_t getHandle() const;
+    handle_t getHandle() const { return m_handle; }
     virtual int handleRead() = 0;
-    virtual int handleWrite() = 0;
-    virtual int hadnleError() = 0;
+    virtual int handleWrite();
+    virtual int hadnleError();
 };
