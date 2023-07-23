@@ -15,15 +15,14 @@ ConnectionInitializer::ConnectionInitializer() {
         mListeningSocket = wrapper::wSocket(mAddressInfo->ai_family, mAddressInfo->ai_socktype,
                                             mAddressInfo->ai_protocol);
         wrapper::wBind(mListeningSocket, mAddressInfo->ai_addr, mAddressInfo->ai_addrlen);
+        freeaddrinfo(mAddressInfo);
         wrapper::wListen(mListeningSocket, BACKLOG_QUEUE_SIZE);
     } catch (const std::exception &e) {
         std::cout << e.what() << std::endl;
     }
 }
 
-ConnectionInitializer::~ConnectionInitializer() {
-    freeaddrinfo(mAddressInfo);
-}
+ConnectionInitializer::~ConnectionInitializer() {}
 
 void ConnectionInitializer::HandleRead() {
     reactor::Socket clientSocket = accept(mListeningSocket, NULL, NULL);

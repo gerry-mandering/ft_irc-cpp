@@ -1,7 +1,6 @@
 #include "Wrapper.hpp"
 
-int
-wrapper::wGetaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res) {
+int wrapper::wGetaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res) {
     if (getaddrinfo(hostname, servname, hints, res) != 0) {
         throw AddrInfoException();
     }

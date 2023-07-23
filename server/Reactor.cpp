@@ -1,10 +1,10 @@
 #include "Reactor.hpp"
 
+// KqueueDemultiplexer copy constructor로 멤버 이니셜라이저 구현
 Reactor::Reactor() {
     mDemultiplexer = new KqueueDemultiplexer();
 }
 
-//DeleteInstance 오버라이딩
 Reactor::~Reactor() {
     delete mDemultiplexer;
 }
@@ -12,7 +12,6 @@ Reactor::~Reactor() {
 void Reactor::RegisterHandler(reactor::EventHandler *handler, reactor::eEventType eventType) {
     reactor::Socket socket = handler->GetSocket();
 
-    // 중복추가 로직 필요?
     mHandleMap[socket] = handler;
     mDemultiplexer->RequestEvent(socket, eventType);
 }

@@ -11,7 +11,6 @@ public:
     Reactor();
     ~Reactor();
 
-public:
     void RegisterHandler(reactor::EventHandler *handler, reactor::eEventType eventType);
     void RemoveHandler(reactor::EventHandler *handler, reactor::eEventType eventType);
     void HandleEvents();
