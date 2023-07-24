@@ -1,30 +1,24 @@
 #pragma once
 
-typedef int eventType;
-
-enum
+typedef enum eEventType
 {
     READ_EVENT = 0x01,
     WRITE_EVENT = 0x02,
-};
+} eEventType;
 
 typedef int handle_t;
 
 class EventHandler
 {
-  private:
-    EventHandler();
-
   protected:
-    handle_t m_handle;
+    EventHandler() {}
 
   public:
-    EventHandler(handle_t hadle);
-    virtual ~EventHandler();
+    virtual ~EventHandler() {}
 
-    handle_t getHandle() const;
-    virtual int handleRead(void) = 0;
-    virtual int handleWrite(void) = 0;
+    virtual handle_t getHandle(void) const = 0;
+    virtual int handleRead(void) { return 0; }
+    virtual int handleWrite(void) { return 0; }
     // TODO: Error 처리 구현
-    virtual int handleError(void) = 0;
+    virtual int handleError(void) { return 0; }
 };

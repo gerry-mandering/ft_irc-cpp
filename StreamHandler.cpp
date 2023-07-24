@@ -4,9 +4,14 @@
 #include <iostream>
 #include <unistd.h>
 
-StreamHandler::StreamHandler(handle_t handle) : EventHandler(handle) {}
+StreamHandler::StreamHandler(handle_t handle) : m_handle(handle) {}
 
 StreamHandler::~StreamHandler() {}
+
+handle_t StreamHandler::getHandle(void) const
+{
+    return (m_handle);
+}
 
 int StreamHandler::handleRead(void)
 {

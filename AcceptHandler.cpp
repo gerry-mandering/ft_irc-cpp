@@ -6,11 +6,16 @@
 #include <sys/types.h>
 
 AcceptHandler::AcceptHandler(int port, std::string password)
-    : EventHandler(-1), m_port(port), m_password(password)
+    : EventHandler(), m_handle(-1), m_port(port), m_password(password)
 {
 }
 
 AcceptHandler::~AcceptHandler() {}
+
+handle_t AcceptHandler::getHandle(void) const
+{
+    return (m_handle);
+}
 
 // TODO: 예외처리 변경, 각 시스템콜 세부사항 공부
 bool AcceptHandler::init()
