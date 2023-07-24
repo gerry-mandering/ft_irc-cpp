@@ -13,11 +13,12 @@ void Reactor::setDemultiplexer(Demultiplexer *demultiplexer)
     m_demultiplexer = demultiplexer;
 }
 
-int Reactor::registerHandler(EventHandler *handler, eventType type)
+int Reactor::registerHandler(EventHandler *handler, eEventType type)
 {
     int handle = handler->getHandle();
     std::map<handle_t, EventHandler *>::iterator it = m_handlers.find(handle);
 
+    // TODO: 민석2 디멀티플렉서에서 핸들러 개수 관리 방법 고민
     if (it == m_handlers.end())
     {
         m_handlers[handle] = handler;
@@ -44,12 +45,12 @@ int Reactor::unregisterHandler(EventHandler *handler)
     return (stat);
 }
 
-int Reactor::registerEvent(EventHandler *handler, eventType type)
+int Reactor::registerEvent(EventHandler *handler, eEventType type)
 {
     return (m_demultiplexer->registerEvent(handler, type));
 }
 
-int Reactor::unregisterEvent(EventHandler *handler, eventType type)
+int Reactor::unregisterEvent(EventHandler *handler, eEventType type)
 {
     return (m_demultiplexer->unregisterEvent(handler, type));
 }
