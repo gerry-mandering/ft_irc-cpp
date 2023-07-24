@@ -1,5 +1,5 @@
-#include "ConnectionInitializer.hpp"
-#include "Reactor.hpp"
+#include "connection_initializer/ConnectionInitializer.hpp"
+#include "reactor/Reactor.hpp"
 
 int main(void) {
 

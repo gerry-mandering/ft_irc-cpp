@@ -12,6 +12,7 @@ Reactor::~Reactor() {
 void Reactor::RegisterHandler(reactor::EventHandler *handler, reactor::eEventType eventType) {
     reactor::Socket socket = handler->GetSocket();
 
+    // TODO 중복체크
     mHandleMap[socket] = handler;
     mDemultiplexer->RequestEvent(socket, eventType);
 }

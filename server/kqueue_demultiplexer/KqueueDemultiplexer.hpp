@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sys/event.h>
 #include <vector>
-#include "ReactorPattern.h"
+#include "../reactor_pattern/ReactorPattern.hpp"
 
 class KqueueDemultiplexer : public reactor::IEventDemultiplexer {
 

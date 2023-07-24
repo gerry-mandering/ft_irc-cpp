@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include "Exception.hpp"
+#include "../exception/Exception.hpp"
 
 namespace wrapper {
 

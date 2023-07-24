@@ -37,6 +37,7 @@ void KqueueDemultiplexer::RequestEvent(reactor::Socket socket, reactor::eEventTy
     else if (eventType == reactor::EVENT_WRITE)
         EV_SET(&event, socket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
 
+    //  TODO kevent 한번만
     std::vector<struct kevent> changelist;
     changelist.push_back(event);
 

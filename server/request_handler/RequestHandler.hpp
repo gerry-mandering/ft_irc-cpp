@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <sys/socket.h>
-#include "ReactorPattern.h"
+#include "../reactor_pattern/ReactorPattern.hpp"
 
 class RequestHandler : public reactor::EventHandler {
 

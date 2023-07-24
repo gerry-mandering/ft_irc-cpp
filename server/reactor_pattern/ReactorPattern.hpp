@@ -21,13 +21,12 @@ namespace reactor {
     class EventHandler {
 
     public:
+        virtual ~EventHandler() {}
+
         virtual Socket GetSocket() const = 0;
         virtual void HandleRead() {}
         virtual void HandleWrite() {}
         virtual void HandleError() {}
-
-    public:
-        virtual ~EventHandler() {}
 
     };
 
@@ -36,12 +35,11 @@ namespace reactor {
     class IEventDemultiplexer {
 
     public:
+        virtual ~IEventDemultiplexer() {}
+
         virtual void WaitEvent(std::map<Socket, EventHandler *> &handlerMap) = 0;
         virtual void RequestEvent(Socket socket, eEventType eventType) = 0;
         virtual void DeleteEvent(Socket socket, eEventType eventType) = 0;
-
-    public:
-        virtual ~IEventDemultiplexer() {}
 
     };
 
@@ -50,12 +48,11 @@ namespace reactor {
     class IReactor {
 
     public:
+        virtual ~IReactor() {}
+
         virtual void RegisterHandler(EventHandler *handler, eEventType eventType) = 0;
         virtual void RemoveHandler(EventHandler *handler, eEventType eventType) = 0;
         virtual void HandleEvents() = 0;
-
-    public:
-        virtual ~IReactor() {}
 
     };
 

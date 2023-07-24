@@ -6,11 +6,11 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <fcntl.h>
-#include "Wrapper.hpp"
-#include "SingletonTemplate.hpp"
-#include "ReactorPattern.h"
-#include "Reactor.hpp"
-#include "RequestHandler.hpp"
+#include "../wrapper/Wrapper.hpp"
+#include "../singleton_template/SingletonTemplate.hpp"
+#include "../reactor_pattern/ReactorPattern.hpp"
+#include "../reactor/Reactor.hpp"
+#include "../request_handler/RequestHandler.hpp"
 
 class ConnectionInitializer : public TSingleton<ConnectionInitializer>, public reactor::EventHandler {
 
