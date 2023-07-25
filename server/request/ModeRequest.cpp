@@ -2,6 +2,16 @@
 
 ModeRequest::ModeRequest(handle_t socket) : Request(socket) {}
 
+void UserRequest::ValidateRequest() const {
+
+}
+
+Command *UserRequest::BuildCommand() const {
+    UserCommand *userCommand = new UserCommand(this);
+
+    return userCommand;
+}
+
 void ModeRequest::SetChannelName(const std::string &channelName) {
     mChannelName = channelName;
 }

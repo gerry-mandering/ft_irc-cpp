@@ -5,4 +5,10 @@ Request::Request(handle_t socket) {
    mClient = ClientRepository::GetInstance()->findBySocket(socket);
 }
 
-Request::~Request() {}
+Client *Request::GetClient() const {
+    return mClient;
+}
+
+eRequestType Request::GetType() const {
+    return mRequestType;
+}

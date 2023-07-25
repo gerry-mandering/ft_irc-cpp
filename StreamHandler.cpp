@@ -32,10 +32,11 @@ int StreamHandler::handleRead(void)
     std::string requestString = PacketManager::GetInstance()->HandlePacket(buffer);
     string str = PacketManager::GetInstance->getRequest();
 
-    Request *request = Parser.parse(buffer);
+    Request *request = Parser.parse(m_handle, buffer);
     RequestValidatior();
-    Command *command = Command::GetCommand(request->GetType());
-    command->execute(request);
+    //request를 넣어서 커맨드 자체를 만듬 -> 넣어서 사용하는 방식 X
+    Command *command = Command::BuildCommand(request);
+    command->execute();
 
     return (g_reactor().registerEvent(this, WRITE_EVENT));
 }
