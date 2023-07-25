@@ -11,8 +11,8 @@ public:
     Client(const Client &other);
     Client &operator=(const Client &other);
 
-    //Builder 패턴 적용
 private:
+    //Builder 패턴 적용
     std::string mIpAddress;
     std::string mNickname;
     std::string mUsername;

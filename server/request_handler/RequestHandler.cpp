@@ -22,6 +22,7 @@ void RequestHandler::HandleRead() {
     }
 
 
+    PacketManager()->handlePacket(std::string recv);
 //    1. 정상적으로 읽혀서 끝에 \r\n 있는경우 - std::string buffer 담고 끝에 \r\n 있으면 바로 파싱
 //    2. partial read 커널버퍼에 더 남아있는 경우 - std::string buffer의 max 사이즈 만큼 들어왔는데 \r\n 이 없는경우 버퍼에
 //    담고 다시 read;
