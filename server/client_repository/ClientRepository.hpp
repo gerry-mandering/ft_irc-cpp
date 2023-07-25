@@ -6,7 +6,7 @@
 #include "../reactor_pattern/ReactorPattern.hpp"
 #include "../client/Client.hpp"
 
-class ClientRepository : public TSingleton<ClientRepository> {
+class ClientRepository : public T {
 
 public:
     ClientRepository();
