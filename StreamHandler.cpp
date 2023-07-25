@@ -25,6 +25,18 @@ int StreamHandler::handleRead(void)
     }
     std::cout << "received data from " << m_handle << ": " << buf << std::endl;
     m_buf += buf;
+
+    std::string buffer;
+
+    // minseok2 구조 짜는중
+    std::string requestString = PacketManager::GetInstance()->HandlePacket(buffer);
+    string str = PacketManager::GetInstance->getRequest();
+
+    Request *request = Parser.parse(buffer);
+    RequestValidatior();
+    Command *command = Command::GetCommand(request->GetType());
+    command->execute(request);
+
     return (g_reactor().registerEvent(this, WRITE_EVENT));
 }
 

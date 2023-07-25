@@ -1,5 +1,4 @@
-#ifndef CLIENT_REPOSITORY_H
-#define CLIENT_REPOSITORY_H
+#pragma once
 
 #include <map>
 #include "../singleton_template/SingletonTemplate.hpp"
@@ -12,13 +11,11 @@ public:
     ClientRepository();
     ~ClientRepository();
 
-    Client *findBySocket(handle_t socket) const;
-    Client *findByNickname(std::string nickname) const;
+    Client *FindBySocket(handle_t socket) const;
+    Client *FindByNickname(std::string nickName) const;
 
 private:
     std::map<handle_t, Client *> mSocketToClients;
-    std::map<std::string, Client *> mNicknameToClients;
+    std::map<std::string, Client *> mNickNameToClients;
 
 };
-
-#endif
