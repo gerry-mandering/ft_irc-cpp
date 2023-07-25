@@ -1,1 +1,0 @@
-CMakeLists.txt not found in /Users/minseok2/Workspace/GitHub/Circle_5/ft_irc-cpp/server Select CMakeLists.txt
