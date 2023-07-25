@@ -2,18 +2,16 @@
 #define CLIENT_H
 
 #include <iostream>
+#include "../../EventHandler.hpp"
 
 class Client {
 
 public:
-    Client();
-    ~Client();
-    Client(const Client &other);
-    Client &operator=(const Client &other);
+    Client(handle_t socket);
 
 private:
     //Builder 패턴 적용
-    std::string mIpAddress;
+    std::string mSocket;
     std::string mNickname;
     std::string mUsername;
     std::string mHostname;

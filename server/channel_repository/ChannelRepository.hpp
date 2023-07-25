@@ -3,18 +3,18 @@
 
 #include <iostream>
 #include <map>
+#include "../singleton_template/SingletonTemplate.hpp"
 #include "../channel/Channel.hpp"
 
-class ChannelRepository {
+class ChannelRepository : TSingleton<ChannelRepository> {
 
 public:
-    ChannelRepository();
-    ~ChannelRepository();
-
     //JOIN은 있으면 만들지만 나머지는 예외처리 ! 채널 만드는 거 따로
-    Channel *FindByName(std::string &channerName) const;
+    Channel *CreateChannel(std::string &name);
+    Channel *FindByName(std::string &name) const;
 
 private:
+    //TODO shared_ptr
     std::map<std::string, Channel *> mChannels;
 
 };
