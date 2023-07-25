@@ -12,11 +12,13 @@ public:
     ~Channel();
 
     std::vector<Client *> &GetClients() const;
+    std::vector<Client *> &GetOperators() const;
 
 private:
     std::string mName;
 
     std::vector<Client *> mClients;
+    std::vector<Client *> mOperators;
 
 };
 
