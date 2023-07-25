@@ -1,0 +1,3 @@
+#include "PingRequest.hpp"
+
+PingRequest::
