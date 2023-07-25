@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../request/Request.hpp"
+
 class Command {
 
 public:

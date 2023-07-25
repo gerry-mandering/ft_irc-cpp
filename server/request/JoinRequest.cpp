@@ -2,6 +2,16 @@
 
 JoinRequest::JoinRequest(handle_t socket) : Request(socket) {}
 
+void UserRequest::ValidateRequest() const {
+
+}
+
+Command *UserRequest::BuildCommand() const {
+    UserCommand *userCommand = new UserCommand(this);
+
+    return userCommand;
+}
+
 void JoinRequest::SetChannelName(const std::string &channelName) {
     mChannelNames.push_back(channelName);
 }
