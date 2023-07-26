@@ -1,15 +1,11 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/ModeCommand.hpp"
 
 class ModeRequest : public Request {
 
 public:
     ModeRequest(handle_t socket);
-
-    void ValidateRequest() const;
-    Command *BuildCommand() const;
 
     void SetChannelName(const std::string &channelName);
     void SetPlusMinus(const std::string &plusMinus);

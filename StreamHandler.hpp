@@ -1,6 +1,8 @@
 #pragma once
 
 #include "EventHandler.hpp"
+#include "Request.hpp"
+#include "Command.hpp"
 #include <string>
 
 class StreamHandler : public EventHandler

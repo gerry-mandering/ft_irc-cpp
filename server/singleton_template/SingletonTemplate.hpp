@@ -1,5 +1,4 @@
-#ifndef SINGLETON_TEMPLATE_H
-#define SINGLETON_TEMPLATE_H
+#pragma once
 
 #include <cstddef>
 #include <cstdlib>
@@ -30,5 +29,3 @@ private:
 };
 
 template<class T> T *TSingleton<T>::mInstance = NULL;
-
-#endif

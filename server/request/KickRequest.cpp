@@ -2,16 +2,6 @@
 
 KickRequest::KickRequest(handle_t socket) : Request(socket) {}
 
-void UserRequest::ValidateRequest() const {
-
-}
-
-Command *UserRequest::BuildCommand() const {
-    UserCommand *userCommand = new UserCommand(this);
-
-    return userCommand;
-}
-
 void KickRequest::SetNickName(const std::string &nickName) {
     mNickNames.push_back(nickName);
 }

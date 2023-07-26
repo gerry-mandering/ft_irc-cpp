@@ -1,10 +1,9 @@
-#ifndef CHANNEL_REPOSITORY_H
-#define CHANNEL_REPOSITORY_H
+#pragma once
 
 #include <iostream>
 #include <map>
-#include "../singleton_template/SingletonTemplate.hpp"
-#include "../channel/Channel.hpp"
+#include "SingletonTemplate.hpp"
+#include "Channel.hpp"
 
 class ChannelRepository : TSingleton<ChannelRepository> {
 
@@ -18,5 +17,3 @@ private:
     std::map<std::string, Channel *> mChannels;
 
 };
-
-#endif

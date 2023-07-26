@@ -1,9 +1,8 @@
-#ifndef CHANNEL_H
-#define CHANNEL_H
+#pragma once
 
 #include <iostream>
 #include <vector>
-#include "../client/Client.hpp"
+#include "Client.hpp"
 
 class Channel {
 
@@ -12,8 +11,8 @@ public:
 
     void SetClient(Client *newClient);
 
-    std::vector<Client *> &GetClients() const;
-    std::vector<Client *> &GetOperators() const;
+    std::vector<Client *> GetClients() const;
+    std::vector<Client *> GetOperators() const;
 
 private:
     std::string mName;
@@ -27,5 +26,3 @@ private:
     bool mbClientLimitMode;
 
 };
-
-#endif

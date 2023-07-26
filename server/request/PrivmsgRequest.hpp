@@ -2,15 +2,11 @@
 
 #include <vector>
 #include "Request.hpp"
-#include "../command/PrivmsgCommand.hpp"
 
 class PrivmsgRequest : public Request {
 
 public:
     PrivmsgRequest(handle_t socket);
-
-    void ValidateRequest() const;
-    Command *BuildCommand() const;
 
     void AddTarget(const std::string &target);
     void SetMessage(const std::string &message);

@@ -1,15 +1,11 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/TopicCommand.hpp"
 
 class TopicRequest : public Request {
 
 public:
     TopicRequest(handle_t socket);
-
-    void ValidateRequest() const;
-    Command *BuildCommand() const;
 
     void SetChannelName(const std::string &channelName);
     void SetTopic(const std::string &topic);

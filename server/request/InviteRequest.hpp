@@ -1,15 +1,11 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/InviteCommand.hpp"
 
 class InviteRequest : public Request {
 
 public:
     InviteRequest(handle_t socket);
-
-    void ValidateRequest() const;
-    Command *BuildCommand() const;
 
     void SetNickName(const std::string &nickName);
     void SetChannelName(const std::string &channelName);
