@@ -1,5 +1,4 @@
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#pragma once
 
 #include <stdexcept>
 
@@ -38,5 +37,3 @@ public:
     }
 
 };
-
-#endif

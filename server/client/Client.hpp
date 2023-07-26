@@ -1,5 +1,4 @@
-#ifndef CLIENT_H
-#define CLIENT_H
+#pragma once
 
 #include <iostream>
 #include "EventHandler.hpp"
@@ -41,5 +40,3 @@ private:
     bool mbEnteredUserInfo;
 
 };
-
-#endif

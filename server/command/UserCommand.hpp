@@ -6,13 +6,6 @@
 class UserCommand : public Command {
 
 public:
-    UserCommand(UserRequest *userRequest);
-
-    void SetRequest();
-
-    void Execute() const;
-
-private:
-    UserRequest *mUserRequest;
+    void Execute(UserRequest *userRequest) const;
 
 };

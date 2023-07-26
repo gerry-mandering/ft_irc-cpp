@@ -1,15 +1,11 @@
 #pragma once
 
 #include "Request.hpp"
-#include "UserCommand.hpp"
 
 class UserRequest : public Request {
 
 public:
     UserRequest(handle_t socket);
-
-    void ValidateRequest() const;
-    Command *BuildCommand() const;
 
     void SetUserName(const std::string &userName);
     void SetHostName(const std::string &hostName);

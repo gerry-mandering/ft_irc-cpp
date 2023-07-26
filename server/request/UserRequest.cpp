@@ -2,17 +2,6 @@
 
 UserRequest::UserRequest(handle_t socket) : Request(socket) {}
 
-void UserRequest::ValidateRequest() const {
-
-}
-
-Command *UserRequest::BuildCommand() const {
-    UserCommand *userCommand = Command::GetCommand(mRequestType);
-    userCommand->SetRequest(this);
-
-    return userCommand;
-}
-
 void UserRequest::SetUserName(const std::string &userName) {
     mUserName = userName;
 }

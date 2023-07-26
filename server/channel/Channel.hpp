@@ -1,5 +1,4 @@
-#ifndef CHANNEL_H
-#define CHANNEL_H
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -27,5 +26,3 @@ private:
     bool mbClientLimitMode;
 
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef CHANNEL_REPOSITORY_H
-#define CHANNEL_REPOSITORY_H
+#pragma once
 
 #include <iostream>
 #include <map>
@@ -18,5 +17,3 @@ private:
     std::map<std::string, Channel *> mChannels;
 
 };
-
-#endif

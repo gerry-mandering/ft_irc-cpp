@@ -1,13 +1,11 @@
 #include "UserCommand.hpp"
 
-UserCommand::UserCommand(UserRequest *userRequest) : mUserRequest(userRequest) {}
+void UserCommand::Execute(UserRequest *userRequest) const {
+    Client *client = userRequest->GetClient();
 
-void UserCommand::Execute() const {
-    Client *client = mUserRequest->GetClient();
-
-    client->SetUserName(mUserRequest->GetUserName());
-    client->SetHostName(mUserRequest->GetHostName());
-    client->SetServerName(mUserRequest->GetServerName());
-    client->SetRealName(mUserRequest->GetRealName());
+    client->SetUserName(userRequest->GetUserName());
+    client->SetHostName(userRequest->GetHostName());
+    client->SetServerName(userRequest->GetServerName());
+    client->SetRealName(userRequest->GetRealName());
     client->SetUserInfoEntered();
 }

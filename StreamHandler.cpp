@@ -32,42 +32,9 @@ int StreamHandler::handleRead(void)
     std::string requestString = PacketManager::GetInstance()->HandlePacket(buffer);
     string str = PacketManager::GetInstance->getRequest();
 
-    Request *request = Parser.parse(m_handle, buffer);
-    request->vaildation;
-    command(request);
-
-    (PassRequest *)request;
-
-    switch
-    requset->type == PASS
-    PassCommand(REQUEST)
-
-    switch
-    request->type == PASS
-    reqeust = (PassRequest *)request;
-//    Command *command = Command::GetCommand(request->Get);
-//    command(request);
-
-    Command::execute(request)
-    Command::execute(reqeust *)
-    {
-        switch
-        if (reqest->type == PASS)
-            exectuePass(reqeust);
-        if (request->type == Ress,.)
-
-            executeRes
-    }
-
-    PASSComand(PassRequest *)
-
-    Command *command = request->BuildCommand();
-
-    buildCommand
-
-    command->execute();
-
-    command->
+    Request *request = Parser.Parse(requestString);
+    Command *command = Command::GetCommand(request->GetType());
+    command->Execute();
 
     return (g_reactor().registerEvent(this, WRITE_EVENT));
 }

@@ -1,5 +1,4 @@
-#ifndef WRAPPER_H
-#define WRAPPER_H
+#pragma once
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -14,5 +13,3 @@ namespace wrapper {
     int wListen(int socket, int backlog);
 
 }
-
-#endif
