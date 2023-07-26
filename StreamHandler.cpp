@@ -33,10 +33,41 @@ int StreamHandler::handleRead(void)
     string str = PacketManager::GetInstance->getRequest();
 
     Request *request = Parser.parse(m_handle, buffer);
-    RequestValidatior();
-    //request를 넣어서 커맨드 자체를 만듬 -> 넣어서 사용하는 방식 X
-    Command *command = Command::BuildCommand(request);
+    request->vaildation;
+    command(request);
+
+    (PassRequest *)request;
+
+    switch
+    requset->type == PASS
+    PassCommand(REQUEST)
+
+    switch
+    request->type == PASS
+    reqeust = (PassRequest *)request;
+//    Command *command = Command::GetCommand(request->Get);
+//    command(request);
+
+    Command::execute(request)
+    Command::execute(reqeust *)
+    {
+        switch
+        if (reqest->type == PASS)
+            exectuePass(reqeust);
+        if (request->type == Ress,.)
+
+            executeRes
+    }
+
+    PASSComand(PassRequest *)
+
+    Command *command = request->BuildCommand();
+
+    buildCommand
+
     command->execute();
+
+    command->
 
     return (g_reactor().registerEvent(this, WRITE_EVENT));
 }

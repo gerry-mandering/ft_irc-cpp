@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/CapCommand.hpp"
+#include "CapCommand.hpp"
 
 class CapRequest : public Request {
 

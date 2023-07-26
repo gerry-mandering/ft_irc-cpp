@@ -1,9 +1,9 @@
 #pragma once
 
 #include <map>
-#include "../singleton_template/SingletonTemplate.hpp"
-#include "../../EventHandler.hpp"
-#include "../client/Client.hpp"
+#include "SingletonTemplate.hpp"
+#include "EventHandler.hpp"
+#include "Client.hpp"
 
 class ClientRepository : public TSingleton<ClientRepository> {
 

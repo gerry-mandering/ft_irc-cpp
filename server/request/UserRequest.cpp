@@ -7,7 +7,8 @@ void UserRequest::ValidateRequest() const {
 }
 
 Command *UserRequest::BuildCommand() const {
-    UserCommand *userCommand = new UserCommand(this);
+    UserCommand *userCommand = Command::GetCommand(mRequestType);
+    userCommand->SetRequest(this);
 
     return userCommand;
 }

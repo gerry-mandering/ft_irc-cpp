@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/QuitCommand.hpp"
+#include "QuitCommand.hpp"
 
 class QuitRequest : public Request {
 

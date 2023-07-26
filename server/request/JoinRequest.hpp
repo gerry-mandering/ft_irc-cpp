@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "Request.hpp"
-#include "../command/JoinCommand.hpp"
+#include "JoinCommand.hpp"
 
 class JoinRequest : public Request {
 

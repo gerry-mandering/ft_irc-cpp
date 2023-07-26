@@ -1,10 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include "../../EventHandler.hpp"
-#include "../client/Client.hpp"
-#include "../client_repository/ClientRepository.hpp"
-#include "../command/Command.hpp"
+#include "EventHandler.hpp"
+#include "Client.hpp"
+#include "ClientRepository.hpp"
+#include "Command.hpp"
 
 typedef enum eRequestType {
     PASS,
@@ -28,8 +28,8 @@ class Request {
 public:
     Request(handle_t socket);
 
-    void ValidateRequest() const = 0;
-    Command *BuildCommand() const = 0;
+    virtual void ValidateRequest() const = 0;
+    virtual Command *BuildCommand() const = 0;
 
     Client *GetClient() const;
     eRequestType GetType() const;

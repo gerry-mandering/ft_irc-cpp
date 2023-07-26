@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "Request.hpp"
-#include "../command/PrivmsgCommand.hpp"
+#include "PrivmsgCommand.hpp"
 
 class PrivmsgRequest : public Request {
 

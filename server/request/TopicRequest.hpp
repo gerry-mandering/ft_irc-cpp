@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/TopicCommand.hpp"
+#include "TopicCommand.hpp"
 
 class TopicRequest : public Request {
 

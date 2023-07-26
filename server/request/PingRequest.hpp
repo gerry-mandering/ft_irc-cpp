@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/PingCommand.hpp"
+#include "PingCommand.hpp"
 
 class PingRequest : public Request {
 

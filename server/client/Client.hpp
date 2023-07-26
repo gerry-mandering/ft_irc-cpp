@@ -2,7 +2,7 @@
 #define CLIENT_H
 
 #include <iostream>
-#include "../../EventHandler.hpp"
+#include "EventHandler.hpp"
 
 class Client {
 

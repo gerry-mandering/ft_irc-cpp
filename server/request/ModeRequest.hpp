@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/ModeCommand.hpp"
+#include "ModeCommand.hpp"
 
 class ModeRequest : public Request {
 

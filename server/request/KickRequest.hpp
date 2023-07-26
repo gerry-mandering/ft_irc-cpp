@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "Request.hpp"
-#include "../command/KickCommand.hpp"
+#include "KickCommand.hpp"
 
 class KickRequest : public Request {
 

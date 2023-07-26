@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "../command/NickCommand.hpp"
+#include "NickCommand.hpp"
 
 class NickRequest : public Request {
 
