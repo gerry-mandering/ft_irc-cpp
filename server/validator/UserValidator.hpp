@@ -11,6 +11,8 @@ public:
     void SetUserRequest(UserRequest *userRequest);
 
 private:
+    void HandleError(eErrorType) const;
+
     UserRequest *mUserRequest;
 
 };

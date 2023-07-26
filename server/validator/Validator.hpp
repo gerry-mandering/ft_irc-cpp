@@ -1,5 +1,12 @@
 #pragma once
 
+typedef enum eErrorType {
+    CLOSING_LINK,
+    ERR_ALREADYREGISTRED = 462,
+} eErrorType;
+
+#include <sstream>
+
 class Validator {
 
 public:
@@ -7,5 +14,8 @@ public:
 
 protected:
     virtual ~Validator() {}
+
+private:
+    virtual void HandleError() const = 0;
 
 };
