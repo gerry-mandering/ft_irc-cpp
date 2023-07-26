@@ -6,6 +6,11 @@
 class JoinCommand : public Command {
 
 public:
-    void Execute(JoinRequest *joinRequest) const;
+    void Execute() const;
+
+    void setJoinRequest(JoinRequest *joinRequest);
+
+private:
+    JoinRequest *mJoinRequest;
 
 };

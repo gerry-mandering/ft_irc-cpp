@@ -7,6 +7,9 @@ class UserRequest : public Request {
 public:
     UserRequest(handle_t socket);
 
+    Validator *GetValidator() const;
+    Command *BuildCommand() const;
+
     void SetUserName(const std::string &userName);
     void SetHostName(const std::string &hostName);
     void SetServerName(const std::string &serverName);

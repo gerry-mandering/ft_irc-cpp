@@ -1,3 +1,7 @@
 #include "KickCommand.hpp"
 
-void KickCommand::Execute(KickRequest *kickRequest) const {}
+void KickCommand::Execute() const {}
+
+void KickCommand::setKickRequest(KickRequest *kickRequest) {
+    mKickRequest = kickRequest;
+}

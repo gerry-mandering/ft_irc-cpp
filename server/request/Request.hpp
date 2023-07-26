@@ -4,19 +4,22 @@
 #include "EventHandler.hpp"
 #include "Client.hpp"
 #include "ClientRepository.hpp"
+#include "Command.hpp"
 
 typedef enum eRequestType {
-    PASS,
-    NICK,
-    USER,
-    PRIVMSG,
+    CAP,
+    INVITE,
     JOIN,
     KICK,
-    INVITE,
+    MODE,
+    NICK,
+    PART,
+    PASS,
+    PING,
+    PRIVMSG,
     QUIT,
     TOPIC,
-    MODE,
-    PING,
+    USER,
 } eRequestType;
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +29,9 @@ class Request {
 
 public:
     Request(handle_t socket);
+
+    virtual Validator *GetValidator() const = 0;
+    virtual Command *BuildCommand() const = 0;
 
     Client *GetClient() const;
     eRequestType GetType() const;

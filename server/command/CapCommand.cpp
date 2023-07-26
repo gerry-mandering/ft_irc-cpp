@@ -1,3 +1,7 @@
 #include "CapCommand.hpp"
 
-void CapCommand::Execute(CapRequest *capRequest) const {}
+void CapCommand::Execute() const {}
+
+void CapCommand::setCapRequest(CapRequest *capRequest) {
+    mCapRequest = capRequest;
+}

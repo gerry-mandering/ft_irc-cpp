@@ -1,3 +1,7 @@
 #include "NickCommand.hpp"
 
-void NickCommand::Execute(NickRequest *nickRequest) const {}
+void NickCommand::Execute() const {}
+
+void NickCommand::setNickRequest(NickRequest *nickRequest) {
+    mNickRequest = nickRequest;
+}

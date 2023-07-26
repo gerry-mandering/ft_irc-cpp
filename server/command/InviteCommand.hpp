@@ -6,6 +6,11 @@
 class InviteCommand : public Command {
 
 public:
-    void Execute(InviteRequest *inviteRequest) const;
+    void Execute() const;
+
+    void setInviteRequest(InviteRequest *inviteRequest);
+
+private:
+    InviteRequest *mInviteRequest;
 
 };
