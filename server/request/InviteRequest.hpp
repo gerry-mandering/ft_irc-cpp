@@ -7,6 +7,9 @@ class InviteRequest : public Request {
 public:
     InviteRequest(handle_t socket);
 
+    void AcceptValidator(Validator *validator);
+    void AcceptCommand(Command *command);
+
     void SetNickName(const std::string &nickName);
     void SetChannelName(const std::string &channelName);
 

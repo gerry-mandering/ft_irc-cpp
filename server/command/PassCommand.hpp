@@ -6,11 +6,6 @@
 class PassCommand : public Command {
 
 public:
-    void Execute() const;
-
-    void SetPassRequest(PassRequest *passRequest);
-
-private:
-    PassRequest *mPassRequest;
+    void Execute(PassRequest *passRequest) const;
 
 };

@@ -6,11 +6,6 @@
 class TopicCommand : public Command {
 
 public:
-    void Execute() const;
-
-    void SetTopicRequest(TopicRequest *topicRequest);
-
-private:
-    TopicRequest *mTopicRequest;
+    void Execute(TopicRequest *topicRequest) const;
 
 };

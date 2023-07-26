@@ -1,7 +1,3 @@
 #include "QuitCommand.hpp"
 
-void QuitCommand::Execute() const {}
-
-void QuitCommand::SetQuitRequest(QuitRequest *quitRequest) {
-    mQuitRequest = quitRequest;
-}
+void QuitCommand::Execute(QuitRequest *quitRequest) const {}

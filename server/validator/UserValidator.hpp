@@ -6,11 +6,6 @@
 class UserValidator : public Validator {
 
 public:
-    bool Validate() const;
-
-    void SetUserRequest(UserRequest *userRequest);
-
-private:
-    UserRequest *mUserRequest;
+    bool Validate(UserRequest *userRequest) const;
 
 };

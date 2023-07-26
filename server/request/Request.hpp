@@ -31,8 +31,8 @@ class Request {
 public:
     Request(handle_t socket);
 
-    virtual Validator *GetValidator() const = 0;
-    virtual Command *BuildCommand() const = 0;
+    virtual void AcceptValidator(Validator *validator) = 0;
+    virtual void AcceptCommand(Command *command) = 0;
 
     Client *GetClient() const;
     eRequestType GetType() const;

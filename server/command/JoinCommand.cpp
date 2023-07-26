@@ -1,7 +1,3 @@
 #include "JoinCommand.hpp"
 
-void JoinCommand::Execute() const {}
-
-void JoinCommand::SetJoinRequest(JoinRequest *joinRequest) {
-    mJoinRequest = joinRequest;
-}
+void JoinCommand::Execute(JoinRequest *joinRequest) const {}

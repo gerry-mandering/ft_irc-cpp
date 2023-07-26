@@ -6,11 +6,6 @@
 class PartCommand : public Command {
 
 public:
-    void Execute() const;
-
-    void SetPartRequest(PartRequest *partRequest);
-
-private:
-    PartRequest *mPartRequest;
+    void Execute(PartRequest *partRequest) const;
 
 };

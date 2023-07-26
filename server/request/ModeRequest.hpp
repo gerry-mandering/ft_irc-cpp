@@ -7,6 +7,9 @@ class ModeRequest : public Request {
 public:
     ModeRequest(handle_t socket);
 
+    void AcceptValidator(Validator *validator);
+    void AcceptCommand(Command *command);
+
     void SetChannelName(const std::string &channelName);
     void SetPlusMinus(const std::string &plusMinus);
     void SetModeChar(const std::string &modeChar);

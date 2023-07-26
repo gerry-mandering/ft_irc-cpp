@@ -1,12 +1,8 @@
 #include "NickCommand.hpp"
 
-void NickCommand::Execute() const {
-    Client *client = mNickRequest->GetClient();
+void NickCommand::Execute(NickRequest *nickRequest) const {
+    Client *client = nickRequest->GetClient();
 
-    client->SetNickName(mNickRequest->GetNickName());
+    client->SetNickName(nickRequest->GetNickName());
     client->SetNickNameEntered();
-}
-
-void NickCommand::SetNickRequest(NickRequest *nickRequest) {
-    mNickRequest = nickRequest;
 }

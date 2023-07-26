@@ -8,6 +8,9 @@ class PrivmsgRequest : public Request {
 public:
     PrivmsgRequest(handle_t socket);
 
+    void AcceptValidator(Validator *validator);
+    void AcceptCommand(Command *command);
+
     void AddTarget(const std::string &target);
     void SetMessage(const std::string &message);
 

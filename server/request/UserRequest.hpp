@@ -1,14 +1,16 @@
 #pragma once
 
 #include "Request.hpp"
+#include "Validator.hpp"
+#include "Command.hpp"
 
 class UserRequest : public Request {
 
 public:
     UserRequest(handle_t socket);
 
-    Validator *GetValidator() const;
-    Command *BuildCommand() const;
+    void AcceptValidator(Validator *validator);
+    void AcceptCommand(Command *command);
 
     void SetUserName(const std::string &userName);
     void SetHostName(const std::string &hostName);

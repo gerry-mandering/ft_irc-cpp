@@ -7,6 +7,9 @@ class NickRequest : public Request {
 public:
     NickRequest(handle_t socket);
 
+    void AcceptValidator(Validator *validator);
+    void AcceptCommand(Command *command);
+
     void SetNickName(const std::string &nickName);
 
     const std::string &GetNickName() const;
