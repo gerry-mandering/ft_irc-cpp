@@ -1,12 +1,16 @@
 #pragma once
 
 #include <iostream>
+#include <queue>
 #include "EventHandler.hpp"
 
 class Client {
 
 public:
     Client(handle_t socket);
+
+    void InsertResponse(const std::string &response);
+    const std::string ExtractResponse();
 
     void SetNickName(const std::string &nickName);
     void SetUserName(const std::string &userName);
@@ -33,6 +37,8 @@ public:
 private:
     //Builder 패턴 적용
     handle_t mSocket;
+    std::queue<std::string> mResponseQueue;
+
     std::string mNickName;
     std::string mUserName;
     std::string mHostName;

@@ -6,6 +6,17 @@ Client::Client(handle_t socket) : mSocket(socket),
                                   mbNickNameEntered(false),
                                   mbUserInfoEntered(false) {}
 
+void Client::InsertResponse(const std::string &response) {
+    mResponseQueue.push(response);
+}
+
+const std::string Client::ExtractResponse() {
+    std::string response = mResponseQueue.front();
+    mResponseQueue.pop();
+
+    return response;
+}
+
 void Client::SetNickName(const std::string &nickName) {
     mNickName = nickName;
 }

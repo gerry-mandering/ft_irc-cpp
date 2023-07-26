@@ -11,7 +11,8 @@ void UserValidator::Validate() const {
     // USER, PASS 둘 다 들어온 경우
 
     // 이미 registered 되어 있는 경우에는 :irc.local 462 minseok2 :You may not reregister
-    client->
+    if (client->Registered())
+        handleError(462, client->GetNickName());
 }
 
 void UserValidator::SetUserRequest(UserRequest *userRequest) {

@@ -6,6 +6,6 @@ public:
     virtual void Validate() const = 0;
 
 protected:
-    virtual ~Validator();
+    virtual ~Validator() {}
 
 };
