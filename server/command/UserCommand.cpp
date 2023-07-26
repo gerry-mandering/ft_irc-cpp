@@ -9,7 +9,8 @@ void UserCommand::Execute() const {
     client->SetRealName(mUserRequest->GetRealName());
     client->SetUserInfoEntered();
 
-    //NICK PASS 들어와 있으면 registered flag 켜주기
+    if (client->EnteredNickName() && client->EnteredPassword())
+        client->SetRegistered();
 }
 
 void UserCommand::SetUserRequest(const UserRequest *userRequest) {

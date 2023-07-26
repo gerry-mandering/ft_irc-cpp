@@ -6,13 +6,11 @@
 class UserValidator : public Validator {
 
 public:
-    void Validate() const;
+    bool Validate() const;
 
     void SetUserRequest(UserRequest *userRequest);
 
 private:
-    void HandleError(eErrorType) const;
-
     UserRequest *mUserRequest;
 
 };
