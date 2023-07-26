@@ -1,15 +1,19 @@
 #include "UserRequest.hpp"
+#include "UserValidator.hpp"
 #include "UserCommand.hpp"
 
 UserRequest::UserRequest(handle_t socket) : Request(socket) {}
 
 Validator *UserRequest::GetValidator() const {
+    UserValidator *userValidator = Validator::GetValidator(this->GetType());
+    userValidator->SetUserRequest(this);
 
+    return userValidator;
 }
 
 Command *UserRequest::BuildCommand() const {
     UserCommand *userCommand = Command::GetCommand(this->GetType());
-    userCommand->setUserRequest(this);
+    userCommand->SetUserRequest(this);
 
     return userCommand;
 }

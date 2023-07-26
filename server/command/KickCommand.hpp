@@ -8,7 +8,7 @@ class KickCommand : public Command {
 public:
     void Execute() const;
 
-    void setKickRequest(KickRequest *kickRequest);
+    void SetKickRequest(KickRequest *kickRequest);
 
 private:
     KickRequest *mKickRequest;

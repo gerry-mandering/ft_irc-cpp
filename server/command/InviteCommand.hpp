@@ -8,7 +8,7 @@ class InviteCommand : public Command {
 public:
     void Execute() const;
 
-    void setInviteRequest(InviteRequest *inviteRequest);
+    void SetInviteRequest(InviteRequest *inviteRequest);
 
 private:
     InviteRequest *mInviteRequest;

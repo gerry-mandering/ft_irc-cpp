@@ -8,7 +8,7 @@ class PingCommand : public Command {
 public:
     void Execute() const;
 
-    void setPingRequest(PingRequest *pingRequest);
+    void SetPingRequest(PingRequest *pingRequest);
 
 private:
     PingRequest *mPingRequest;

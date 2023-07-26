@@ -8,7 +8,7 @@ class QuitCommand : public Command {
 public:
     void Execute() const;
 
-    void setQuitRequest(QuitRequest *quitRequest);
+    void SetQuitRequest(QuitRequest *quitRequest);
 
 private:
     QuitRequest *mQuitRequest;

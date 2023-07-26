@@ -8,7 +8,7 @@ class NickCommand : public Command {
 public:
     void Execute() const;
 
-    void setNickRequest(NickRequest *nickRequest);
+    void SetNickRequest(NickRequest *nickRequest);
 
 private:
     NickRequest *mNickRequest;

@@ -2,6 +2,6 @@
 
 void ModeCommand::Execute() const {}
 
-void ModeCommand::setModeRequest(ModeRequest *modeRequest) {
+void ModeCommand::SetModeRequest(ModeRequest *modeRequest) {
     mModeRequest = modeRequest;
 }

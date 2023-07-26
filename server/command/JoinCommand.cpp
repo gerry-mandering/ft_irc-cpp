@@ -2,6 +2,6 @@
 
 void JoinCommand::Execute() const {}
 
-void JoinCommand::setJoinRequest(JoinRequest *joinRequest) {
+void JoinCommand::SetJoinRequest(JoinRequest *joinRequest) {
     mJoinRequest = joinRequest;
 }

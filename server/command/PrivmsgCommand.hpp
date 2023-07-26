@@ -8,7 +8,7 @@ class PrivmsgCommand : public Command {
 public:
     void Execute() const;
 
-    void setPrivmsgRequest(PrivmsgRequest *privmsgRequest);
+    void SetPrivmsgRequest(PrivmsgRequest *privmsgRequest);
 
 private:
     PrivmsgRequest *mPrivmsgRequest;

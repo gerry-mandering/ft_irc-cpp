@@ -5,6 +5,7 @@
 #include "Client.hpp"
 #include "ClientRepository.hpp"
 #include "Command.hpp"
+#include "Validator.hpp"
 
 typedef enum eRequestType {
     CAP,

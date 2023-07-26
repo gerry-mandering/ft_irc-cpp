@@ -8,7 +8,7 @@ class ModeCommand : public Command {
 public:
     void Execute() const;
 
-    void setModeRequest(ModeRequest *modeRequest);
+    void SetModeRequest(ModeRequest *modeRequest);
 
 private:
     ModeRequest *mModeRequest;

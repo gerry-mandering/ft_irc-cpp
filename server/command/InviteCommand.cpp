@@ -2,6 +2,6 @@
 
 void InviteCommand::Execute() const {}
 
-void InviteCommand::setInviteRequest(InviteRequest *inviteRequest) {
+void InviteCommand::SetInviteRequest(InviteRequest *inviteRequest) {
     mInviteRequest = inviteRequest;
 }

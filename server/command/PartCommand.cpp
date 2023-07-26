@@ -2,6 +2,6 @@
 
 void PartCommand::Execute() const {}
 
-void PartCommand::setPartRequest(PartRequest *partRequest) {
+void PartCommand::SetPartRequest(PartRequest *partRequest) {
     mPartRequest = partRequest;
 }

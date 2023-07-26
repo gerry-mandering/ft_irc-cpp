@@ -2,6 +2,6 @@
 
 void QuitCommand::Execute() const {}
 
-void QuitCommand::setQuitRequest(QuitRequest *quitRequest) {
+void QuitCommand::SetQuitRequest(QuitRequest *quitRequest) {
     mQuitRequest = quitRequest;
 }
