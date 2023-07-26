@@ -1,3 +1,7 @@
 #include "PingCommand.hpp"
 
-void PingCommand::Execute(PingRequest *pingRequest) const {}
+void PingCommand::Execute() const {}
+
+void PingCommand::setPingRequest(PingRequest *pingRequest) {
+    mPingRequest = pingRequest;
+}

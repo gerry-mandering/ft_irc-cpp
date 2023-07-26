@@ -1,3 +1,7 @@
 #include "PrivmsgCommand.hpp"
 
-void PrivmsgCommand::Execute(PrivmsgRequest *privmsgRequest) const {}
+void PrivmsgCommand::Execute() const {}
+
+void PrivmsgCommand::setPrivmsgRequest(PrivmsgRequest *privmsgRequest) {
+    mPrivmsgRequest = privmsgRequest;
+}

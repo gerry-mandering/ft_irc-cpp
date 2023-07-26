@@ -6,6 +6,11 @@
 class KickCommand : public Command {
 
 public:
-    void Execute(KickRequest *kickRequest) const;
+    void Execute() const;
+
+    void setKickRequest(KickRequest *kickRequest);
+
+private:
+    KickRequest *mKickRequest;
 
 };

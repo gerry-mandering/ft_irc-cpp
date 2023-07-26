@@ -1,6 +1,18 @@
 #include "UserRequest.hpp"
+#include "UserCommand.hpp"
 
 UserRequest::UserRequest(handle_t socket) : Request(socket) {}
+
+Validator *UserRequest::GetValidator() const {
+
+}
+
+Command *UserRequest::BuildCommand() const {
+    UserCommand *userCommand = Command::GetCommand(this->GetType());
+    userCommand->setUserRequest(this);
+
+    return userCommand;
+}
 
 void UserRequest::SetUserName(const std::string &userName) {
     mUserName = userName;

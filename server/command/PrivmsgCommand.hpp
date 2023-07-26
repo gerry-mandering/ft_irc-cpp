@@ -6,6 +6,11 @@
 class PrivmsgCommand : public Command {
 
 public:
-    void Execute(PrivmsgRequest *privmsgRequest) const;
+    void Execute() const;
+
+    void setPrivmsgRequest(PrivmsgRequest *privmsgRequest);
+
+private:
+    PrivmsgRequest *mPrivmsgRequest;
 
 };

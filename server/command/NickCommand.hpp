@@ -6,6 +6,11 @@
 class NickCommand : public Command {
 
 public:
-    void Execute(NickRequest *nickRequest) const;
+    void Execute() const;
+
+    void setNickRequest(NickRequest *nickRequest);
+
+private:
+    NickRequest *mNickRequest;
 
 };

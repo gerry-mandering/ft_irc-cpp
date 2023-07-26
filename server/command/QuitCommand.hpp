@@ -3,9 +3,14 @@
 #include "Command.hpp"
 #include "QuitRequest.hpp"
 
-class QuitComamnd : public Command {
+class QuitCommand : public Command {
 
 public:
-    void Execute(QuitRequest *quitRequest) const;
+    void Execute() const;
+
+    void setQuitRequest(QuitRequest *quitRequest);
+
+private:
+    QuitRequest *mQuitRequest;
 
 };

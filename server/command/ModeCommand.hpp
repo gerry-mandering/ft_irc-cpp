@@ -6,6 +6,11 @@
 class ModeCommand : public Command {
 
 public:
-    void Execute(ModeRequest *modeRequest) const;
+    void Execute() const;
+
+    void setModeRequest(ModeRequest *modeRequest);
+
+private:
+    ModeRequest *mModeRequest;
 
 };

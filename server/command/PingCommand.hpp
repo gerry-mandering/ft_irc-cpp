@@ -6,6 +6,11 @@
 class PingCommand : public Command {
 
 public:
-    void Execute(PingRequest *pingRequest) const;
+    void Execute() const;
+
+    void setPingRequest(PingRequest *pingRequest);
+
+private:
+    PingRequest *mPingRequest;
 
 };

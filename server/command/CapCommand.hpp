@@ -6,6 +6,11 @@
 class CapCommand : public Command {
 
 public:
-    void Execute(CapRequest *capRequest) const;
+    void Execute() const;
+
+    void setCapRequest(CapRequest *capRequest);
+
+private:
+    CapRequest *mCapRequest;
 
 };
