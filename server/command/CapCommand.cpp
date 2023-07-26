@@ -2,6 +2,6 @@
 
 void CapCommand::Execute() const {}
 
-void CapCommand::setCapRequest(CapRequest *capRequest) {
+void CapCommand::SetCapRequest(CapRequest *capRequest) {
     mCapRequest = capRequest;
 }

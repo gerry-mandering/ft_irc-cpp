@@ -8,8 +8,10 @@ void UserCommand::Execute() const {
     client->SetServerName(mUserRequest->GetServerName());
     client->SetRealName(mUserRequest->GetRealName());
     client->SetUserInfoEntered();
+
+    //NICK PASS 들어와 있으면 registered flag 켜주기
 }
 
-void UserCommand::setUserRequest(const UserRequest *userRequest) {
+void UserCommand::SetUserRequest(const UserRequest *userRequest) {
     mUserRequest = userRequest;
 }

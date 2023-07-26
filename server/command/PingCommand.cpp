@@ -2,6 +2,6 @@
 
 void PingCommand::Execute() const {}
 
-void PingCommand::setPingRequest(PingRequest *pingRequest) {
+void PingCommand::SetPingRequest(PingRequest *pingRequest) {
     mPingRequest = pingRequest;
 }

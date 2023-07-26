@@ -8,7 +8,7 @@ class CapCommand : public Command {
 public:
     void Execute() const;
 
-    void setCapRequest(CapRequest *capRequest);
+    void SetCapRequest(CapRequest *capRequest);
 
 private:
     CapRequest *mCapRequest;

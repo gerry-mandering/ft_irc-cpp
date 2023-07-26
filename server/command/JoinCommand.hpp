@@ -8,7 +8,7 @@ class JoinCommand : public Command {
 public:
     void Execute() const;
 
-    void setJoinRequest(JoinRequest *joinRequest);
+    void SetJoinRequest(JoinRequest *joinRequest);
 
 private:
     JoinRequest *mJoinRequest;

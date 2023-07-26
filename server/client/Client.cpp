@@ -1,10 +1,21 @@
 #include "Client.hpp"
 
 Client::Client(handle_t socket) : mSocket(socket),
-                                  mbRegisteredClient(false),
-                                  mbEnteredPassword(false),
-                                  mbEnteredNickName(false),
-                                  mbEnteredUserInfo(false) {}
+                                  mbRegistered(false),
+                                  mbPasswordEntered(false),
+                                  mbNickNameEntered(false),
+                                  mbUserInfoEntered(false) {}
+
+void Client::InsertResponse(const std::string &response) {
+    mResponseQueue.push(response);
+}
+
+const std::string Client::ExtractResponse() {
+    std::string response = mResponseQueue.front();
+    mResponseQueue.pop();
+
+    return response;
+}
 
 void Client::SetNickName(const std::string &nickName) {
     mNickName = nickName;
@@ -46,18 +57,34 @@ const std::string &Client::GetRealName() const {
     return mRealName;
 }
 
-void Client::SetClientRegistered() {
-    mbRegisteredClient = true;
+void Client::SetRegistered() {
+    mbRegistered = true;
 }
 
 void Client::SetPasswordEntered() {
-    mbEnteredPassword = true;
+    mbPasswordEntered = true;
 }
 
 void Client::SetNickNameEntered() {
-    mbEnteredNickName = true;
+    mbNickNameEntered = true;
 }
 
 void Client::SetUserInfoEntered() {
-    mbEnteredUserInfo = true;
+    mbUserInfoEntered = true;
+}
+
+bool Client::Registered() const {
+    return mbRegistered;
+}
+
+bool Client::EnteredPassword() const {
+    return mbPasswordEntered;
+}
+
+bool Client::EnteredNickName() const {
+    return mbNickNameEntered;
+}
+
+bool Client::EnteredUserInfo() const {
+    return mbUserInfoEntered;
 }

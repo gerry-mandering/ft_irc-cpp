@@ -8,7 +8,7 @@ class PassCommand : public Command {
 public:
     void Execute() const;
 
-    void setPassRequest(PassRequest *passRequest);
+    void SetPassRequest(PassRequest *passRequest);
 
 private:
     PassRequest *mPassRequest;

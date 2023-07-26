@@ -8,7 +8,7 @@ class TopicCommand : public Command {
 public:
     void Execute() const;
 
-    void setTopicRequest(TopicRequest *topicRequest);
+    void SetTopicRequest(TopicRequest *topicRequest);
 
 private:
     TopicRequest *mTopicRequest;

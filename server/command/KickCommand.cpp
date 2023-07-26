@@ -2,6 +2,6 @@
 
 void KickCommand::Execute() const {}
 
-void KickCommand::setKickRequest(KickRequest *kickRequest) {
+void KickCommand::SetKickRequest(KickRequest *kickRequest) {
     mKickRequest = kickRequest;
 }

@@ -33,7 +33,9 @@ int StreamHandler::handleRead(void)
     string str = PacketManager::GetInstance->getRequest();
 
     Request *request = Parser.Parse(requestString);
-    Command *command = Command::GetCommand(request->GetType());
+    Validator *validator = request->GetValidator();
+    validator->Validate();
+    Command *command = request->BuildCommand();
     command->Execute();
 
     return (g_reactor().registerEvent(this, WRITE_EVENT));

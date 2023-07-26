@@ -2,6 +2,6 @@
 
 void TopicCommand::Execute() const {}
 
-void TopicCommand::setTopicRequest(TopicRequest *topicRequest) {
+void TopicCommand::SetTopicRequest(TopicRequest *topicRequest) {
     mTopicRequest = topicRequest;
 }

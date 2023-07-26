@@ -2,6 +2,6 @@
 
 void PrivmsgCommand::Execute() const {}
 
-void PrivmsgCommand::setPrivmsgRequest(PrivmsgRequest *privmsgRequest) {
+void PrivmsgCommand::SetPrivmsgRequest(PrivmsgRequest *privmsgRequest) {
     mPrivmsgRequest = privmsgRequest;
 }

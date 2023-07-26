@@ -8,7 +8,7 @@ class PartCommand : public Command {
 public:
     void Execute() const;
 
-    void setPartRequest(PartRequest *partRequest);
+    void SetPartRequest(PartRequest *partRequest);
 
 private:
     PartRequest *mPartRequest;
