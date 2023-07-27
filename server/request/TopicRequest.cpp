@@ -2,6 +2,10 @@
 
 TopicRequest::TopicRequest(handle_t socket) : Request(socket) {}
 
+void TopicRequest::AcceptCommand(Command *command) {}
+
+void TopicRequest::AcceptValidator(Validator *validator) {}
+
 void TopicRequest::SetChannelName(const std::string &channelName) {
     mChannelName = channelName;
 }

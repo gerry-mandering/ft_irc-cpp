@@ -2,6 +2,10 @@
 
 KickRequest::KickRequest(handle_t socket) : Request(socket) {}
 
+void KickRequest::AcceptValidator(Validator *validator) {}
+
+void KickRequest::AcceptCommand(Command *command) {}
+
 void KickRequest::SetNickName(const std::string &nickName) {
     mNickNames.push_back(nickName);
 }

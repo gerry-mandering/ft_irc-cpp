@@ -2,6 +2,10 @@
 
 InviteRequest::InviteRequest(handle_t socket) : Request(socket) {}
 
+void InviteRequest::AcceptValidator(Validator *validator) {}
+
+void InviteRequest::AcceptCommand(Command *command) {}
+
 void InviteRequest::SetNickName(const std::string &nickName) {
     mNickName = nickName;
 }

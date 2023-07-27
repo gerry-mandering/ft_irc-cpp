@@ -2,6 +2,10 @@
 
 PrivmsgRequest::PrivmsgRequest(handle_t socket) : Request(socket) {}
 
+void PrivmsgRequest::AcceptValidator(Validator *validator) {}
+
+void PrivmsgRequest::AcceptCommand(Command *command) {}
+
 void PrivmsgRequest::AddTarget(const std::string &target) {
     mTargets.push_back(target);
 }

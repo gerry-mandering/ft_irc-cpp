@@ -2,6 +2,10 @@
 
 ModeRequest::ModeRequest(handle_t socket) : Request(socket) {}
 
+void ModeRequest::AcceptValidator(Validator *validator) {}
+
+void ModeRequest::AcceptCommand(Command *command) {}
+
 void ModeRequest::SetChannelName(const std::string &channelName) {
     mChannelName = channelName;
 }
