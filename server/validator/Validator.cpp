@@ -25,6 +25,38 @@ bool Validator::Visit(ModeRequest *modeRequest) const
 
 bool Validator::Visit(NickRequest *nickRequest) const
 {
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+    Client *client = nickRequest->GetClient();
+
+    // 이미 해당 닉네임을 사용하는 클라이언트가 존재하는 경우
+    if (clientRepository->FindByNickname(nickRequest->GetNickName()) != NULL)
+    {
+        std::string errorMessage;
+
+        if (client->EnteredNickName())
+            errorMessage = BuildNickNameInUseMsg(nickRequest->GetNickName(), client->GetNickName());
+        else
+            errorMessage = BuildNickNameInUseMsg(nickRequest->GetNickName());
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    // Password를 입력하지 않았는데 register를 시도하는 경우
+    if (client->EnteredUserInfo() && !client->EnteredPassword())
+    {
+        std::string errorMessage;
+
+        if (client->EnteredUserInfo())
+            errorMessage = BuildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
+        else
+            errorMessage = BuildAccessDeniedMsg();
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    return true;
 }
 
 bool Validator::Visit(PartRequest *partRequest) const
@@ -89,7 +121,7 @@ bool Validator::Visit(UserRequest *userRequest) const
 {
     Client *client = userRequest->GetClient();
 
-    if (client->EnteredUserInfo())
+    if (client->Registered() || client->EnteredUserInfo())
     {
         std::string errorMessage;
 
@@ -126,11 +158,25 @@ std::string Validator::BuildAlreadyRegisteredMsg(const std::string &nickName)
 }
 
 // TODO 원래는 GetHostName()이 아니라 아이피 주소로 출력됨 방법 찾기
-std::string Validator::BuildAccessDeniedMsg(const std::string &userName, const std::string &hostName)
+// TODO AccessDenied 는 연결을 끊어야 함!!!!!
+std::string Validator::BuildAccessDeniedMsg(const std::string &userName,
+                                            const std::string &hostName)
 {
     std::stringstream ErrorMessage;
 
-    ErrorMessage << "Error :Closing link: (" << userName << "@" << hostName << ") [Access denied by configuration]";
+    ErrorMessage << "Error :Closing link: (" << userName << "@" << hostName
+                 << ") [Access denied by configuration]";
+
+    return ErrorMessage.str();
+}
+
+std::string Validator::BuildNickNameInUseMsg(const std::string &newNickName,
+                                             const std::string &clientNickName)
+{
+    std::stringstream ErrorMessage;
+
+    ErrorMessage << "irc.local 433 " << clientNickName << " " << newNickName
+                 << " :Nickname is already in use.";
 
     return ErrorMessage.str();
 }

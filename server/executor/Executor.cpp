@@ -30,6 +30,7 @@ bool Executor::Visit(ModeRequest *modeRequest) const
     return true;
 }
 
+// TODO 클라이언트가 속한 채널 가져오기
 bool Executor::Visit(NickRequest *nickRequest) const
 {
     Client *client = nickRequest->GetClient();
@@ -37,7 +38,22 @@ bool Executor::Visit(NickRequest *nickRequest) const
     client->SetNickName(nickRequest->GetNickName());
     client->SetNickNameEntered();
 
-    if (client->EnteredUserInfo() && client->EnteredPassword())
+    std::stringstream responseMessage;
+
+    if (client->Registered())
+    {
+        responseMessage << client->GetClientInfo() << "NICK :" << nickRequest->GetNickName();
+
+        if (클라이언트가 어떠한 채널에 속해 있으면)
+        {
+            Channel *channel; // 클라이언트가 속한 채널
+            channel->BroadcastMessage(responseMessage);
+        }
+        else
+            client->InsertResponse(responseMessage);
+    }
+
+    if (!client->Registered() && client->EnteredUserInfo() && client->EnteredPassword())
     {
         // TODO Welcome message 뿌려주기
         client->SetRegistered();
