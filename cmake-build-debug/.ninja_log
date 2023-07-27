@@ -1,0 +1,4 @@
+# ninja log v5
+0	735	1690390172316287044	CMakeFiles/ft_irc_cpp.dir/server/channel/Channel.cpp.o	d0922184d4024cb1
+1	738	1690390172319657529	CMakeFiles/ft_irc_cpp.dir/server/client/Client.cpp.o	a2c5c7f6d34a3157
+1	743	1690390172325441110	CMakeFiles/ft_irc_cpp.dir/server/channel_repository/ChannelRepository.cpp.o	24cf396ae39a017f

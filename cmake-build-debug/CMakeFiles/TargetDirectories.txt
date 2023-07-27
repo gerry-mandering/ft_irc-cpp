@@ -1,0 +1,3 @@
+/Users/minseok/WorkSpace/ft_irc-cpp/cmake-build-debug/CMakeFiles/ft_irc_cpp.dir
+/Users/minseok/WorkSpace/ft_irc-cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/minseok/WorkSpace/ft_irc-cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir

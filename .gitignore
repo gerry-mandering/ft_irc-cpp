@@ -2,9 +2,6 @@
 .DS_Store
 
 # IDE idea
-.idea
-CMakeLists.txt
-cmake-build-debug
 
 # Prerequisites
 *.d
