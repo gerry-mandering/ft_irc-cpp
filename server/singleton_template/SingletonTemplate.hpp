@@ -3,29 +3,34 @@
 #include <cstddef>
 #include <cstdlib>
 
-template<class T>
-class TSingleton {
+template <class T>
+class TSingleton
+{
 
-public:
-    static T *GetInstance() {
-        if (mInstance == NULL) {
+  public:
+    static T *GetInstance()
+    {
+        if (mInstance == NULL)
+        {
             mInstance = new T;
             std::atexit(DeleteInstance);
         }
         return mInstance;
     }
-    static void DeleteInstance() {
+    static void DeleteInstance()
+    {
         if (mInstance != NULL)
             delete mInstance;
         mInstance = NULL;
     }
 
-protected:
+  protected:
     TSingleton() {}
     ~TSingleton() {}
 
-private:
+  private:
     static T *mInstance;
 };
 
-template<class T> T *TSingleton<T>::mInstance = NULL;
+template <class T>
+T *TSingleton<T>::mInstance = NULL;

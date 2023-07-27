@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Client.hpp"
 #include <iostream>
 #include <vector>
-#include "Client.hpp"
 
-class Channel {
+class Channel
+{
 
-public:
+  public:
     Channel(const std::string &name);
 
     void SetClient(Client *newClient);
@@ -14,7 +15,7 @@ public:
     std::vector<Client *> GetClients() const;
     std::vector<Client *> GetOperators() const;
 
-private:
+  private:
     std::string mName;
 
     std::vector<Client *> mClients;
@@ -24,5 +25,4 @@ private:
     bool mbProtectedTopicMode;
     bool mbKeyMode;
     bool mbClientLimitMode;
-
 };

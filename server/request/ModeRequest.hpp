@@ -2,10 +2,13 @@
 
 #include "Request.hpp"
 
-class ModeRequest : public Request {
+class ModeRequest : public Request
+{
 
-public:
+  public:
     ModeRequest(handle_t socket);
+
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetChannelName(const std::string &channelName);
     void SetPlusMinus(const std::string &plusMinus);
@@ -17,10 +20,9 @@ public:
     const std::string &GetModeChar() const;
     const std::string &GetModeArgument() const;
 
-private:
+  private:
     std::string mChannelName;
     std::string mPlusMinus;
     std::string mModeChar;
     std::string mModeArgument;
-
 };

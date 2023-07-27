@@ -2,13 +2,13 @@
 
 #include "Request.hpp"
 
-class UserRequest : public Request {
+class UserRequest : public Request
+{
 
-public:
+  public:
     UserRequest(handle_t socket);
 
-    Validator *GetValidator() const;
-    Command *BuildCommand() const;
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetUserName(const std::string &userName);
     void SetHostName(const std::string &hostName);
@@ -20,10 +20,9 @@ public:
     const std::string &GetServerName() const;
     const std::string &GetRealName() const;
 
-private:
+  private:
     std::string mUserName;
     std::string mHostName;
     std::string mServerName;
     std::string mRealName;
-
 };

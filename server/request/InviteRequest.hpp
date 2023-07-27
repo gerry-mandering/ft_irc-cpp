@@ -2,10 +2,13 @@
 
 #include "Request.hpp"
 
-class InviteRequest : public Request {
+class InviteRequest : public Request
+{
 
-public:
+  public:
     InviteRequest(handle_t socket);
+
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetNickName(const std::string &nickName);
     void SetChannelName(const std::string &channelName);
@@ -13,8 +16,7 @@ public:
     const std::string &GetNickName() const;
     const std::string &GetChannelName() const;
 
-private:
+  private:
     std::string mNickName;
     std::string mChannelName;
-
 };
