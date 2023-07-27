@@ -12,8 +12,8 @@ class ClientRepository : public TSingleton<ClientRepository>
     ClientRepository();
     ~ClientRepository();
 
-    Client *FindBySocket(handle_t socket) const;
-    Client *FindByNickname(std::string nickName) const;
+    Client *FindBySocket(handle_t socket);
+    Client *FindByNickname(std::string nickName);
 
   private:
     std::map<handle_t, Client *> mSocketToClients;

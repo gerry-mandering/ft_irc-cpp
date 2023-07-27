@@ -26,7 +26,7 @@ class TSingleton
 
   protected:
     TSingleton() {}
-    ~TSingleton() {}
+    virtual ~TSingleton() {}
 
   private:
     static T *mInstance;

@@ -81,7 +81,21 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 
 bool Executor::Visit(TopicRequest *topicRequest) const
 {
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(topicRequest->GetChannelName());
 
+    std::string newTopic = topicRequest->GetTopic();
+
+    if (newTopic == channel->GetTopic())
+        return true;
+
+    channel->SetTopic(newTopic);
+
+    std::stringstream topicChangedMsg;
+    topicChangedMsg << topicRequest->GetClient()->GetClientInfo() << "TOPIC #"
+                    << topicRequest->GetChannelName() << " :" << newTopic;
+
+    channel->BroadcastMessage(topicChangedMsg.str());
     return true;
 }
 

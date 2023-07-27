@@ -9,12 +9,10 @@ ClientRepository::~ClientRepository()
 }
 
 // 요청이 들어오면 소켓을 무조건 존재 -> 해당 클라이언트를 만들어야함
-Client *ClientRepository::FindBySocket(handle_t socket) const
+Client *ClientRepository::FindBySocket(handle_t socket)
 {
-    std::map<handle_t, Client *>::iterator it = mSocketToClients.find(socket);
-
-    if (it != mSocketToClients.end())
-        return *it;
+    if (mSocketToClients.find(socket) != mSocketToClients.end())
+        return mSocketToClients[socket];
 
     // TODO shared_ptr로 수정하기
     Client *client = new Client(socket);
@@ -23,12 +21,10 @@ Client *ClientRepository::FindBySocket(handle_t socket) const
 }
 
 // 없는 닉네임을 조회하는 요청이 들어오면 안 만들어야함
-Client *ClientRepository::FindByNickname(std::string nickName) const
+Client *ClientRepository::FindByNickname(std::string nickName)
 {
-    std::map<std::string, Client *>::iterator it = mNickNameToClients.find(nickName);
-
-    if (it != mNickNameToClients.end())
-        return *it;
+    if (mNickNameToClients.find(nickName) != mNickNameToClients.end())
+        return mNickNameToClients[nickName];
 
     return NULL;
 }
