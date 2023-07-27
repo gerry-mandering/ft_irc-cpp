@@ -35,9 +35,9 @@ int StreamHandler::handleRead(void)
     Request *request = Parser.Parse(requestString);
 
     Validator *validator = Validator::GetValidator(request->GetType());
-    if (request->AcceptValidator(validator)) {
+    if (request->Accept(validator)) {
         Command *command = Command::GetCommand(request->GetType());
-        request->AcceptCommand(command);
+        request->Accept(command);
     }
 
     return (g_reactor().registerEvent(this, WRITE_EVENT));

@@ -1,4 +1,4 @@
-# Install script for directory: /Users/minseok/WorkSpace/ft_irc-cpp
+# Install script for directory: /Users/minseok2/Workspace/GitHub/Circle_5/IRC
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/minseok/WorkSpace/ft_irc-cpp/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/minseok2/Workspace/GitHub/Circle_5/IRC/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
