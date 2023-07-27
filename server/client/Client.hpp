@@ -3,6 +3,7 @@
 #include "EventHandler.hpp"
 #include <iostream>
 #include <queue>
+#include <sstream>
 
 class Client
 {
@@ -11,7 +12,9 @@ class Client
     Client(handle_t socket);
 
     void InsertResponse(const std::string &response);
-    const std::string ExtractResponse();
+    std::string ExtractResponse();
+
+    std::string GetClientInfo() const;
 
     void SetNickName(const std::string &nickName);
     void SetUserName(const std::string &userName);

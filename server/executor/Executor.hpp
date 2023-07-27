@@ -1,7 +1,9 @@
 #pragma once
 
 #include "CapRequest.hpp"
+#include "ChannelRepository.hpp"
 #include "Client.hpp"
+#include "ClientRepository.hpp"
 #include "InviteRequest.hpp"
 #include "JoinRequest.hpp"
 #include "KickRequest.hpp"
@@ -16,6 +18,7 @@
 #include "TopicRequest.hpp"
 #include "UserRequest.hpp"
 #include "VisitorPattern.hpp"
+#include <sstream>
 
 class Executor : public TSingleton<Executor>, visitor_pattern::Visitor
 {

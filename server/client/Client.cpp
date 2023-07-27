@@ -1,8 +1,8 @@
 #include "Client.hpp"
 
 Client::Client(handle_t socket)
-    : mSocket(socket), mbRegistered(false), mbPasswordEntered(false),
-      mbNickNameEntered(false), mbUserInfoEntered(false)
+    : mSocket(socket), mbRegistered(false), mbPasswordEntered(false), mbNickNameEntered(false),
+      mbUserInfoEntered(false)
 {
 }
 
@@ -11,12 +11,21 @@ void Client::InsertResponse(const std::string &response)
     mResponseQueue.push(response);
 }
 
-const std::string Client::ExtractResponse()
+std::string Client::ExtractResponse()
 {
     std::string response = mResponseQueue.front();
     mResponseQueue.pop();
 
     return response;
+}
+
+std::string Client::GetClientInfo() const
+{
+    std::stringstream clientInfo;
+
+    // TODO hostname 수정
+    clientInfo << ":" << mNickName << "!" << mUserName << "@" << mHostName << " ";
+    return clientInfo.str();
 }
 
 void Client::SetNickName(const std::string &nickName)
