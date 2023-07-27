@@ -1,15 +1,15 @@
 #pragma once
 
-#include <vector>
 #include "Request.hpp"
+#include <vector>
 
-class KickRequest : public Request {
+class KickRequest : public Request
+{
 
-public:
+  public:
     KickRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetNickName(const std::string &nickName);
     void SetMessage(const std::string &message);
@@ -17,8 +17,7 @@ public:
     const std::vector<std::string> &GetNickNames() const;
     const std::string &GetMessage() const;
 
-private:
+  private:
     std::vector<std::string> mNickNames;
     std::string mMessage;
-
 };

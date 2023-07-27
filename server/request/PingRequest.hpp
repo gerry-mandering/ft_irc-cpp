@@ -2,19 +2,18 @@
 
 #include "Request.hpp"
 
-class PingRequest : public Request {
+class PingRequest : public Request
+{
 
-public:
+  public:
     PingRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetToken(const std::string &token);
 
     const std::string &GetToken() const;
 
-private:
+  private:
     std::string mToken;
-
 };

@@ -2,19 +2,18 @@
 
 #include "Request.hpp"
 
-class NickRequest : public Request {
+class NickRequest : public Request
+{
 
-public:
+  public:
     NickRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetNickName(const std::string &nickName);
 
     const std::string &GetNickName() const;
 
-private:
+  private:
     std::string mNickname;
-
 };
