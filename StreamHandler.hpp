@@ -2,7 +2,8 @@
 
 #include "EventHandler.hpp"
 #include "Request.hpp"
-#include "Command.hpp"
+#include "Executor.hpp"
+#include "Validator.hpp"
 #include <string>
 
 class StreamHandler : public EventHandler

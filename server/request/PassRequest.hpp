@@ -2,19 +2,18 @@
 
 #include "Request.hpp"
 
-class PassRequest : public Request {
+class PassRequest : public Request
+{
 
-public:
+  public:
     PassRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetPassword(const std::string &password);
 
     const std::string &GetPassword() const;
 
-private:
+  private:
     std::string mPassword;
-
 };

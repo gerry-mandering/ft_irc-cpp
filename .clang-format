@@ -1,0 +1,10 @@
+---
+BasedOnStyle: Microsoft
+AllowShortFunctionsOnASingleLine: InlineOnly
+AlwaysBreakTemplateDeclarations: 'Yes'
+BreakBeforeBraces: Allman
+ColumnLimit: 120
+IndentCaseLabels: true
+Language: Cpp
+
+...

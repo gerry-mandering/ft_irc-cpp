@@ -2,19 +2,18 @@
 
 #include "Request.hpp"
 
-class QuitRequest : public Request {
+class QuitRequest : public Request
+{
 
-public:
+  public:
     QuitRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetReason(const std::string &reason);
 
     const std::string &GetReason() const;
 
-private:
+  private:
     std::string mReason;
-
 };

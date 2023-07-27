@@ -34,7 +34,7 @@ int StreamHandler::handleRead(void)
 
     Request *request = Parser.Parse(requestString);
 
-    Validator *validator = Validator::GetValidator(request->GetType());
+    Validator *validator = Validator::GetInstance();
     if (request->Accept(validator)) {
         Command *command = Command::GetCommand(request->GetType());
         request->Accept(command);

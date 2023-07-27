@@ -1,13 +1,13 @@
 #pragma once
 
-#include <iostream>
-#include "EventHandler.hpp"
 #include "Client.hpp"
 #include "ClientRepository.hpp"
-#include "Command.hpp"
-#include "Validator.hpp"
+#include "EventHandler.hpp"
+#include "VisitorPattern.hpp"
+#include <iostream>
 
-typedef enum eRequestType {
+typedef enum eRequestType
+{
     CAP,
     INVITE,
     JOIN,
@@ -25,23 +25,22 @@ typedef enum eRequestType {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-//Exception 정의도 각각 request에 할지 생각
-class Request {
+// Exception 정의도 각각 request에 할지 생각
+class Request
+{
 
-public:
+  public:
     Request(handle_t socket);
 
-    virtual void AcceptValidator(Validator *validator) = 0;
-    virtual void AcceptCommand(Command *command) = 0;
+    virtual void Accept(visitor_pattern::Visitor *visitor) = 0;
 
     Client *GetClient() const;
     eRequestType GetType() const;
 
-protected:
+  protected:
     virtual ~Request() {}
 
-private:
+  private:
     Client *mClient;
     eRequestType mRequestType;
-
 };

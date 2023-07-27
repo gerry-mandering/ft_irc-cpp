@@ -2,19 +2,18 @@
 
 #include "Request.hpp"
 
-class CapRequest : public Request {
+class CapRequest : public Request
+{
 
-public:
+  public:
     CapRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetSubCommand(const std::string &subCommand);
 
     const std::string &GetSubCommand() const;
 
-private:
+  private:
     std::string mSubCommand;
-
 };

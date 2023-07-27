@@ -1,21 +1,21 @@
 #pragma once
 
-#include <map>
-#include "SingletonTemplate.hpp"
-#include "EventHandler.hpp"
 #include "Client.hpp"
+#include "EventHandler.hpp"
+#include "SingletonTemplate.hpp"
+#include <map>
 
-class ClientRepository : public TSingleton<ClientRepository> {
+class ClientRepository : public TSingleton<ClientRepository>
+{
 
-public:
+  public:
     ClientRepository();
     ~ClientRepository();
 
     Client *FindBySocket(handle_t socket) const;
     Client *FindByNickname(std::string nickName) const;
 
-private:
+  private:
     std::map<handle_t, Client *> mSocketToClients;
     std::map<std::string, Client *> mNickNameToClients;
-
 };

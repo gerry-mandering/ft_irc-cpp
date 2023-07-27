@@ -1,15 +1,15 @@
 #pragma once
 
-#include <vector>
 #include "Request.hpp"
+#include <vector>
 
-class JoinRequest : public Request {
+class JoinRequest : public Request
+{
 
-public:
+  public:
     JoinRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void SetChannelName(const std::string &channelName);
     void SetKey(const std::string &key);
@@ -17,8 +17,7 @@ public:
     const std::vector<std::string> &GetChannelNames() const;
     const std::vector<std::string> &GetKeys() const;
 
-private:
+  private:
     std::vector<std::string> mChannelNames;
     std::vector<std::string> mKeys;
-
 };

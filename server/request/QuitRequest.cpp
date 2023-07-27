@@ -1,15 +1,20 @@
 #include "QuitRequest.hpp"
 
-QuitRequest::QuitRequest(handle_t socket) : Request(socket) {}
+QuitRequest::QuitRequest(handle_t socket) : Request(socket)
+{
+}
 
-void QuitRequest::AcceptValidator(Validator *validator) {}
+void QuitRequest::Accept(visitor_pattern::Visitor *visitor)
+{
+    visitor->Visit(this);
+}
 
-void QuitRequest::AcceptCommand(Command *command) {}
-
-void QuitRequest::SetReason(const std::string &reason) {
+void QuitRequest::SetReason(const std::string &reason)
+{
     mReason = reason;
 }
 
-const std::string &QuitRequest::GetReason() const {
+const std::string &QuitRequest::GetReason() const
+{
     return mReason;
 }

@@ -1,23 +1,30 @@
 #include "PrivmsgRequest.hpp"
 
-PrivmsgRequest::PrivmsgRequest(handle_t socket) : Request(socket) {}
+PrivmsgRequest::PrivmsgRequest(handle_t socket) : Request(socket)
+{
+}
 
-void PrivmsgRequest::AcceptValidator(Validator *validator) {}
+void PrivmsgRequest::Accept(visitor_pattern::Visitor *visitor)
+{
+    visitor->Visit(this);
+}
 
-void PrivmsgRequest::AcceptCommand(Command *command) {}
-
-void PrivmsgRequest::AddTarget(const std::string &target) {
+void PrivmsgRequest::AddTarget(const std::string &target)
+{
     mTargets.push_back(target);
 }
 
-void PrivmsgRequest::SetMessage(const std::string &message) {
+void PrivmsgRequest::SetMessage(const std::string &message)
+{
     mMessage = message;
 }
 
-const std::vector<std::string> &PrivmsgRequest::GetTargets() const {
+const std::vector<std::string> &PrivmsgRequest::GetTargets() const
+{
     return mTargets;
 }
 
-const std::string &PrivmsgRequest::GetMessage() const {
+const std::string &PrivmsgRequest::GetMessage() const
+{
     return mMessage;
 }

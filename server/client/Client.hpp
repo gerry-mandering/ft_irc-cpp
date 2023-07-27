@@ -1,12 +1,13 @@
 #pragma once
 
+#include "EventHandler.hpp"
 #include <iostream>
 #include <queue>
-#include "EventHandler.hpp"
 
-class Client {
+class Client
+{
 
-public:
+  public:
     Client(handle_t socket);
 
     void InsertResponse(const std::string &response);
@@ -34,8 +35,8 @@ public:
     bool EnteredNickName() const;
     bool EnteredUserInfo() const;
 
-private:
-    //Builder 패턴 적용
+  private:
+    // Builder 패턴 적용
     handle_t mSocket;
     std::queue<std::string> mResponseQueue;
 
@@ -49,5 +50,4 @@ private:
     bool mbPasswordEntered;
     bool mbNickNameEntered;
     bool mbUserInfoEntered;
-
 };

@@ -1,12 +1,5 @@
 #pragma once
 
-// TODO enum 필요 없는 코드 일 수도?
-typedef enum eErrorType
-{
-    ACCESS_DENIED,
-    ERR_ALREADYREGISTRED = 462,
-} eErrorType;
-
 #include "CapRequest.hpp"
 #include "Client.hpp"
 #include "InviteRequest.hpp"
@@ -23,9 +16,8 @@ typedef enum eErrorType
 #include "TopicRequest.hpp"
 #include "UserRequest.hpp"
 #include "VisitorPattern.hpp"
-#include <sstream>
 
-class Validator : public TSingleton<Validator>, visitor_pattern::Visitor
+class Executor : public TSingleton<Executor>, visitor_pattern::Visitor
 {
 
   public:
@@ -42,8 +34,4 @@ class Validator : public TSingleton<Validator>, visitor_pattern::Visitor
     bool Visit(QuitRequest *quitRequest) const;
     bool Visit(TopicRequest *topicRequest) const;
     bool Visit(UserRequest *userRequest) const;
-
-  private:
-    static std::string BuildAlreadyRegisteredMsg(const std::string &nickName = "*");
-    static std::string BuildAccessDeniedMsg(const std::string &userName = "*", const std::string &hostName = "*");
 };

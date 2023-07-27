@@ -1,15 +1,15 @@
 #pragma once
 
-#include <vector>
 #include "Request.hpp"
+#include <vector>
 
-class PrivmsgRequest : public Request {
+class PrivmsgRequest : public Request
+{
 
-public:
+  public:
     PrivmsgRequest(handle_t socket);
 
-    void AcceptValidator(Validator *validator);
-    void AcceptCommand(Command *command);
+    void Accept(visitor_pattern::Visitor *visitor);
 
     void AddTarget(const std::string &target);
     void SetMessage(const std::string &message);
@@ -17,8 +17,7 @@ public:
     const std::vector<std::string> &GetTargets() const;
     const std::string &GetMessage() const;
 
-private:
+  private:
     std::vector<std::string> mTargets;
     std::string mMessage;
-
 };
