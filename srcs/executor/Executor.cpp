@@ -30,7 +30,6 @@ bool Executor::Visit(ModeRequest *modeRequest) const
     return true;
 }
 
-// TODO 클라이언트가 속한 채널 가져오기
 bool Executor::Visit(NickRequest *nickRequest) const
 {
     Client *client = nickRequest->GetClient();
@@ -53,6 +52,13 @@ bool Executor::Visit(NickRequest *nickRequest) const
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
         // TODO Welcome message 뿌려주기
+        EnvManager *envManager = EnvManager::GetInstance();
+
+        std::stringstream welcomeMessage;
+        welcomeMessage << ":" << envManager->GetServerName() << " 001 " << client->GetNickName()
+                       << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
+
+        client->InsertResponse(welcomeMessage.str());
         client->SetRegistered();
     }
 
@@ -173,6 +179,13 @@ bool Executor::Visit(UserRequest *userRequest) const
     if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
         // TODO Welcome message 뿌려주기
+        EnvManager *envManager = EnvManager::GetInstance();
+
+        std::stringstream welcomeMessage;
+        welcomeMessage << ":" << envManager->GetServerName() << " 001 " << client->GetNickName()
+                       << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
+
+        client->InsertResponse(welcomeMessage.str());
         client->SetRegistered();
     }
 
