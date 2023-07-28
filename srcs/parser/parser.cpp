@@ -1,5 +1,5 @@
+#include "ParseException.hpp"
 #include "debug.h"
-#include "parseException.hpp"
 #include "parser_internal.h"
 
 namespace Parser
