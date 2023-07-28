@@ -1,5 +1,5 @@
 #CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(INCLUDE_PATH) $(ASAN)
-# TODO 플래그 사용하기!!!!!!!!!!!!!!!!!!
+# TODO: 플래그 사용하기!!!!!!!!!!!!!!!!!!
 
 CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
 NAME = ircserver
@@ -22,16 +22,17 @@ DIR_VALIDATOR = validator
 DIR_VISITOR = visitor_pattern
 
 
-DRIVER := $(DIR_SRCS)/main.cpp
+DRIVER_SRC := $(DIR_SRCS)/main.cpp
+DRIVER_OBJ := $(DRIVER_SRC:.cpp=.o)
 
 DIR_TESTS = tests
-TEST_FILENAME = test_shared_ptr \
+TEST_FILENAMES = test_shared_ptr \
 					test_bracesyntax \
 					test_string \
 					test_stringstream \
 					test_stringstream2 \
 					
-TEST_SRCS := $(addprefix $(DIR_SRCS)/$(DIR_TESTS)/, $(addsuffix .cpp, $(TEST_FILENAME)))
+TEST_SRCS := $(addprefix $(DIR_SRCS)/$(DIR_TESTS)/, $(addsuffix .cpp, $(TEST_FILENAMES)))
 TEST_OBJS := $(TEST_SRCS:.cpp=.o)
 
 
@@ -39,18 +40,18 @@ TEST_OBJS := $(TEST_SRCS:.cpp=.o)
 SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp $(DIR_SRCS)/$(DIR_PARSER)/*.cpp)
 
 # TO BE
- SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_CHANNEL_REPOSITORY)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_CLIENT)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_CLIENT_REPOSITORY)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_ENV_MANGER)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_EXCEPTION)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_EXECUTOR)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_REACTOR)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_REQUEST)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp)
+# SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_CHANNEL_REPOSITORY)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_CLIENT)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_CLIENT_REPOSITORY)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_ENV_MANGER)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_EXCEPTION)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_EXECUTOR)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_REACTOR)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_REQUEST)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
+#  					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp)
 # 					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp \
 
 # SRCS := $(filter-out $(DRIVER) $(VAR),$(SRCS))
@@ -77,20 +78,20 @@ all: $(NAME)
 # $(NAME): $(OBJS) main.cpp
 # 	$(LINK.cc) $^ -o $(NAME)
 
-$(NAME): $(OBJS) $(DRIVER)
+$(NAME): $(OBJS) $(DRIVER_OBJ)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $?
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-test_shared_ptr: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_shared_ptr.cpp
+test_shared_ptr: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_shared_ptr.o
 	$(CXX) $(CXXFLAGS) -o test_shared_ptr $?
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(DRIVER_OBJ) $(TEST_OBJS)
 
 fclean: clean
-	$(RM) $(NAME) test_shared_ptr
+	$(RM) $(NAME) $(TEST_FILENAMES)
 
 re:
 	make fclean
