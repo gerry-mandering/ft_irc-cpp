@@ -1,6 +1,6 @@
 ---
 BasedOnStyle: Microsoft
-AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortFunctionsOnASingleLine: Inline
 AlwaysBreakTemplateDeclarations: 'Yes'
 BreakBeforeBraces: Allman
 ColumnLimit: 120
