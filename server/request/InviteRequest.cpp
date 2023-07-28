@@ -1,6 +1,7 @@
 #include "InviteRequest.hpp"
 
-InviteRequest::InviteRequest(handle_t socket) : Request(socket)
+InviteRequest::InviteRequest(handle_t socket, const std::string &nickName, const std::string &channelName)
+    : Request(socket), mNickName(nickName), mChannelName(channelName)
 {
 }
 

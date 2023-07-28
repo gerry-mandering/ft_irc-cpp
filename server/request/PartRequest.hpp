@@ -6,7 +6,7 @@ class PartRequest : public Request
 {
 
   public:
-    PartRequest(handle_t socket);
+    PartRequest(handle_t socket, const std::string &channelName, const std::string &reason);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

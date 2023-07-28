@@ -6,7 +6,8 @@ class UserRequest : public Request
 {
 
   public:
-    UserRequest(handle_t socket);
+    UserRequest(handle_t socket, const std::string &userName, const std::string &hostName,
+                const std::string &serverName, const std::string &realName);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

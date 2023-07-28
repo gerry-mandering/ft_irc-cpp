@@ -1,6 +1,7 @@
 #include "JoinRequest.hpp"
 
-JoinRequest::JoinRequest(handle_t socket) : Request(socket)
+JoinRequest::JoinRequest(handle_t socket, const std::string &channelName, const std::string &key)
+    : Request(socket), mChannelName(channelName), mKey(key)
 {
 }
 
@@ -9,22 +10,22 @@ void JoinRequest::Accept(visitor_pattern::Visitor *visitor)
     visitor->Visit(this);
 }
 
-void JoinRequest::SetChannelName(const std::string &channelName)
+void JoinRequest::setChannelName(const std::string &channelName)
 {
-    mChannelNames.push_back(channelName);
+    mChannelName = channelName;
 }
 
-void JoinRequest::SetKey(const std::string &key)
+void JoinRequest::setKey(const std::string &key)
 {
-    mKeys.push_back(key);
+    mKey = key;
 }
 
-const std::vector<std::string> &JoinRequest::GetChannelNames() const
+const std::string &JoinRequest::getChannelName() const
 {
-    return mChannelNames;
+    return mChannelName;
 }
 
-const std::vector<std::string> &JoinRequest::GetKeys() const
+const std::string &JoinRequest::getKey() const
 {
-    return mKeys;
+    return mKey;
 }

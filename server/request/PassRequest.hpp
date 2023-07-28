@@ -6,7 +6,7 @@ class PassRequest : public Request
 {
 
   public:
-    PassRequest(handle_t socket);
+    PassRequest(handle_t socket, const std::string &password);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

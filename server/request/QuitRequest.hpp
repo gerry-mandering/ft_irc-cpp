@@ -6,7 +6,7 @@ class QuitRequest : public Request
 {
 
   public:
-    QuitRequest(handle_t socket);
+    QuitRequest(handle_t socket, const std::string &reason);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

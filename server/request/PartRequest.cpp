@@ -1,6 +1,7 @@
 #include "PartRequest.hpp"
 
-PartRequest::PartRequest(handle_t socket) : Request(socket)
+PartRequest::PartRequest(handle_t socket, const std::string &channelName, const std::string &reason)
+    : Request(socket), mChannelName(channelName), mReason(reason)
 {
 }
 

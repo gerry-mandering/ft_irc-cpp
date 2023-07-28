@@ -1,6 +1,7 @@
 #include "TopicRequest.hpp"
 
-TopicRequest::TopicRequest(handle_t socket) : Request(socket)
+TopicRequest::TopicRequest(handle_t socket, const std::string &channelName, const std::string &topic)
+    : Request(socket), mChannelName(channelName), mTopic(topic)
 {
 }
 

@@ -1,6 +1,7 @@
 #include "KickRequest.hpp"
 
-KickRequest::KickRequest(handle_t socket) : Request(socket)
+KickRequest::KickRequest(handle_t socket, const std::vector<std::string> &nickNames, const std::string &message)
+    : Request(socket), mNickNames(nickNames), mMessage(message)
 {
 }
 
