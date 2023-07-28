@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Request.hpp"
-#include "debug.hpp"
-#include "Request.hpp"
+#include "debug.h"
 #include "requestConcrete.hpp"
 #include <map>
 #include <sstream>

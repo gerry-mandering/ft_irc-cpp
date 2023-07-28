@@ -1,6 +1,6 @@
-#include "debug.hpp"
+#include "debug.h"
 #include "parseException.hpp"
-#include "parserInternal.h"
+#include "parser_internal.h"
 
 namespace Parser
 {
@@ -159,6 +159,7 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     if (!(ss >> command >> receivers))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS);
     end = receivers.find(',');
+
     // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
     // ,가 연속으로 나오면 에러, / , 뒤에 아무것도 없으면 에러
     while (end != std::string::npos)
