@@ -1,6 +1,8 @@
 #include "UserRequest.hpp"
 
-UserRequest::UserRequest(handle_t socket) : Request(socket)
+UserRequest::UserRequest(handle_t socket, const std::string &userName, const std::string &hostName,
+                         const std::string &serverName, const std::string &realName)
+    : Request(socket), mUserName(userName), mHostName(hostName), mServerName(serverName), mRealName(realName)
 {
 }
 

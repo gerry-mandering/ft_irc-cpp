@@ -7,7 +7,7 @@ class KickRequest : public Request
 {
 
   public:
-    KickRequest(handle_t socket);
+    KickRequest(handle_t socket, const std::vector<std::string> &nickNames, const std::string &message);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

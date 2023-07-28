@@ -6,7 +6,7 @@ class CapRequest : public Request
 {
 
   public:
-    CapRequest(handle_t socket);
+    CapRequest(handle_t socket, const std::string &subCommand);
 
     void Accept(visitor_pattern::Visitor *visitor);
 
