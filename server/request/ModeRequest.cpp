@@ -1,6 +1,9 @@
 #include "ModeRequest.hpp"
 
-ModeRequest::ModeRequest(handle_t socket) : Request(socket)
+ModeRequest::ModeRequest(handle_t socket, const std::string &channelName, const std::string &plusMinus,
+                         const std::string &modeChar, const std::string &modeArgument)
+    : Request(socket), mChannelName(channelName), mPlusMinus(plusMinus), mModeChar(modeChar),
+      mModeArgument(modeArgument)
 {
 }
 

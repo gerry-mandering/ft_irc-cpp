@@ -6,7 +6,7 @@ class TopicRequest : public Request
 {
 
   public:
-    TopicRequest(handle_t socket);
+    TopicRequest(handle_t socket, const std::string &channelName, const std::string &topic);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

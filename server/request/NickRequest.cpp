@@ -1,8 +1,6 @@
 #include "NickRequest.hpp"
 
-NickRequest::NickRequest(handle_t socket) : Request(socket)
-{
-}
+NickRequest::NickRequest(handle_t socket, const std::string &nickname) : Request(socket), mNickname(nickname) {}
 
 void NickRequest::Accept(visitor_pattern::Visitor *visitor)
 {

@@ -6,7 +6,7 @@ class PingRequest : public Request
 {
 
   public:
-    PingRequest(handle_t socket);
+    PingRequest(handle_t socket, const std::string &token);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

@@ -114,18 +114,19 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        responseMessage << client->GetClientInfo() << " PRIVMSG " << *iter << ":"
-                        << privmsgRequest->GetMessage();
+        responseMessage << client->GetClientInfo() << " PRIVMSG " << *iter << ":" << privmsgRequest->GetMessage();
 
-        Channel *targetChannel = channelRepository->FindByName(*iter);
-        if (targetChannel)
+        if (iter->front() == '#')
         {
+            Channel *targetChannel = channelRepository->FindByName(*iter);
             targetChannel->BroadcastMessage(responseMessage.str());
-            continue;
         }
+        else
+        {
 
-        Client *targetClient = clientRepository->FindByNickname(*iter);
-        targetClient->InsertResponse(responseMessage.str());
+            Client *targetClient = clientRepository->FindByNickname(*iter);
+            targetClient->InsertResponse(responseMessage.str());
+        }
     }
 
     return true;
@@ -150,8 +151,8 @@ bool Executor::Visit(TopicRequest *topicRequest) const
     channel->SetTopic(newTopic);
 
     std::stringstream topicChangedMsg;
-    topicChangedMsg << topicRequest->GetClient()->GetClientInfo() << "TOPIC "
-                    << topicRequest->GetChannelName() << " :" << newTopic;
+    topicChangedMsg << topicRequest->GetClient()->GetClientInfo() << "TOPIC " << topicRequest->GetChannelName() << " :"
+                    << newTopic;
 
     channel->BroadcastMessage(topicChangedMsg.str());
     return true;

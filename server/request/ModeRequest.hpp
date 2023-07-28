@@ -6,7 +6,8 @@ class ModeRequest : public Request
 {
 
   public:
-    ModeRequest(handle_t socket);
+    ModeRequest(handle_t socket, const std::string &channelName, const std::string &plusMinus,
+                const std::string &modeChar, const std::string &modeArgument);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

@@ -1,12 +1,8 @@
 #include "ClientRepository.hpp"
 
-ClientRepository::ClientRepository()
-{
-}
+ClientRepository::ClientRepository() {}
 
-ClientRepository::~ClientRepository()
-{
-}
+ClientRepository::~ClientRepository() {}
 
 // 요청이 들어오면 소켓을 무조건 존재 -> 해당 클라이언트를 만들어야함
 Client *ClientRepository::FindBySocket(handle_t socket)

@@ -7,7 +7,7 @@ class PrivmsgRequest : public Request
 {
 
   public:
-    PrivmsgRequest(handle_t socket);
+    PrivmsgRequest(handle_t socket, const std::vector<std::string> &targets, const std::string &message);
 
     void Accept(visitor_pattern::Visitor *visitor);
 

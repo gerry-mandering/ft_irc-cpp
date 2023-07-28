@@ -1,8 +1,6 @@
 #include "CapRequest.hpp"
 
-CapRequest::CapRequest(handle_t socket) : Request(socket)
-{
-}
+CapRequest::CapRequest(handle_t socket, const std::string &subCommand) : Request(socket), mSubCommand(subCommand) {}
 
 void CapRequest::Accept(visitor_pattern::Visitor *visitor)
 {
