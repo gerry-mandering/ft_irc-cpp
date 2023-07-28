@@ -9,6 +9,7 @@ typedef enum eErrorType
 
 #include "CapRequest.hpp"
 #include "Client.hpp"
+#include "EnvManager.hpp"
 #include "InviteRequest.hpp"
 #include "JoinRequest.hpp"
 #include "KickRequest.hpp"
@@ -45,8 +46,6 @@ class Validator : public TSingleton<Validator>, visitor_pattern::Visitor
 
   private:
     static std::string BuildAlreadyRegisteredMsg(const std::string &nickName = "*");
-    static std::string BuildAccessDeniedMsg(const std::string &userName = "*",
-                                            const std::string &hostName = "*");
-    static std::string BuildNickNameInUseMsg(const std::string &newNickName,
-                                             const std::string &clientNickName = "*");
+    static std::string BuildAccessDeniedMsg(const std::string &userName = "*", const std::string &hostName = "*");
+    static std::string BuildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName = "*");
 };
