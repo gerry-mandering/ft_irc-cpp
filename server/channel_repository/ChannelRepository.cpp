@@ -8,7 +8,10 @@ Channel *ChannelRepository::CreateChannel(const std::string &name)
     return channel;
 }
 
-Channel *ChannelRepository::FindByName(const std::string &name) const
+Channel *ChannelRepository::FindByName(const std::string &name)
 {
-    mChannels.find(name)
+    if (mChannels.find(name) != mChannels.end())
+        return mChannels[name];
+
+    return NULL;
 }

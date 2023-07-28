@@ -34,7 +34,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
     {
         std::string errorMessage;
 
-        if (client->EnteredNickName())
+        if (client->HasEnteredNickName())
             errorMessage = BuildNickNameInUseMsg(nickRequest->GetNickName(), client->GetNickName());
         else
             errorMessage = BuildNickNameInUseMsg(nickRequest->GetNickName());
@@ -44,11 +44,11 @@ bool Validator::Visit(NickRequest *nickRequest) const
     }
 
     // Password를 입력하지 않았는데 register를 시도하는 경우
-    if (client->EnteredUserInfo() && !client->EnteredPassword())
+    if (client->HasEnteredUserInfo() && !client->HasEnteredPassword())
     {
         std::string errorMessage;
 
-        if (client->EnteredUserInfo())
+        if (client->HasEnteredUserInfo())
             errorMessage = BuildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
         else
             errorMessage = BuildAccessDeniedMsg();
@@ -70,11 +70,11 @@ bool Validator::Visit(PassRequest *passRequest) const
 {
     Client *client = passRequest->GetClient();
 
-    if (client->EnteredPassword() && client->EnteredUserInfo() && client->EnteredNickName())
+    if (client->HasRegistered())
     {
         std::string errorMessage;
 
-        if (client->EnteredNickName())
+        if (client->HasEnteredNickName())
             errorMessage = BuildAlreadyRegisteredMsg(client->GetNickName());
         else
             errorMessage = BuildAlreadyRegisteredMsg();
@@ -83,14 +83,14 @@ bool Validator::Visit(PassRequest *passRequest) const
         return true;
     }
 
-    if (client->EnteredPassword())
+    if (client->HasEnteredPassword())
         return true;
 
     if (passRequest->GetPassword() != PASSWORD)
     {
         std::string errorMessage;
 
-        if (client->EnteredUserInfo())
+        if (client->HasEnteredUserInfo())
             errorMessage = BuildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
         else
             errorMessage = BuildAccessDeniedMsg(); // TODO 사용자 hostname 은 가져와서 넣기
@@ -104,6 +104,11 @@ bool Validator::Visit(PassRequest *passRequest) const
 
 bool Validator::Visit(PingRequest *pingRequest) const
 {
+    // 파라미터가 부족한 경우는 Parser에서 처리
+
+    // Error 종류 중에 ERR_NOORIGIN (409)는 처리할 필요 없는 듯?
+
+    return true;
 }
 
 bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
@@ -122,11 +127,11 @@ bool Validator::Visit(UserRequest *userRequest) const
 {
     Client *client = userRequest->GetClient();
 
-    if (client->Registered() || client->EnteredUserInfo())
+    if (client->HasRegistered() || client->HasEnteredUserInfo())
     {
         std::string errorMessage;
 
-        if (client->EnteredNickName())
+        if (client->HasEnteredNickName())
             errorMessage = BuildAlreadyRegisteredMsg(client->GetNickName());
         else
             errorMessage = BuildAlreadyRegisteredMsg();
@@ -135,7 +140,7 @@ bool Validator::Visit(UserRequest *userRequest) const
         return false;
     }
 
-    if (client->EnteredNickName() && !client->EnteredPassword())
+    if (client->HasEnteredNickName() && !client->HasEnteredPassword())
     {
         std::string errorMessage;
 

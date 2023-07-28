@@ -18,6 +18,7 @@ class Client
 
     std::string GetClientInfo() const;
 
+    void SetChannel(Channel *channel);
     Channel *GetChannel() const;
 
     void SetNickName(const std::string &nickName);
@@ -37,10 +38,10 @@ class Client
     const std::string &GetServerName() const;
     const std::string &GetRealName() const;
 
-    bool Registered() const;
-    bool EnteredPassword() const;
-    bool EnteredNickName() const;
-    bool EnteredUserInfo() const;
+    bool HasRegistered() const;
+    bool HasEnteredPassword() const;
+    bool HasEnteredNickName() const;
+    bool HasEnteredUserInfo() const;
 
   private:
     // Builder 패턴 적용

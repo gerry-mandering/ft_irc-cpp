@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client.hpp"
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -13,6 +14,7 @@ class Channel
     void BroadcastMessage(const std::string &message);
 
     void SetClient(Client *newClient);
+    void RemoveClient(Client *clientToRemove);
 
     const std::string &GetTopic() const;
     void SetTopic(const std::string &topic);

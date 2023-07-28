@@ -19,7 +19,7 @@ void PrivmsgRequest::SetMessage(const std::string &message)
     mMessage = message;
 }
 
-const std::vector<std::string> &PrivmsgRequest::GetTargets() const
+std::vector<std::string> PrivmsgRequest::GetTargets() const
 {
     return mTargets;
 }

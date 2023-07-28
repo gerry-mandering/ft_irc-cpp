@@ -5,13 +5,13 @@
 #include <iostream>
 #include <map>
 
-class ChannelRepository : TSingleton<ChannelRepository>
+class ChannelRepository : public TSingleton<ChannelRepository>
 {
 
   public:
     // JOIN은 있으면 만들지만 나머지는 예외처리 ! 채널 만드는 거 따로
     Channel *CreateChannel(const std::string &name);
-    Channel *FindByName(const std::string &name) const;
+    Channel *FindByName(const std::string &name);
 
   private:
     // TODO shared_ptr
