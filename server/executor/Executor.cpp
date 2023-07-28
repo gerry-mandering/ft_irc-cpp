@@ -38,22 +38,19 @@ bool Executor::Visit(NickRequest *nickRequest) const
     client->SetNickName(nickRequest->GetNickName());
     client->SetNickNameEntered();
 
-    std::stringstream responseMessage;
-
-    if (client->Registered())
+    if (client->HasRegistered())
     {
+        std::stringstream responseMessage;
         responseMessage << client->GetClientInfo() << "NICK :" << nickRequest->GetNickName();
 
-        if (클라이언트가 어떠한 채널에 속해 있으면)
-        {
-            Channel *channel; // 클라이언트가 속한 채널
-            channel->BroadcastMessage(responseMessage);
-        }
+        Channel *channel = client->GetChannel();
+        if (channel)
+            channel->BroadcastMessage(responseMessage.str());
         else
-            client->InsertResponse(responseMessage);
+            client->InsertResponse(responseMessage.str());
     }
 
-    if (!client->Registered() && client->EnteredUserInfo() && client->EnteredPassword())
+    if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
         // TODO Welcome message 뿌려주기
         client->SetRegistered();
@@ -64,6 +61,21 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
 bool Executor::Visit(PartRequest *partRequest) const
 {
+    Client *client = partRequest->GetClient();
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(partRequest->GetChannelName());
+
+    std::stringstream responseMessage;
+    responseMessage << client->GetClientInfo() << " PART " << partRequest->GetChannelName();
+
+    if (!partRequest->GetReason().empty())
+        responseMessage << " :" << partRequest->GetReason();
+
+    channel->BroadcastMessage(responseMessage.str());
+
+    channel->RemoveClient(client);
+    client->SetChannel(NULL);
 
     return true;
 }
@@ -79,12 +91,42 @@ bool Executor::Visit(PassRequest *passRequest) const
 
 bool Executor::Visit(PingRequest *pingRequest) const
 {
+    // TODO EnvManager로 부터 서버이름 받아오기
+    std::stringstream responseMessage;
+    responseMessage << ":irc.local PONG irc.local :" << pingRequest->GetToken();
+
+    Client *client = pingRequest->GetClient();
+    client->InsertResponse(responseMessage.str());
 
     return true;
 }
 
 bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 {
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+
+    Client *client = privmsgRequest->GetClient();
+    std::stringstream responseMessage;
+
+    std::vector<std::string> targets = privmsgRequest->GetTargets();
+    std::vector<std::string>::iterator iter;
+
+    for (iter = targets.begin(); iter != targets.end(); iter++)
+    {
+        responseMessage << client->GetClientInfo() << " PRIVMSG " << *iter << ":"
+                        << privmsgRequest->GetMessage();
+
+        Channel *targetChannel = channelRepository->FindByName(*iter);
+        if (targetChannel)
+        {
+            targetChannel->BroadcastMessage(responseMessage.str());
+            continue;
+        }
+
+        Client *targetClient = clientRepository->FindByNickname(*iter);
+        targetClient->InsertResponse(responseMessage.str());
+    }
 
     return true;
 }
@@ -108,7 +150,7 @@ bool Executor::Visit(TopicRequest *topicRequest) const
     channel->SetTopic(newTopic);
 
     std::stringstream topicChangedMsg;
-    topicChangedMsg << topicRequest->GetClient()->GetClientInfo() << "TOPIC #"
+    topicChangedMsg << topicRequest->GetClient()->GetClientInfo() << "TOPIC "
                     << topicRequest->GetChannelName() << " :" << newTopic;
 
     channel->BroadcastMessage(topicChangedMsg.str());
@@ -125,7 +167,7 @@ bool Executor::Visit(UserRequest *userRequest) const
     client->SetRealName(userRequest->GetRealName());
     client->SetUserInfoEntered();
 
-    if (client->EnteredNickName() && client->EnteredPassword())
+    if (!client->HasRegistered() && client->HasEnteredNickName() && client->HasEnteredPassword())
     {
         // TODO Welcome message 뿌려주기
         client->SetRegistered();
