@@ -4,25 +4,15 @@
 #define PASSWORD "1234"
 
 // TODO registered 관련된거 아니면 다 reistered 했는지 체크하기
-bool Validator::Visit(CapRequest *capRequest) const
-{
-}
+bool Validator::Visit(CapRequest *capRequest) const {}
 
-bool Validator::Visit(InviteRequest *inviteRequest) const
-{
-}
+bool Validator::Visit(InviteRequest *inviteRequest) const {}
 
-bool Validator::Visit(JoinRequest *joinRequest) const
-{
-}
+bool Validator::Visit(JoinRequest *joinRequest) const {}
 
-bool Validator::Visit(KickRequest *kickRequest) const
-{
-}
+bool Validator::Visit(KickRequest *kickRequest) const {}
 
-bool Validator::Visit(ModeRequest *modeRequest) const
-{
-}
+bool Validator::Visit(ModeRequest *modeRequest) const {}
 
 bool Validator::Visit(NickRequest *nickRequest) const
 {
@@ -60,9 +50,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
     return true;
 }
 
-bool Validator::Visit(PartRequest *partRequest) const
-{
-}
+bool Validator::Visit(PartRequest *partRequest) const {}
 
 // Password 틀릴 경우 그냥 바로 Closing Link - 원래는 보관했다가 register 할 때
 // 검증
@@ -111,17 +99,11 @@ bool Validator::Visit(PingRequest *pingRequest) const
     return true;
 }
 
-bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
-{
-}
+bool Validator::Visit(PrivmsgRequest *privmsgRequest) const {}
 
-bool Validator::Visit(QuitRequest *quitRequest) const
-{
-}
+bool Validator::Visit(QuitRequest *quitRequest) const {}
 
-bool Validator::Visit(TopicRequest *topicRequest) const
-{
-}
+bool Validator::Visit(TopicRequest *topicRequest) const {}
 
 bool Validator::Visit(UserRequest *userRequest) const
 {
@@ -155,33 +137,32 @@ bool Validator::Visit(UserRequest *userRequest) const
 
 std::string Validator::BuildAlreadyRegisteredMsg(const std::string &nickName)
 {
+    EnvManager *envManager = EnvManager::GetInstance();
     std::stringstream ErrorMessage;
 
     // TODO EnvManager에서 서버 이름 가져오기
-    ErrorMessage << ":irc.local 462 " << nickName << ":You may not reregister";
+    ErrorMessage << ":" << envManager->GetServerName() << " 462 " << nickName << ":You may not reregister";
 
     return ErrorMessage.str();
 }
 
 // TODO 원래는 GetHostName()이 아니라 아이피 주소로 출력됨 방법 찾기
 // TODO AccessDenied 는 연결을 끊어야 함!!!!!
-std::string Validator::BuildAccessDeniedMsg(const std::string &userName,
-                                            const std::string &hostName)
+std::string Validator::BuildAccessDeniedMsg(const std::string &userName, const std::string &hostName)
 {
     std::stringstream ErrorMessage;
 
-    ErrorMessage << "Error :Closing link: (" << userName << "@" << hostName
-                 << ") [Access denied by configuration]";
+    ErrorMessage << "Error :Closing link: (" << userName << "@" << hostName << ") [Access denied by configuration]";
 
     return ErrorMessage.str();
 }
 
-std::string Validator::BuildNickNameInUseMsg(const std::string &newNickName,
-                                             const std::string &clientNickName)
+std::string Validator::BuildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName)
 {
+    EnvManager *envManager = EnvManager::GetInstance();
     std::stringstream ErrorMessage;
 
-    ErrorMessage << "irc.local 433 " << clientNickName << " " << newNickName
+    ErrorMessage << ":" << envManager->GetServerName() << " 433 " << clientNickName << " " << newNickName
                  << " :Nickname is already in use.";
 
     return ErrorMessage.str();

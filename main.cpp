@@ -1,4 +1,5 @@
 #include "AcceptHandler.hpp"
+#include "EnvManager.hpp"
 #include "KqueueDemultiplexer.hpp"
 #include "Reactor.hpp"
 #include "def.h"
@@ -10,14 +11,15 @@
 int main(int argc, char **argv)
 {
     (void)argv;
-    // TODO EnvManager 객체 만들기
     if (argc != 3)
     {
         std::cerr << "Wrong Parameter." << std::endl;
         return (0);
     }
-    // EnvManager::GetInstance()->SetEnv(argc, argv);
+    EnvManager::GetInstance()->SetPortNumber(argv[1]);
+    EnvManager::GetInstance()->SetConnectionPassword(argv[2]);
 
+    // TODO AcceptHandler 내부에서 불러오는 방식으로 수정?
     AcceptHandler acceptHandler(PORT, PASSWORD);
     g_reactor().setDemultiplexer(new KqueueDemultiplexer());
 
