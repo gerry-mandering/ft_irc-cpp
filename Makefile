@@ -1,4 +1,7 @@
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(INCLUDE_PATH) $(ASAN)
+#CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(INCLUDE_PATH) $(ASAN)
+# TODO 플래그 사용하기!!!!!!!!!!!!!!!!!!
+
+CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
 NAME = ircserver
 
 DIR_INCLUDES = includes
@@ -10,7 +13,7 @@ DIR_CLIENT = client
 DIR_CLIENT_REPOSITORY = client_repository
 DIR_ENV_MANGER = env_manager
 DIR_EXCEPTION = exception
-DIR_EXCECUTOR = executor
+DIR_EXECUTOR = executor
 DIR_PARSER = parser
 DIR_REACTOR = reactor
 DIR_REQUEST = request
@@ -34,22 +37,22 @@ TEST_OBJS := $(TEST_SRCS:.cpp=.o)
 
 
 # AS IS
-SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp)
+#SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp)
 
 # TO BE
-# SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)*.cpp \
-# 					$(DIR_SRCS)/$(DIR_CHANNEL_REPOSITORY)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_CLIENT)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_CLIENT_REPOSITORY)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_ENV_MANGER)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_EXCEPTION)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_EXCECUTOR)/*.cpp \
+ SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_CHANNEL_REPOSITORY)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_CLIENT)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_CLIENT_REPOSITORY)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_ENV_MANGER)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_EXCEPTION)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_EXECUTOR)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_REACTOR)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_REQUEST)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp)
 # 					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_REACTOR)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_REQUEST)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
-# 					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp)
 
 # SRCS := $(filter-out $(DRIVER) $(VAR),$(SRCS))
 OBJS := $(SRCS:.cpp=.o)
@@ -62,7 +65,7 @@ INCLUDE_PATH := $(addprefix -I, $(DIR_INCLUDES) \
 								$(DIR_INCLUDES)/$(DIR_CLIENT_REPOSITORY) \
 								$(DIR_INCLUDES)/$(DIR_ENV_MANGER) \
 								$(DIR_INCLUDES)/$(DIR_EXCEPTION) \
-								$(DIR_INCLUDES)/$(DIR_EXCECUTOR) \
+								$(DIR_INCLUDES)/$(DIR_EXECUTOR) \
 								$(DIR_INCLUDES)/$(DIR_PARSER) \
 								$(DIR_INCLUDES)/$(DIR_REACTOR) \
 								$(DIR_INCLUDES)/$(DIR_REQUEST) \
