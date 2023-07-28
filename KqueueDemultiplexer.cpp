@@ -1,7 +1,6 @@
 #include "KqueueDemultiplexer.hpp"
 #include "def.h"
 #include <unistd.h>
-
 #include <iostream>
 
 // TODO: fd 생성후 전부 nonblocking에 넣기
