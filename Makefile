@@ -76,16 +76,16 @@ all: $(NAME)
 # 	$(LINK.cc) $^ -o $(NAME)
 
 $(NAME): $(OBJS) $(DRIVER_OBJ)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $?
+	$(CXX) $(CXXFLAGS) -o $(NAME) $^
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 test_shared_ptr: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_shared_ptr.o
-	$(CXX) $(CXXFLAGS) -o $@ $?
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 test_parser: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_parser.o
-	$(CXX) $(CXXFLAGS) -o $@ $?
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
 	$(RM) $(OBJS) $(DRIVER_OBJ) $(TEST_OBJS)
