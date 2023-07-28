@@ -27,10 +27,7 @@ DRIVER_OBJ := $(DRIVER_SRC:.cpp=.o)
 
 DIR_TESTS = tests
 TEST_FILENAMES = test_shared_ptr \
-					test_bracesyntax \
-					test_string \
-					test_stringstream \
-					test_stringstream2 \
+					test_parser \
 					
 TEST_SRCS := $(addprefix $(DIR_SRCS)/$(DIR_TESTS)/, $(addsuffix .cpp, $(TEST_FILENAMES)))
 TEST_OBJS := $(TEST_SRCS:.cpp=.o)
@@ -85,7 +82,10 @@ $(NAME): $(OBJS) $(DRIVER_OBJ)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 test_shared_ptr: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_shared_ptr.o
-	$(CXX) $(CXXFLAGS) -o test_shared_ptr $?
+	$(CXX) $(CXXFLAGS) -o $@ $?
+
+test_parser: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_parser.o
+	$(CXX) $(CXXFLAGS) -o $@ $?
 
 clean:
 	$(RM) $(OBJS) $(DRIVER_OBJ) $(TEST_OBJS)
