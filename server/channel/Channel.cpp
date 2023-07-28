@@ -1,8 +1,8 @@
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name)
-    : mName(name), mTopic(std::string()), mbInviteOnlyMode(false), mbProtectedTopicMode(false), mbKeyMode(false),
-      mbClientLimitMode(false)
+    : mName(name), mTopic(std::string()), mbInviteOnlyMode(false), mbProtectedTopicMode(false),
+      mbKeyMode(false), mbClientLimitMode(false)
 {
 }
 
@@ -20,6 +20,15 @@ void Channel::BroadcastMessage(const std::string &message)
 void Channel::SetClient(Client *newClient)
 {
     mClients.push_back(newClient);
+}
+
+void Channel::RemoveClient(Client *clientToRemove)
+{
+    std::vector<Client *>::iterator iter;
+    iter = std::find(mClients.begin(), mClients.end(), clientToRemove);
+
+    // 이 메소드는 무조건 있다는 가정하에 실행할거
+    mClients.erase(iter);
 }
 
 const std::string &Channel::GetTopic() const

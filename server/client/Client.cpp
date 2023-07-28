@@ -1,8 +1,8 @@
 #include "Client.hpp"
 
 Client::Client(handle_t socket)
-    : mSocket(socket), mbRegistered(false), mbPasswordEntered(false), mbNickNameEntered(false),
-      mbUserInfoEntered(false)
+    : mSocket(socket), mChannel(NULL), mbRegistered(false), mbPasswordEntered(false),
+      mbNickNameEntered(false), mbUserInfoEntered(false)
 {
 }
 
@@ -24,8 +24,18 @@ std::string Client::GetClientInfo() const
     std::stringstream clientInfo;
 
     // TODO hostname 수정
-    clientInfo << ":" << mNickName << "!" << mUserName << "@" << mHostName << " ";
+    clientInfo << ":" << mNickName << "!" << mUserName << "@" << mHostName;
     return clientInfo.str();
+}
+
+void Client::SetChannel(Channel *channel)
+{
+    mChannel = channel;
+}
+
+Channel *Client::GetChannel() const
+{
+    return mChannel;
 }
 
 void Client::SetNickName(const std::string &nickName)
@@ -98,22 +108,22 @@ void Client::SetUserInfoEntered()
     mbUserInfoEntered = true;
 }
 
-bool Client::Registered() const
+bool Client::HasRegistered() const
 {
     return mbRegistered;
 }
 
-bool Client::EnteredPassword() const
+bool Client::HasEnteredPassword() const
 {
     return mbPasswordEntered;
 }
 
-bool Client::EnteredNickName() const
+bool Client::HasEnteredNickName() const
 {
     return mbNickNameEntered;
 }
 
-bool Client::EnteredUserInfo() const
+bool Client::HasEnteredUserInfo() const
 {
     return mbUserInfoEntered;
 }

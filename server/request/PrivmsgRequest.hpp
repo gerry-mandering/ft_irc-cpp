@@ -14,7 +14,7 @@ class PrivmsgRequest : public Request
     void AddTarget(const std::string &target);
     void SetMessage(const std::string &message);
 
-    const std::vector<std::string> &GetTargets() const;
+    std::vector<std::string> GetTargets() const;
     const std::string &GetMessage() const;
 
   private:
