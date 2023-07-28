@@ -91,9 +91,11 @@ bool Executor::Visit(PassRequest *passRequest) const
 
 bool Executor::Visit(PingRequest *pingRequest) const
 {
-    // TODO EnvManager로 부터 서버이름 받아오기
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::string serverName = envManager->GetServerName();
+
     std::stringstream responseMessage;
-    responseMessage << ":irc.local PONG irc.local :" << pingRequest->GetToken();
+    responseMessage << ":" << serverName << " PONG " << serverName << " :" << pingRequest->GetToken();
 
     Client *client = pingRequest->GetClient();
     client->InsertResponse(responseMessage.str());

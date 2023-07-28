@@ -4,6 +4,7 @@
 #include "ChannelRepository.hpp"
 #include "Client.hpp"
 #include "ClientRepository.hpp"
+#include "EnvManager.hpp"
 #include "InviteRequest.hpp"
 #include "JoinRequest.hpp"
 #include "KickRequest.hpp"
