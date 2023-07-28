@@ -3,7 +3,7 @@ BasedOnStyle: Microsoft
 AllowShortFunctionsOnASingleLine: InlineOnly
 AlwaysBreakTemplateDeclarations: 'Yes'
 BreakBeforeBraces: Allman
-ColumnLimit: 100
+ColumnLimit: 120
 IndentCaseLabels: true
 Language: Cpp
 
