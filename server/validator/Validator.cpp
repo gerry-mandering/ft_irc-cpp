@@ -109,7 +109,7 @@ bool Validator::Visit(UserRequest *userRequest) const
 {
     Client *client = userRequest->GetClient();
 
-    if (client->HasRegistered() || client->HasEnteredUserInfo())
+    if (client->HasEnteredUserInfo())
     {
         std::string errorMessage;
 
@@ -126,6 +126,7 @@ bool Validator::Visit(UserRequest *userRequest) const
     {
         std::string errorMessage;
 
+        // TODO hostname Ip로 알아오기
         errorMessage = BuildAccessDeniedMsg(userRequest->GetUserName(), userRequest->GetHostName());
 
         client->InsertResponse(errorMessage);
