@@ -1,23 +1,39 @@
 #pragma once
 
-#include <map>
-#include <string>
+#include "Request.hpp"
+#include "parseException.hpp"
+#include "requestConcrete.hpp"
+
+typedef int handle_t;
 
 class Request;
 
-Request *parsePass(const std::string &tcpStream);
-Request *parseNick(const std::string &tcpStream);
-Request *parseUser(const std::string &tcpStream);
-Request *parseQuit(const std::string &tcpStream);
-Request *parseTopic(const std::string &tcpStream);
-Request *parseMode(const std::string &tcpStream);
-Request *parseJoin(const std::string &tcpStream);
-Request *parsePart(const std::string &tcpStream);
-Request *parseInvite(const std::string &tcpStream);
-Request *parseKick(const std::string &tcpStream);
-Request *parsePrivmsg(const std::string &tcpStream);
-Request *parsePing(const std::string &tcpStream);
-Request *parsePong(const std::string &tcpStream);
+namespace Parser
+{
+enum eInvaldFormat
+{
+    INVALID_PASSWORD,
+    INVALID_NICKNAME,
+    INVALID_USER,
+    INVALID_HOSTNAME,
+    INVALID_HOSTNAME,
+    INVALID_MSG,
+};
+} // namespace Parser
+
+Request *parsePass(const std::string &tcpStream, handle_t socket);
+Request *parseNick(const std::string &tcpStream, handle_t socket);
+Request *parseUser(const std::string &tcpStream, handle_t socket);
+Request *parseQuit(const std::string &tcpStream, handle_t socket);
+Request *parseTopic(const std::string &tcpStream, handle_t socket);
+Request *parseMode(const std::string &tcpStream, handle_t socket);
+Request *parseJoin(const std::string &tcpStream, handle_t socket);
+Request *parsePart(const std::string &tcpStream, handle_t socket);
+Request *parseInvite(const std::string &tcpStream, handle_t socket);
+Request *parseKick(const std::string &tcpStream, handle_t socket);
+Request *parsePrivmsg(const std::string &tcpStream, handle_t socket);
+Request *parsePing(const std::string &tcpStream, handle_t socket);
+Request *parsePong(const std::string &tcpStream, handle_t socket);
 bool isalnum(const std::string &str);
 bool isalpha(const std::string &str);
 
