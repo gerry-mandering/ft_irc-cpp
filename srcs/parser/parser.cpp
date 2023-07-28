@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "parser_internal.h"
 
+// TODO: 마지막토큰에 딸려있는 \r 지우기
 namespace Parser
 {
 
@@ -46,7 +47,7 @@ Request *parseNick(const std::string &tcpStreams, handle_t socket)
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
-    if (!std::isalpha(nickname.front()) || isalnum(nickname))
+    if (!std::isalpha(nickname.front()) || !isalnum(nickname))
         throw InvalidFormat(socket, MSG_INVALID_NICKNAME + command, INVALID_NICKNAME);
     return (new NickRequest(socket, nickname));
 }
@@ -78,7 +79,8 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
         return (new QuitRequest(socket, "")); // TODO: 디폴트 매개변수
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
-    message = tcpStreams.substr(tcpStreams.find(':'));
+    message = tcpStreams.substr(tcpStreams.find(':', command.size() + 1));
+    // std::cout << "Quit, message: " << message << std::endl;
     return (new QuitRequest(socket, message));
 }
 
@@ -89,6 +91,8 @@ Request *parseTopic(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command >> channel >> topic))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (!isalnum(topic))
+        throw InvalidFormat(socket, MSG_INVALID_TOPIC + command, INVALID_TOPIC);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
     return (new TopicRequest(socket, channel, topic));
@@ -124,9 +128,12 @@ Request *parseJoin(const std::string &tcpStreams, handle_t socket)
     if (!(ss >> command >> channel))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (channel.front() != '#' || !isalnum(channel.substr(1)))
-        throw InvalidFormat(socket, MSG_INVALID_CHANNEL, INVALID_HOSTNAME);
+        throw InvalidFormat(socket, MSG_INVALID_CHANNEL + command, INVALID_CHANNEL);
     if (!(ss >> key))
         return (new JoinRequest(socket, channel, ""));
+    // TODO: 입력 KEY에 이상한 문자가 있더라도 일단 validator에 보내는게 타당할듯
+    // if (hasMetaChar(key))
+    //     throw InvalidFormat(socket, MSG_INVALID_KEY + command, INVALID_KEY);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
     return (new JoinRequest(socket, channel, key));
@@ -137,14 +144,15 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
     std::stringstream ss(tcpStreams);
     std::string command, channel, headOfLast, message;
 
+    // 채널명에 #이 없더라도 validator에 보낸후 이후 no such channel을 출력한다
     if (!(ss >> command >> channel))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (!(ss >> headOfLast))
         return (new PartRequest(socket, channel, ""));
     if (headOfLast.front() != ':')
-        throw InvalidFormat(socket, MSG_INVALID_MSG, INVALID_MSG);
-    // ':' 특수문자는 매개변수 명에 절대로 사용되지 않는다
-    message = tcpStreams.substr(tcpStreams.find(':'));
+        throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
+    message = tcpStreams.substr(tcpStreams.find(':', command.size() + channel.size() + 2));
+    // std::cout << "Part, message: " << message << std::endl;
     return (new PartRequest(socket, channel, message));
 }
 
@@ -174,9 +182,8 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     if (!(ss >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (headOfLast.front() != ':')
-        throw InvalidFormat(socket, MSG_INVALID_MSG, INVALID_MSG);
-    // ':' 특수문자는 매개변수 명에 절대로 사용되지 않는다
-    message = tcpStreams.substr(tcpStreams.find(':'));
+        throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
+    message = tcpStreams.substr(tcpStreams.find(headOfLast, command.size() + receivers.size() + 2));
     return (new PrivmsgRequest(socket, receiverList, message));
 }
 
