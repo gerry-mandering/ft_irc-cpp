@@ -28,14 +28,28 @@ void test1(const std::string &str)
     std::cout << "---------------------\n";
 }
 
+void test_junk(const std::string &str)
+{
+    std::stringstream ss(str);
+    std::string junk;
+
+    ss >> junk;
+    if (!(ss >> junk))
+        std::cout << "fail to parse token\n";
+    else
+        std::cout << "success to parse token\n";
+}
+
 int main(void)
 {
-    test1("a b c d");
-    test1("a");
-    test1("");
-    //
-    test1("a b c d e");
-    test1("a b	c		d e ");
+    // test1("a b c d");
+    // test1("a");
+    // test1("");
+    // //
+    // test1("a b c d e");
+    // test1("a b	c		d e ");
+    test_junk("  ");
+    test_junk(" a  ");
 
     return (0);
 }

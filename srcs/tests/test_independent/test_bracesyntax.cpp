@@ -23,7 +23,7 @@ typedef Request *(*parser_t)(const std::string &tcpStream);
 
 std::map<std::string, parser_t> parsers;
 
-void initParsers(void)
+void test_initParsers(void)
 {
     std::pair<std::string, parser_t> commands[] = {
         make_pair("PASS", parserPass),       make_pair("NICK", parserNick),
@@ -41,6 +41,6 @@ void initParsers(void)
 
 int main(void)
 {
-    initParsers();
+    test_initParsers();
     return (0);
 }
