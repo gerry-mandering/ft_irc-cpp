@@ -52,8 +52,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
 
 bool Validator::Visit(PartRequest *partRequest) const {}
 
-// Password 틀릴 경우 그냥 바로 Closing Link - 원래는 보관했다가 register 할 때
-// 검증
+// User Command 경우의 수 검증 완료
 bool Validator::Visit(PassRequest *passRequest) const
 {
     Client *client = passRequest->GetClient();
@@ -68,11 +67,8 @@ bool Validator::Visit(PassRequest *passRequest) const
             errorMessage = BuildAlreadyRegisteredMsg();
 
         client->InsertResponse(errorMessage);
-        return true;
+        return false;
     }
-
-    if (client->HasEnteredPassword())
-        return true;
 
     if (passRequest->GetPassword() != PASSWORD)
     {
@@ -105,6 +101,7 @@ bool Validator::Visit(QuitRequest *quitRequest) const {}
 
 bool Validator::Visit(TopicRequest *topicRequest) const {}
 
+// User Command 경우의 수 검증 완료
 bool Validator::Visit(UserRequest *userRequest) const
 {
     Client *client = userRequest->GetClient();
