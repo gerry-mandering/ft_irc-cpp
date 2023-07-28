@@ -5,6 +5,8 @@
 #include <queue>
 #include <sstream>
 
+class Channel;
+
 class Client
 {
 
@@ -15,6 +17,8 @@ class Client
     std::string ExtractResponse();
 
     std::string GetClientInfo() const;
+
+    Channel *GetChannel() const;
 
     void SetNickName(const std::string &nickName);
     void SetUserName(const std::string &userName);
@@ -42,6 +46,8 @@ class Client
     // Builder 패턴 적용
     handle_t mSocket;
     std::queue<std::string> mResponseQueue;
+
+    Channel *mChannel;
 
     std::string mNickName;
     std::string mUserName;

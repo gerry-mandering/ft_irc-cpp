@@ -3,6 +3,7 @@
 // TODO EnvManager 고치기
 #define PASSWORD "1234"
 
+// TODO registered 관련된거 아니면 다 reistered 했는지 체크하기
 bool Validator::Visit(CapRequest *capRequest) const
 {
 }
