@@ -28,13 +28,12 @@ TEST_FILENAME = test_shared_ptr \
 					test_stringstream \
 					test_stringstream2 \
 					
-
 TEST_SRCS := $(addprefix $(DIR_SRCS)/$(DIR_TESTS)/, $(addsuffix .cpp, $(TEST_FILENAME)))
 TEST_OBJS := $(TEST_SRCS:.cpp=.o)
 
 
 # AS IS
-SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp)
+SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp $(DIR_SRCS)/$(DIR_PARSER)/*.cpp)
 
 # TO BE
 # SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)*.cpp \

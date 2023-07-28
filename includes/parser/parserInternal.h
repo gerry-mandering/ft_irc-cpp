@@ -1,25 +1,47 @@
 #pragma once
 
 #include "Request.hpp"
-#include "parseException.hpp"
+#include "debug.hpp"
+#include "Request.hpp"
 #include "requestConcrete.hpp"
+#include <map>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 typedef int handle_t;
-
-class Request;
+typedef Request *(*parser_t)(const std::string &tcpStream, handle_t socket);
 
 namespace Parser
 {
-enum eInvaldFormat
+
+typedef enum eInvaldFormat
 {
     INVALID_PASSWORD,
     INVALID_NICKNAME,
     INVALID_USER,
     INVALID_HOSTNAME,
-    INVALID_HOSTNAME,
     INVALID_MSG,
-};
-} // namespace Parser
+} eInvaldFormat;
+
+#define MSG_INVALID_CMD "Invalid command"
+#define MSG_NOT_ENOUGH_PARAMS "Not enough parameters"
+#define MSG_TOO_MANY_PARAMS "Too many parameters"
+#define MSG_INVALID_PASSWORD "Invalid naming password"
+#define MSG_INVALID_NICKNAME "Invalid naming nickname"
+#define MSG_INVALID_USER "Invalid naming username"
+#define MSG_INVALID_HOSTNAME "Invalid naming hostname"
+#define MSG_INVALID_CHANNEL "Invalid naming channel"
+#define MSG_INVALID_MSG "Invalid message"
+
+std::string codeToString(eInvaldFormat code);
+std::string invalidFormatMsg(eInvaldFormat type, const std::string &msg);
+bool isLastToken(const std::string &token);
+void removeTrailingCRLF(std::string &str);
+bool isalnum(const std::string &str);
+// TODO: isalph 필요성 여부
+// bool isalpha(const std::string &str);
 
 Request *parsePass(const std::string &tcpStream, handle_t socket);
 Request *parseNick(const std::string &tcpStream, handle_t socket);
@@ -34,7 +56,5 @@ Request *parseKick(const std::string &tcpStream, handle_t socket);
 Request *parsePrivmsg(const std::string &tcpStream, handle_t socket);
 Request *parsePing(const std::string &tcpStream, handle_t socket);
 Request *parsePong(const std::string &tcpStream, handle_t socket);
-bool isalnum(const std::string &str);
-bool isalpha(const std::string &str);
 
-typedef Request *(*parser_t)(const std::string &tcpStream);
+} // namespace Parser
