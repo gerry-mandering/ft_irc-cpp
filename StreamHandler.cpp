@@ -4,9 +4,13 @@
 #include <iostream>
 #include <unistd.h>
 
-StreamHandler::StreamHandler(handle_t handle) : m_handle(handle) {}
+StreamHandler::StreamHandler(handle_t handle) : m_handle(handle)
+{
+}
 
-StreamHandler::~StreamHandler() {}
+StreamHandler::~StreamHandler()
+{
+}
 
 handle_t StreamHandler::getHandle(void) const
 {
@@ -26,19 +30,19 @@ int StreamHandler::handleRead(void)
     std::cout << "received data from " << m_handle << ": " << buf << std::endl;
     m_buf += buf;
 
-    std::string buffer;
+    // std::string buffer;
 
-    // minseok2 구조 짜는중
-    std::string requestString = PacketManager::GetInstance()->HandlePacket(buffer);
-    string str = PacketManager::GetInstance->getRequest();
+    // // minseok2 구조 짜는중
+    // std::string requestString = PacketManager::GetInstance()->HandlePacket(buffer);
+    // string str = PacketManager::GetInstance->getRequest();
 
-    Request *request = Parser.Parse(requestString);
+    // Request *request = Parser.Parse(requestString);
 
-    Validator *validator = Validator::GetInstance();
-    if (request->Accept(validator)) {
-        Command *command = Command::GetCommand(request->GetType());
-        request->Accept(command);
-    }
+    // Validator *validator = Validator::GetInstance();
+    // if (request->Accept(validator)) {
+    //     Command *command = Command::GetCommand(request->GetType());
+    //     request->Accept(command);
+    // }
 
     return (g_reactor().registerEvent(this, WRITE_EVENT));
 }

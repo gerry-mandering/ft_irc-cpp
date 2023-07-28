@@ -9,12 +9,14 @@
 
 int main(int argc, char **argv)
 {
-    //TODO EnvManager 객체 만들기
-    if (argc != 3) {
+    (void)argv;
+    // TODO EnvManager 객체 만들기
+    if (argc != 3)
+    {
         std::cerr << "Wrong Parameter." << std::endl;
-        return ;
+        return (0);
     }
-    EnvManager::GetInstance()->SetEnv(argc, argv);
+    // EnvManager::GetInstance()->SetEnv(argc, argv);
 
     AcceptHandler acceptHandler(PORT, PASSWORD);
     g_reactor().setDemultiplexer(new KqueueDemultiplexer());
