@@ -19,9 +19,9 @@ void initParsers(void)
         parsers[std::string(commands[i].first)] = commands[i].second;
 }
 
-std::string codeToString(eInvaldFormat code)
+std::string eTypeToString(eInvaldFormat type)
 {
-    switch (code)
+    switch (type)
     {
         case INVALID_PASSWORD:
             return MSG_INVALID_PASSWORD;
@@ -31,6 +31,12 @@ std::string codeToString(eInvaldFormat code)
             return MSG_INVALID_USER;
         case INVALID_HOSTNAME:
             return MSG_INVALID_HOSTNAME;
+        case INVALID_CHANNEL:
+            return MSG_INVALID_CHANNEL;
+        case INVALID_TOPIC:
+            return MSG_INVALID_TOPIC;
+        case INVALID_KEY:
+            return MSG_INVALID_KEY;
         case INVALID_MSG:
             return MSG_INVALID_MSG;
         default:
@@ -40,7 +46,7 @@ std::string codeToString(eInvaldFormat code)
 
 std::string invalidFormatMsg(eInvaldFormat type, const std::string &msg)
 {
-    return codeToString(type) + ": " + msg;
+    return eTypeToString(type) + ": " + msg;
 }
 
 // parse로 문자열이 넘길 때 항상 문자열 마지막에 \r\n이 존재한다.
@@ -63,8 +69,21 @@ void removeTrailingCRLF(std::string &str)
 bool isalnum(const std::string &str)
 {
     for (size_t i = 0; i < str.length(); i++)
+    {
         if (!std::isalnum(str[i]))
             return false;
+    }
     return true;
+}
+
+bool hasMetaChar(const std::string &str)
+{
+    for (size_t i = 0; i < str.length(); i++)
+    {
+        if (str.find('#') != std::string::npos || str.find(':') != std::string::npos ||
+            str.find(',') != std::string::npos)
+            return true;
+    }
+    return false;
 }
 }
