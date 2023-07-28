@@ -170,7 +170,7 @@ bool Executor::Visit(UserRequest *userRequest) const
     client->SetRealName(userRequest->GetRealName());
     client->SetUserInfoEntered();
 
-    if (!client->HasRegistered() && client->HasEnteredNickName() && client->HasEnteredPassword())
+    if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
         // TODO Welcome message 뿌려주기
         client->SetRegistered();
