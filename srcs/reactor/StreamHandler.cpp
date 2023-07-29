@@ -29,19 +29,23 @@ int StreamHandler::handleRead(void)
     Request *request;
     try
     {
-        request = Parser::parseRequest(buf, m_handle);
+        request = Parser::parseRequest(m_buf, m_handle);
     }
     catch (std::exception &e)
     {
         std::cout << e.what() << std::endl;
     }
+    std::cerr << "parse Request\n";
 
+    std::cerr << "before validating\n";
     Validator *validator = Validator::GetInstance();
     if (request->Accept(validator))
     {
+        std::cerr << "after validating\n";
         Executor *executor = Executor::GetInstance();
         request->Accept(executor);
     }
+    std::cerr << "after execution\n";
 
     return true;
     //    return (g_reactor().registerEvent(this, WRITE_EVENT));
