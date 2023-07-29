@@ -16,6 +16,8 @@ class JoinRequest : public Request
     const std::string &getChannelName() const;
     const std::string &getKey() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const JoinRequest &joinRequest);
+
   private:
     std::string mChannelName;
     std::string mKey;

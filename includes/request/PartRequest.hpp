@@ -16,6 +16,8 @@ class PartRequest : public Request
     const std::string &GetChannelName() const;
     const std::string &GetReason() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const PartRequest &partRequest);
+
   private:
     std::string mChannelName;
     std::string mReason; // TODO 생성시 std::string()으로 빈 문자열 넣어주기 Executer 구현시 빈

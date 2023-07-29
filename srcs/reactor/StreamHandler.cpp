@@ -23,7 +23,7 @@ int StreamHandler::handleRead(void)
         perror("read failed");
         exit(EXIT_FAILURE);
     }
-    std::cout << "received data from " << m_handle << ": " << buf << std::endl;
+    //    std::cout << "received data from " << m_handle << ": " << buf << std::endl;
     m_buf += buf;
 
     Request *request;
@@ -35,17 +35,15 @@ int StreamHandler::handleRead(void)
     {
         std::cout << e.what() << std::endl;
     }
-    std::cerr << "parse Request\n";
 
-    std::cerr << "before validating\n";
     Validator *validator = Validator::GetInstance();
     if (request->Accept(validator))
     {
-        std::cerr << "after validating\n";
         Executor *executor = Executor::GetInstance();
         request->Accept(executor);
     }
-    std::cerr << "after execution\n";
+
+    m_buf.clear();
 
     return true;
     //    return (g_reactor().registerEvent(this, WRITE_EVENT));

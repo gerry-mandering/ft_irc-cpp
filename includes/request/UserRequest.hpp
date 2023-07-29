@@ -21,6 +21,8 @@ class UserRequest : public Request
     const std::string &GetServerName() const;
     const std::string &GetRealName() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const UserRequest &userRequest);
+
   private:
     std::string mUserName;
     std::string mHostName;

@@ -17,6 +17,8 @@ class KickRequest : public Request
     std::vector<std::string> &GetNickNames();
     const std::string &GetMessage() const;
 
+    friend std::ostream &operator<<(std::ostream &os, KickRequest &kickRequest);
+
   private:
     std::vector<std::string> mNickNames;
     std::string mMessage;

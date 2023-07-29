@@ -1,9 +1,10 @@
 #include "AcceptHandler.hpp"
-#include "parser.h"
 #include "EnvManager.hpp"
 #include "KqueueDemultiplexer.hpp"
+#include "Logger.hpp"
 #include "Reactor.hpp"
 #include "def.h"
+#include "parser.h"
 #include <iostream>
 #include <string>
 
@@ -18,8 +19,8 @@ int main(int argc, char **argv)
         std::cerr << "Wrong Parameter." << std::endl;
         return (0);
     }
-    // EnvManager::GetInstance()->SetPortNumber(std::string(argv[1]));
-    // EnvManager::GetInstance()->SetConnectionPassword(std::string(argv[2]));
+    EnvManager::GetInstance()->SetPortNumber(std::string(argv[1]));
+    EnvManager::GetInstance()->SetConnectionPassword(std::string(argv[2]));
 
     Parser::initParsers();
 

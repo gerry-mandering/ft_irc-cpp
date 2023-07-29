@@ -3,6 +3,7 @@
 InviteRequest::InviteRequest(handle_t socket, const std::string &nickName, const std::string &channelName)
     : Request(socket), mNickName(nickName), mChannelName(channelName)
 {
+    //    Logger::GetInstance()->Trace("InviteRequest constructor", *this);
 }
 
 bool InviteRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -28,4 +29,11 @@ const std::string &InviteRequest::GetNickName() const
 const std::string &InviteRequest::GetChannelName() const
 {
     return mChannelName;
+}
+
+std::ostream &operator<<(std::ostream &os, const InviteRequest &inviteRequest)
+{
+    os << "InviteRequest - NickName: " << inviteRequest.mNickName << ", ChannelName: " << inviteRequest.mChannelName;
+
+    return os;
 }

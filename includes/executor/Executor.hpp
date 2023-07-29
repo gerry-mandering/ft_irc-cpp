@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include "ClientRepository.hpp"
 #include "EnvManager.hpp"
+#include "Logger.hpp"
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
 #include "requestConcrete.hpp"

@@ -21,6 +21,8 @@ class ModeRequest : public Request
     const std::string &GetModeChar() const;
     const std::string &GetModeArgument() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const ModeRequest &modeRequest);
+
   private:
     std::string mChannelName;
     std::string mPlusMinus;

@@ -5,6 +5,7 @@ ModeRequest::ModeRequest(handle_t socket, const std::string &channelName, const 
     : Request(socket), mChannelName(channelName), mPlusMinus(plusMinus), mModeChar(modeChar),
       mModeArgument(modeArgument)
 {
+    //    Logger::GetInstance()->Trace("ModeRequest constructor", *this);
 }
 
 bool ModeRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -50,4 +51,12 @@ const std::string &ModeRequest::GetModeChar() const
 const std::string &ModeRequest::GetModeArgument() const
 {
     return mModeArgument;
+}
+
+std::ostream &operator<<(std::ostream &os, const ModeRequest &modeRequest)
+{
+    os << "ModeRequest - ChannelName: " << modeRequest.mChannelName << ", PlusMinus: " << modeRequest.mPlusMinus
+       << ", ModeChar: " << modeRequest.mModeArgument;
+
+    return os;
 }
