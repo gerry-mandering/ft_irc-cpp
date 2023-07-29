@@ -16,7 +16,10 @@
 
 #include "Validator.hpp"
 
-bool Validator::Visit(CapRequest *capRequest) const {}
+bool Validator::Visit(CapRequest *capRequest) const
+{
+    return true;
+}
 
 bool Validator::Visit(InviteRequest *inviteRequest) const
 {
@@ -490,8 +493,20 @@ std::string Validator::BuildNotChannelOperatorMsg(const std::string &nickName, c
     EnvManager *envManager = EnvManager::GetInstance();
     std::stringstream errorMessage;
 
+    // TODO MODE 변경할때는 다름
     errorMessage << ":" << envManager->GetServerName() << " 482 " << nickName << " " << channelName
-                 << " :You cannot send external messages to this channel.";
+                 << " :You do not have access to change the topic on this channel";
+
+    return errorMessage.str();
+}
+
+std::string Validator::BuildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 404 " << nickName << " " << channelName
+                 << " :You cannot send external messages to this channel";
 
     return errorMessage.str();
 }

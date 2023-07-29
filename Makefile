@@ -39,22 +39,22 @@ TEST_OBJS := $(TEST_SRCS:.cpp=.o)
 
 
 # AS IS
-SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp $(DIR_SRCS)/$(DIR_PARSER)/*.cpp)
+#SRCS := $(wildcard $(DIR_SRCS)/$(DIR_REQUEST)/*.cpp $(DIR_SRCS)/$(DIR_REACTOR)/*.cpp $(DIR_SRCS)/$(DIR_PARSER)/*.cpp)
 
 # TO BE
-# SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_CHANNEL_REPOSITORY)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_CLIENT)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_CLIENT_REPOSITORY)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_ENV_MANGER)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_EXCEPTION)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_EXECUTOR)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_REACTOR)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_REQUEST)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
-#  					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp)
-# 					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp \
+ SRCS := $(wildcard $(DIR_SRCS)/$(DIR_CHANNEL)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_CHANNEL_REPOSITORY)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_CLIENT)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_CLIENT_REPOSITORY)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_ENV_MANGER)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_EXCEPTION)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_EXECUTOR)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_REACTOR)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_REQUEST)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
+  					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp) \
 
 # SRCS := $(filter-out $(DRIVER) $(VAR),$(SRCS))
 OBJS := $(SRCS:.cpp=.o)
