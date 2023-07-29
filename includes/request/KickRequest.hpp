@@ -14,7 +14,7 @@ class KickRequest : public Request
     void SetNickName(const std::string &nickName);
     void SetMessage(const std::string &message);
 
-    const std::vector<std::string> &GetNickNames() const;
+    std::vector<std::string> &GetNickNames();
     const std::string &GetMessage() const;
 
   private:

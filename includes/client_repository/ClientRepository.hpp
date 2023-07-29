@@ -13,6 +13,7 @@ class ClientRepository : public TSingleton<ClientRepository>
     ~ClientRepository();
 
     Client *CreateClient(handle_t socket);
+    void RemoveClient(handle_t socket, const std::string &nickName);
 
     Client *FindBySocket(handle_t socket);
     Client *FindByNickname(std::string nickName);

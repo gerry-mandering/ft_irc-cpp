@@ -18,6 +18,8 @@ class Client
 
     std::string GetClientInfo() const;
 
+    handle_t GetSocket() const;
+
     void SetChannel(Channel *channel);
     Channel *GetChannel() const;
 
@@ -44,7 +46,11 @@ class Client
     bool HasEnteredUserInfo() const;
 
   private:
-    // Builder 패턴 적용
+    static const int REGISTERED_FLAG = 1 << 0;
+    static const int PASSWORD_ENTERED_FLAG = 1 << 1;
+    static const int NICKNAME_ENTERED_FLAG = 1 << 2;
+    static const int USER_INFO_ENTERED_FLAG = 1 << 3;
+
     handle_t mSocket;
     std::queue<std::string> mResponseQueue;
 
@@ -56,8 +62,5 @@ class Client
     std::string mServerName;
     std::string mRealName;
 
-    bool mbRegistered;
-    bool mbPasswordEntered;
-    bool mbNickNameEntered;
-    bool mbUserInfoEntered;
+    int mRegistrationFlags;
 };
