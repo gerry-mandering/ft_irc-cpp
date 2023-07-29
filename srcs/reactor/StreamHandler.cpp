@@ -4,13 +4,9 @@
 #include <iostream>
 #include <unistd.h>
 
-StreamHandler::StreamHandler(handle_t handle) : m_handle(handle)
-{
-}
+StreamHandler::StreamHandler(handle_t handle) : m_handle(handle) {}
 
-StreamHandler::~StreamHandler()
-{
-}
+StreamHandler::~StreamHandler() {}
 
 handle_t StreamHandler::getHandle(void) const
 {
@@ -30,21 +26,29 @@ int StreamHandler::handleRead(void)
     std::cout << "received data from " << m_handle << ": " << buf << std::endl;
     m_buf += buf;
 
-    // std::string buffer;
+    Request *request;
+    try
+    {
+        request = Parser::parseRequest(m_buf, m_handle);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    std::cerr << "parse Request\n";
 
-    // // minseok2 구조 짜는중
-    // std::string requestString = PacketManager::GetInstance()->HandlePacket(buffer);
-    // string str = PacketManager::GetInstance->getRequest();
+    std::cerr << "before validating\n";
+    Validator *validator = Validator::GetInstance();
+    if (request->Accept(validator))
+    {
+        std::cerr << "after validating\n";
+        Executor *executor = Executor::GetInstance();
+        request->Accept(executor);
+    }
+    std::cerr << "after execution\n";
 
-    // Request *request = Parser.Parse(requestString);
-
-    // Validator *validator = Validator::GetInstance();
-    // if (request->Accept(validator)) {
-    //     Command *command = Command::GetCommand(request->GetType());
-    //     request->Accept(command);
-    // }
-
-    return (g_reactor().registerEvent(this, WRITE_EVENT));
+    return true;
+    //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 }
 
 int StreamHandler::handleWrite(void)

@@ -8,7 +8,7 @@ class InviteRequest : public Request
   public:
     InviteRequest(handle_t socket, const std::string &nickName, const std::string &channelName);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetNickName(const std::string &nickName);
     void SetChannelName(const std::string &channelName);

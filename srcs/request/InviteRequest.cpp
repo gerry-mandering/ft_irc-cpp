@@ -5,9 +5,9 @@ InviteRequest::InviteRequest(handle_t socket, const std::string &nickName, const
 {
 }
 
-void InviteRequest::Accept(visitor_pattern::Visitor *visitor)
+bool InviteRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void InviteRequest::SetNickName(const std::string &nickName)

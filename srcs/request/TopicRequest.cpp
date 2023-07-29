@@ -5,9 +5,9 @@ TopicRequest::TopicRequest(handle_t socket, const std::string &channelName, cons
 {
 }
 
-void TopicRequest::Accept(visitor_pattern::Visitor *visitor)
+bool TopicRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void TopicRequest::SetChannelName(const std::string &channelName)

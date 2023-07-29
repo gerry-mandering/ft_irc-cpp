@@ -12,7 +12,7 @@ class Request
   public:
     Request(handle_t socket);
 
-    virtual void Accept(visitor_pattern::Visitor *visitor) = 0;
+    virtual bool Accept(visitor_pattern::Visitor *visitor) = 0;
 
     Client *GetClient() const;
 

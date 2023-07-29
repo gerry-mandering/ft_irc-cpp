@@ -8,7 +8,7 @@ class CapRequest : public Request
   public:
     CapRequest(handle_t socket, const std::string &subCommand);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetSubCommand(const std::string &subCommand);
 
