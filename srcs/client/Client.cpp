@@ -1,8 +1,8 @@
 #include "Client.hpp"
 
 Client::Client(handle_t socket)
-    : mSocket(socket), mChannel(NULL), mbRegistered(false), mbPasswordEntered(false),
-      mbNickNameEntered(false), mbUserInfoEntered(false)
+    : mSocket(socket), mChannel(NULL), mbRegistered(false), mbPasswordEntered(false), mbNickNameEntered(false),
+      mbUserInfoEntered(false)
 {
 }
 

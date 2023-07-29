@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parserInternal.hpp"
+#include "parser_internal.h"
 #include <exception>
 #include <string>
 
@@ -47,7 +47,6 @@ class InvalidFormat : public ParseException
 
   public:
     InvalidFormat(handle_t socket, const std::string &msg, eInvaldFormat type) throw();
-    virtual const char *what() const throw();
     virtual void handleError() const throw();
 };
 

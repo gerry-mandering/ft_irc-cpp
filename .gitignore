@@ -1,6 +1,9 @@
 # DS_Store
 .DS_Store
 
+# IDE vscode
+.vscode
+
 # IDE idea
 .idea
 cmake-build-debug
@@ -38,3 +41,4 @@ CMakeLists.txt
 *.exe
 *.out
 *.app
+ircserver

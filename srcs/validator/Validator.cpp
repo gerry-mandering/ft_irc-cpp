@@ -14,6 +14,7 @@ bool Validator::Visit(KickRequest *kickRequest) const {}
 
 bool Validator::Visit(ModeRequest *modeRequest) const {}
 
+// NICK Command 경우의 수 검증 완료
 bool Validator::Visit(NickRequest *nickRequest) const
 {
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -38,10 +39,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
     {
         std::string errorMessage;
 
-        if (client->HasEnteredUserInfo())
-            errorMessage = BuildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
-        else
-            errorMessage = BuildAccessDeniedMsg();
+        errorMessage = BuildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
 
         client->InsertResponse(errorMessage);
         return false;
