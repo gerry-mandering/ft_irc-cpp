@@ -46,7 +46,11 @@ class Client
     bool HasEnteredUserInfo() const;
 
   private:
-    // Builder 패턴 적용
+    const int REGISTERED_FLAG = 1 << 0;
+    const int PASSWORD_ENTERED_FLAG = 1 << 1;
+    const int NICKNAME_ENTERED_FLAG = 1 << 2;
+    const int USER_INFO_ENTERED_FLAG = 1 << 3;
+
     handle_t mSocket;
     std::queue<std::string> mResponseQueue;
 
@@ -58,8 +62,5 @@ class Client
     std::string mServerName;
     std::string mRealName;
 
-    bool mbRegistered;
-    bool mbPasswordEntered;
-    bool mbNickNameEntered;
-    bool mbUserInfoEntered;
+    int mRegistrationFlags;
 };

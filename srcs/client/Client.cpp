@@ -1,10 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(handle_t socket)
-    : mSocket(socket), mChannel(NULL), mbRegistered(false), mbPasswordEntered(false), mbNickNameEntered(false),
-      mbUserInfoEntered(false)
-{
-}
+Client::Client(handle_t socket) : mSocket(socket), mChannel(NULL), mRegistrationFlags(0) {}
 
 void Client::InsertResponse(const std::string &response)
 {
@@ -95,40 +91,40 @@ const std::string &Client::GetRealName() const
 
 void Client::SetRegistered()
 {
-    mbRegistered = true;
+    mRegistrationFlags |= REGISTERED_FLAG;
 }
 
 void Client::SetPasswordEntered()
 {
-    mbPasswordEntered = true;
+    mRegistrationFlags |= PASSWORD_ENTERED_FLAG;
 }
 
 void Client::SetNickNameEntered()
 {
-    mbNickNameEntered = true;
+    mRegistrationFlags |= NICKNAME_ENTERED_FLAG;
 }
 
 void Client::SetUserInfoEntered()
 {
-    mbUserInfoEntered = true;
+    mRegistrationFlags |= USER_INFO_ENTERED_FLAG;
 }
 
 bool Client::HasRegistered() const
 {
-    return mbRegistered;
+    return (mRegistrationFlags & REGISTERED_FLAG) != 0;
 }
 
 bool Client::HasEnteredPassword() const
 {
-    return mbPasswordEntered;
+    return (mRegistrationFlags & PASSWORD_ENTERED_FLAG) != 0;
 }
 
 bool Client::HasEnteredNickName() const
 {
-    return mbNickNameEntered;
+    return (mRegistrationFlags & NICKNAME_ENTERED_FLAG) != 0;
 }
 
 bool Client::HasEnteredUserInfo() const
 {
-    return mbUserInfoEntered;
+    return (mRegistrationFlags & USER_INFO_ENTERED_FLAG) != 0;
 }
