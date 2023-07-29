@@ -2,9 +2,9 @@
 
 PingRequest::PingRequest(handle_t socket, const std::string &token) : Request(socket), mToken(token) {}
 
-void PingRequest::Accept(visitor_pattern::Visitor *visitor)
+bool PingRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void PingRequest::SetToken(const std::string &token)

@@ -9,7 +9,7 @@ class UserRequest : public Request
     UserRequest(handle_t socket, const std::string &userName, const std::string &hostName,
                 const std::string &serverName, const std::string &realName);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetUserName(const std::string &userName);
     void SetHostName(const std::string &hostName);

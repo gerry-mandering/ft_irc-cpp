@@ -9,7 +9,7 @@ class ModeRequest : public Request
     ModeRequest(handle_t socket, const std::string &channelName, const std::string &plusMinus,
                 const std::string &modeChar, const std::string &modeArgument);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetChannelName(const std::string &channelName);
     void SetPlusMinus(const std::string &plusMinus);

@@ -8,7 +8,7 @@ class PassRequest : public Request
   public:
     PassRequest(handle_t socket, const std::string &password);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetPassword(const std::string &password);
 

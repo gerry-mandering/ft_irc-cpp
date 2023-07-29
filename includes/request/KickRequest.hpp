@@ -9,7 +9,7 @@ class KickRequest : public Request
   public:
     KickRequest(handle_t socket, const std::vector<std::string> &nickNames, const std::string &message);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetNickName(const std::string &nickName);
     void SetMessage(const std::string &message);

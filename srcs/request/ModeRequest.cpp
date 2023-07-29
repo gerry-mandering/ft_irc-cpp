@@ -7,9 +7,9 @@ ModeRequest::ModeRequest(handle_t socket, const std::string &channelName, const 
 {
 }
 
-void ModeRequest::Accept(visitor_pattern::Visitor *visitor)
+bool ModeRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void ModeRequest::SetChannelName(const std::string &channelName)
