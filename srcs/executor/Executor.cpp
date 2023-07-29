@@ -133,7 +133,6 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         }
         else
         {
-
             Client *targetClient = clientRepository->FindByNickname(*iter);
             targetClient->InsertResponse(responseMessage.str());
         }
@@ -144,6 +143,42 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
 bool Executor::Visit(QuitRequest *quitRequest) const
 {
+    Client *client = quitRequest->GetClient();
+
+    std::stringstream responseMessage;
+
+    // TODO hostname 수정
+    responseMessage << "ERROR :Closing link: (" << client->GetUserName() << "@" << client->GetHostName() << ")";
+
+    if (quitRequest->GetReason().empty())
+        responseMessage << " [Client exited]";
+    else
+        responseMessage << " [Quit: " << quitRequest->GetReason() << "]";
+
+    client->InsertResponse(responseMessage.str());
+
+    Channel *channel = client->GetChannel();
+
+    if (channel)
+    {
+        std::stringstream responseMessage;
+
+        responseMessage << client->GetClientInfo() << " QUIT :";
+
+        if (quitRequest->GetReason().empty())
+            responseMessage << "Client exited";
+        else
+            responseMessage << "Quit : " << quitRequest->GetReason();
+
+        channel->BroadcastMessage(responseMessage.str());
+        channel->RemoveClient(client->GetNickName());
+    }
+
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+
+    clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
+
+    // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
 
     return true;
 }
