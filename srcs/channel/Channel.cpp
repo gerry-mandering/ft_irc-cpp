@@ -1,8 +1,8 @@
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name)
-    : mName(name), mTopic(std::string()), mbInviteOnlyMode(false), mbProtectedTopicMode(false),
-      mbKeyMode(false), mbClientLimitMode(false)
+    : mName(name), mTopic(std::string()), mbInviteOnlyMode(false), mbProtectedTopicMode(false), mbKeyMode(false),
+      mbClientLimitMode(false)
 {
 }
 
@@ -15,6 +15,21 @@ void Channel::BroadcastMessage(const std::string &message)
         (*iter)->InsertResponse(message);
         iter++;
     }
+}
+
+bool Channel::CheckClientExist(const std::string &nickName)
+{
+    std::vector<Client *>::iterator iter = mClients.begin();
+
+    while (iter != mClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+            return true;
+
+        iter++;
+    }
+
+    return false;
 }
 
 void Channel::SetClient(Client *newClient)
