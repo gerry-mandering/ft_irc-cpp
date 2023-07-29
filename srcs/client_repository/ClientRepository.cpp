@@ -12,6 +12,15 @@ Client *ClientRepository::CreateClient(handle_t socket)
     return client;
 }
 
+void ClientRepository::RemoveClient(handle_t socket, const std::string &nickName)
+{
+    std::map<handle_t, Client *>::iterator socketIter = mSocketToClients.find(socket);
+    mSocketToClients.erase(socketIter);
+
+    std::map<std::string, Client *>::iterator nickNameIter = mNickNameToClients.find(nickName);
+    mNickNameToClients.erase(nickNameIter);
+}
+
 Client *ClientRepository::FindBySocket(handle_t socket)
 {
     if (mSocketToClients.find(socket) != mSocketToClients.end())
