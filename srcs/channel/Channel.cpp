@@ -17,11 +17,26 @@ void Channel::BroadcastMessage(const std::string &message)
     }
 }
 
-bool Channel::CheckClientExist(const std::string &nickName)
+bool Channel::CheckClientIsExist(const std::string &nickName)
 {
     std::vector<Client *>::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+            return true;
+
+        iter++;
+    }
+
+    return false;
+}
+
+bool Channel::CheckClientIsOperator(const std::string &nickName)
+{
+    std::vector<Client *>::iterator iter = mOperators.begin();
+
+    while (iter != mOperators.end())
     {
         if ((*iter)->GetNickName() == nickName)
             return true;

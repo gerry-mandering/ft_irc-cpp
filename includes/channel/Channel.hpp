@@ -13,7 +13,8 @@ class Channel
 
     void BroadcastMessage(const std::string &message);
 
-    bool CheckClientExist(const std::string &nickName);
+    bool CheckClientIsExist(const std::string &nickName);
+    bool CheckClientIsOperator(const std::string &nickName);
 
     void SetClient(Client *newClient);
     void RemoveClient(Client *clientToRemove);
