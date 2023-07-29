@@ -22,7 +22,7 @@
 #include "VisitorPattern.hpp"
 #include <sstream>
 
-class Validator : public TSingleton<Validator>, visitor_pattern::Visitor
+class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
 {
 
   public:
