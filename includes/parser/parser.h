@@ -1,5 +1,6 @@
 #pragma once
 
+#include "parseException.hpp"
 #include <string>
 
 namespace Parser
