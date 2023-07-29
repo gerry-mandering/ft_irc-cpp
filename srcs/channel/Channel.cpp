@@ -52,13 +52,46 @@ void Channel::SetClient(Client *newClient)
     mClients.push_back(newClient);
 }
 
-void Channel::RemoveClient(Client *clientToRemove)
+void Channel::RemoveClient(const std::string &nickName)
+{
+    if (CheckClientIsOperator(nickName))
+        RemoveOperator(nickName);
+
+    std::vector<Client *>::iterator iter;
+
+    iter = mClients.begin();
+    while (iter != mClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+        {
+            mClients.erase(iter);
+            break;
+        }
+
+        iter++;
+    }
+}
+
+void Channel::SetOperator(Client *newOperator)
+{
+    mOperators.push_back(newOperator);
+}
+
+void Channel::RemoveOperator(const std::string &nickName)
 {
     std::vector<Client *>::iterator iter;
-    iter = std::find(mClients.begin(), mClients.end(), clientToRemove);
 
-    // 이 메소드는 무조건 있다는 가정하에 실행할거
-    mClients.erase(iter);
+    iter = mOperators.begin();
+    while (iter != mOperators.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+        {
+            mOperators.erase(iter);
+            break;
+        }
+
+        iter++;
+    }
 }
 
 const std::string &Channel::GetTopic() const

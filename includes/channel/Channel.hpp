@@ -17,7 +17,10 @@ class Channel
     bool CheckClientIsOperator(const std::string &nickName);
 
     void SetClient(Client *newClient);
-    void RemoveClient(Client *clientToRemove);
+    void RemoveClient(const std::string &nickName);
+
+    void SetOperator(Client *newOperator);
+    void RemoveOperator(const std::string &nickName);
 
     const std::string &GetTopic() const;
     void SetTopic(const std::string &topic);
