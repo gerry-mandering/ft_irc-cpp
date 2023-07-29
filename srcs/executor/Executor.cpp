@@ -80,7 +80,8 @@ bool Executor::Visit(PartRequest *partRequest) const
 
     channel->BroadcastMessage(responseMessage.str());
 
-    channel->RemoveClient(client);
+    // Operator 이면 지워주는 것은 내부에서 알아서 해줌
+    channel->RemoveClient(client->GetNickName());
     // TODO Shared Ptr 이면 delete?
     client->SetChannel(NULL);
 
