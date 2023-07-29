@@ -1,6 +1,5 @@
 #pragma once
 
-#include "parseException.hpp"
 #include <string>
 
 namespace Parser
@@ -13,4 +12,4 @@ bool isalnum(const std::string &str);
 bool hasMetaChar(const std::string &str);
 // TODO: isalph 필요성 여부
 // bool isalpha(const std::string &str);
-}
+} // namespace Parser
