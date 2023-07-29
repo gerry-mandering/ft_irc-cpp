@@ -28,6 +28,11 @@ std::string Client::GetClientInfo() const
     return clientInfo.str();
 }
 
+handle_t Client::GetSocket() const
+{
+    return mSocket;
+}
+
 void Client::SetChannel(Channel *channel)
 {
     mChannel = channel;
