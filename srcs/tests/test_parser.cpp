@@ -148,6 +148,7 @@ static void test_privmsg()
     test_parseGeneral("PRIVMSG #acdc,bdfs,#c,dffsjd, :b,c");
     test_parseGeneral("PRIVMSG #acdc,bdfs,#c,dffsjd,,, :b,c");
     test_parseGeneral("PRIVMSG #acdc,,,,bdfs,,,#c,dffsjd,,, :b,c");
+    test_parseGeneral("PRIVMSG ,,,,,#acdc,,,,bdfs,,,#c,dffsjd,,, :b,c");
 }
 
 int main(void)
