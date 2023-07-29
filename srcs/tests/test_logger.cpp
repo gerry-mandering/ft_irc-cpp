@@ -3,12 +3,19 @@
 
 int main(void)
 {
-    LOG_TRACE("trace");
-    LOG_DEBUG("debug");
+    int i = 0;
+
+    LOG_TRACE("trace" << i);
+    LOG_DEBUG("debug" << i);
     LOG_INFO("info");
     LOG_WARN("warn");
     LOG_ERROR("error");
-    std::cout << "log level: " << LOG_LEVEL << std::endl;
+    // LoggingHandler tmp;
+    // LoggingHandler &logger = *(LoggingHandler::GetInstance());
+
+    // logger << LoggingHandler::buildPrefix(LEVEL_TRACE);
+    // logger << "trace\n";
+    std::cout << LoggingHandler::GetInstance()->m_writeBuf << std::endl;
 
     return 0;
 }

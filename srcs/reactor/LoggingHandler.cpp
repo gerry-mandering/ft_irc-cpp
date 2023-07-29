@@ -19,11 +19,10 @@ handle_t LoggingHandler::getHandle(void) const
 
 int LoggingHandler::handleWrite(void)
 {
-    log_t log = m_bufQueue.front();
-    size_t len = log.second.length();
+    size_t len = m_writeBuf.length();
     ssize_t w_bytes;
 
-    w_bytes = write(m_handle, log.second.c_str(), len);
+    w_bytes = write(m_handle, m_writeBuf.c_str(), len);
     if (w_bytes < 0)
     {
         // TODO: 추후 삭제
@@ -32,30 +31,18 @@ int LoggingHandler::handleWrite(void)
     }
     if (w_bytes == len)
     {
-        m_bufQueue.pop();
-        // if (m_bufQueue.empty())
+        m_writeBuf.clear();
         // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+        return 0;
     }
-    m_bufQueue.front().second = m_bufQueue.front().second.substr(w_bytes);
-    return (0);
+    m_writeBuf = m_writeBuf.substr(w_bytes);
+    return 0;
 }
 
 // TODO: 로거 핸들 에러 처리
 int LoggingHandler::handleError(void)
 {
     return 0;
-}
-
-void LoggingHandler::pushLog(int level, const std::string &log)
-{
-    std::cout << "level: " << level << std::endl;
-    std::string fullLog = buildPrefix(level) + log;
-
-    m_bufQueue.push(std::make_pair(level, fullLog));
-    // g_reactor().registerEvent(this, WRITE_EVENT);
-
-    // TODO: 추후 삭제, 일단 동기로 처리
-    std::cout << fullLog << std::endl;
 }
 
 std::string LoggingHandler::logLevelToString(int level)
@@ -67,9 +54,9 @@ std::string LoggingHandler::logLevelToString(int level)
         case LEVEL_DEBUG:
             return "DEBUG";
         case LEVEL_INFO:
-            return "INFO";
+            return "INFO ";
         case LEVEL_WARN:
-            return "WARN";
+            return "WARN ";
         case LEVEL_ERROR:
             return "ERROR";
         default:
@@ -88,7 +75,12 @@ std::string LoggingHandler::buildPrefix(int level)
 
     // Write hour and minute with leading zeroes to the string stream
     oss << std::setfill('0') << std::setw(2) << localTime->tm_hour << ":" << std::setfill('0') << std::setw(2)
-        << localTime->tm_min;
+        << localTime->tm_min << ":" << std::setfill('0') << std::setw(2) << localTime->tm_sec;
     std::string prefix = oss.str() + " [" + LoggingHandler::logLevelToString(level) + "] ";
     return prefix;
+}
+
+void LoggingHandler::addWriteBuf(const std::string &str)
+{
+    m_writeBuf += str;
 }

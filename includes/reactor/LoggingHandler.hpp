@@ -4,6 +4,7 @@
 #include "Reactor.hpp"
 #include "SingletonTemplate.hpp"
 #include <queue>
+#include <sstream>
 #include <string>
 #include <utility>
 
@@ -20,43 +21,58 @@
 #define LOG_LEVEL LEVEL_OFF
 #endif
 
-#if LOGGING && (LOG_LEVEL >= LEVEL_TRACE)
-#define LOG_TRACE(log) LoggingHandler::GetInstance()->pushLog(LEVEL_TRACE, log)
-#else
-#define LOG_TRACE(log)
-#endif
+#define REGISTER_EVENT g_reactor().registerEvent(LoggingHandler::GetInstance(), WRITE_EVENT);
 
-#if LOGGING && (LOG_LEVEL >= LEVEL_DEBUG)
-#define LOG_DEBUG(log) LoggingHandler::GetInstance()->pushLog(LEVEL_DEBUG, log)
-#else
-#define LOG_DEBUG(log)
-#endif
+#define LOG_TRACE(log)                                                                                                 \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (LOG_LEVEL >= LEVEL_TRACE)                                                                                  \
+        {                                                                                                              \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+        }                                                                                                              \
+    } while (0);
 
-#if LOGGING && (LOG_LEVEL >= LEVEL_INFO)
-#define LOG_INFO(log) LoggingHandler::GetInstance()->pushLog(LEVEL_INFO, log)
-#else
-#define LOG_INFO(log)
-#endif
+#define LOG_DEBUG(log)                                                                                                 \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (LOG_LEVEL >= LEVEL_DEBUG)                                                                                  \
+        {                                                                                                              \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+        }                                                                                                              \
+    } while (0);
 
-#if LOGGING && (LOG_LEVEL >= LEVEL_WARN)
-#define LOG_WARN(log) LoggingHandler::GetInstance()->pushLog(LEVEL_WARN, log)
-#else
-#define LOG_WARN(log)
-#endif
+#define LOG_INFO(log)                                                                                                  \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (LOG_LEVEL >= LEVEL_INFO)                                                                                   \
+        {                                                                                                              \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+        }                                                                                                              \
+    } while (0);
 
-#if (LOGGING && (LOG_LEVEL >= LEVEL_ERROR))
-#define LOG_ERROR(log) LoggingHandler::GetInstance()->pushLog(LEVEL_ERROR, log)
-#else
-#define LOG_ERROR(log)
-#endif
+#define LOG_WARN(log)                                                                                                  \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (LOG_LEVEL >= LEVEL_WARN)                                                                                   \
+        {                                                                                                              \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+        }                                                                                                              \
+    } while (0);
 
-typedef std::pair<int, std::string> log_t;
+#define LOG_ERROR(log)                                                                                                 \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (LOG_LEVEL >= LEVEL_ERROR)                                                                                  \
+        {                                                                                                              \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+        }                                                                                                              \
+    } while (0);
 
 class LoggingHandler : public EventHandler, public TSingleton<LoggingHandler>
 {
   private:
     handle_t m_handle;
-    std::queue<log_t> m_bufQueue;
+    std::string m_writeBuf;
 
   public:
     LoggingHandler();
@@ -66,7 +82,16 @@ class LoggingHandler : public EventHandler, public TSingleton<LoggingHandler>
     virtual int handleWrite(void);
     virtual int handleError(void);
 
-    void pushLog(int level, const std::string &log);
     static std::string buildPrefix(int level);
     static std::string logLevelToString(int level);
+    void addWriteBuf(std::string const &str);
 };
+
+template <typename T>
+inline LoggingHandler &operator<<(LoggingHandler &logger, T content)
+{
+    std::stringstream ss;
+    ss << content;
+    logger.addWriteBuf(ss.str());
+    return (logger);
+}
