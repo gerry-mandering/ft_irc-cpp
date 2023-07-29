@@ -2,6 +2,11 @@
 # TODO: 플래그 사용하기!!!!!!!!!!!!!!!!!!
 
 CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
+
+ifdef DEBUG
+CXXFLAGS += -DDEBUG
+endif
+
 NAME = ircserver
 
 DIR_INCLUDES = includes
