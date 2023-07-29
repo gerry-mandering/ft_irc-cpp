@@ -9,6 +9,8 @@
  * TOPIC
  * PING
  * PART
+ * PRIVMSG
+ * QUIT
  *
  * */
 
@@ -248,9 +250,73 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
         client->InsertResponse(errorMessage);
         return false;
     }
+
+    bool executeFlag = true;
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+
+    std::vector<std::string> &targets = privmsgRequest->GetTargets();
+    std::vector<std::string>::iterator iter;
+
+    for (iter = targets.begin(); iter != targets.end(); iter++)
+    {
+        if (iter->front() == '#')
+        {
+            Channel *targetChannel = channelRepository->FindByName(*iter);
+
+            // 채널이 없는 경우
+            if (!targetChannel)
+            {
+                std::string errorMessage;
+
+                errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), *iter);
+
+                client->InsertResponse(errorMessage);
+                targets.erase(iter);
+
+                executeFlag ^= true;
+            }
+
+            // 채널에 속하지 않는 경우
+            if (!targetChannel->CheckClientIsExist(client->GetNickName()))
+            {
+                std::string errorMessage;
+
+                errorMessage = BuildCannotSendToChannelMsg(client->GetNickName(), *iter);
+
+                client->InsertResponse(errorMessage);
+                targets.erase(iter);
+
+                executeFlag ^= true;
+            }
+        }
+        else
+        {
+            Client *targetClient = clientRepository->FindByNickname(*iter);
+
+            // 닉네임이 존재하지 않는 경우
+            if (!targetClient)
+            {
+                std::string errorMessage;
+
+                errorMessage = BuildNoSuchNickMsg(client->GetNickName(), *iter);
+
+                client->InsertResponse(errorMessage);
+                targets.erase(iter);
+
+                executeFlag ^= true;
+            }
+        }
+    }
+
+    return executeFlag;
 }
 
-bool Validator::Visit(QuitRequest *quitRequest) const {}
+bool Validator::Visit(QuitRequest *quitRequest) const
+{
+    return true;
+}
 
 bool Validator::Visit(TopicRequest *topicRequest) const
 {
@@ -397,6 +463,17 @@ std::string Validator::BuildNoSuchChannelMsg(const std::string &nickName, const 
     return errorMessage.str();
 }
 
+std::string Validator::BuildNoSuchNickMsg(const std::string &nickName, const std::string &targetNickName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 401 " << nickName << " " << targetNickName
+                 << " :No such nick";
+
+    return errorMessage.str();
+}
+
 std::string Validator::BuildNotOnChannelMsg(const std::string &nickName, const std::string &channelName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
@@ -414,7 +491,7 @@ std::string Validator::BuildNotChannelOperatorMsg(const std::string &nickName, c
     std::stringstream errorMessage;
 
     errorMessage << ":" << envManager->GetServerName() << " 482 " << nickName << " " << channelName
-                 << " :You do not have access to change the topic on this channel";
+                 << " :You cannot send external messages to this channel.";
 
     return errorMessage.str();
 }
