@@ -20,7 +20,7 @@ void KickRequest::SetMessage(const std::string &message)
     mMessage = message;
 }
 
-const std::vector<std::string> &KickRequest::GetNickNames() const
+std::vector<std::string> &KickRequest::GetNickNames()
 {
     return mNickNames;
 }
