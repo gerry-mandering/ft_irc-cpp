@@ -1,18 +1,98 @@
+/*
+ * PASS, NICK, USER, CAP 빼고는 다 Registered 안되어 있으면 NotRegisteredMsg
+ *
+ * <Validator 구현 완료 명령어>
+ *
+ * PASS
+ * NICK
+ * USER
+ * TOPIC
+ * PING
+ * PART
+ * PRIVMSG
+ * QUIT
+ *
+ * */
+
 #include "Validator.hpp"
 
-// TODO EnvManager 고치기
-#define PASSWORD "1234"
-
-// TODO registered 관련된거 아니면 다 reistered 했는지 체크하기
 bool Validator::Visit(CapRequest *capRequest) const {}
 
-bool Validator::Visit(InviteRequest *inviteRequest) const {}
+bool Validator::Visit(InviteRequest *inviteRequest) const
+{
+    Client *client = inviteRequest->GetClient();
 
-bool Validator::Visit(JoinRequest *joinRequest) const {}
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
 
-bool Validator::Visit(KickRequest *kickRequest) const {}
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("INVITE", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("INVITE");
 
-bool Validator::Visit(ModeRequest *modeRequest) const {}
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+}
+
+bool Validator::Visit(JoinRequest *joinRequest) const
+{
+    Client *client = joinRequest->GetClient();
+
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
+
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("JOIN", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("JOIN");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+}
+
+bool Validator::Visit(KickRequest *kickRequest) const
+{
+    Client *client = kickRequest->GetClient();
+
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
+
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("KICK", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("KICK");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+}
+
+bool Validator::Visit(ModeRequest *modeRequest) const
+{
+    Client *client = modeRequest->GetClient();
+
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
+
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("MODE", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("MODE");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+}
 
 // NICK Command 경우의 수 검증 완료
 bool Validator::Visit(NickRequest *nickRequest) const
@@ -34,7 +114,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
         return false;
     }
 
-    // Password를 입력하지 않았는데 register를 시도하는 경우
+    // Connection Password를 입력하지 않고 Register 하려는 경우
     if (client->HasEnteredUserInfo() && !client->HasEnteredPassword())
     {
         std::string errorMessage;
@@ -48,13 +128,58 @@ bool Validator::Visit(NickRequest *nickRequest) const
     return true;
 }
 
-bool Validator::Visit(PartRequest *partRequest) const {}
+bool Validator::Visit(PartRequest *partRequest) const
+{
+    Client *client = partRequest->GetClient();
+
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
+
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("PART", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("PART");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(partRequest->GetChannelName());
+
+    // 채널이 없는 경우
+    if (!channel)
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), partRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    // 채널에 속하지 않는 경우
+    if (!channel->CheckClientIsExist(client->GetNickName()))
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNotOnChannelMsg(client->GetNickName(), partRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    return true;
+}
 
 // User Command 경우의 수 검증 완료
 bool Validator::Visit(PassRequest *passRequest) const
 {
     Client *client = passRequest->GetClient();
 
+    // Registered 하지 않은 경우
     if (client->HasRegistered())
     {
         std::string errorMessage;
@@ -68,7 +193,10 @@ bool Validator::Visit(PassRequest *passRequest) const
         return false;
     }
 
-    if (passRequest->GetPassword() != PASSWORD)
+    EnvManager *envManager = EnvManager::GetInstance();
+
+    // 비밀번호가 일치하지 않는 경우
+    if (passRequest->GetPassword() != envManager->GetConnectionPassord())
     {
         std::string errorMessage;
 
@@ -86,24 +214,173 @@ bool Validator::Visit(PassRequest *passRequest) const
 
 bool Validator::Visit(PingRequest *pingRequest) const
 {
-    // 파라미터가 부족한 경우는 Parser에서 처리
+    Client *client = pingRequest->GetClient();
 
-    // Error 종류 중에 ERR_NOORIGIN (409)는 처리할 필요 없는 듯?
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
+
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("PING", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("PING");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
 
     return true;
 }
 
-bool Validator::Visit(PrivmsgRequest *privmsgRequest) const {}
+bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
+{
+    Client *client = privmsgRequest->GetClient();
 
-bool Validator::Visit(QuitRequest *quitRequest) const {}
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
 
-bool Validator::Visit(TopicRequest *topicRequest) const {}
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("PRIVMSG", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("PRIVMSG");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    bool executeFlag = true;
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+
+    std::vector<std::string> &targets = privmsgRequest->GetTargets();
+    std::vector<std::string>::iterator iter;
+
+    for (iter = targets.begin(); iter != targets.end(); iter++)
+    {
+        if (iter->front() == '#')
+        {
+            Channel *targetChannel = channelRepository->FindByName(*iter);
+
+            // 채널이 없는 경우
+            if (!targetChannel)
+            {
+                std::string errorMessage;
+
+                errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), *iter);
+
+                client->InsertResponse(errorMessage);
+                targets.erase(iter);
+
+                executeFlag ^= true;
+            }
+
+            // 채널에 속하지 않는 경우
+            if (!targetChannel->CheckClientIsExist(client->GetNickName()))
+            {
+                std::string errorMessage;
+
+                errorMessage = BuildCannotSendToChannelMsg(client->GetNickName(), *iter);
+
+                client->InsertResponse(errorMessage);
+                targets.erase(iter);
+
+                executeFlag ^= true;
+            }
+        }
+        else
+        {
+            Client *targetClient = clientRepository->FindByNickname(*iter);
+
+            // 닉네임이 존재하지 않는 경우
+            if (!targetClient)
+            {
+                std::string errorMessage;
+
+                errorMessage = BuildNoSuchNickMsg(client->GetNickName(), *iter);
+
+                client->InsertResponse(errorMessage);
+                targets.erase(iter);
+
+                executeFlag ^= true;
+            }
+        }
+    }
+
+    return executeFlag;
+}
+
+bool Validator::Visit(QuitRequest *quitRequest) const
+{
+    return true;
+}
+
+bool Validator::Visit(TopicRequest *topicRequest) const
+{
+    Client *client = topicRequest->GetClient();
+
+    // Registered 하지 않은 경우
+    if (!client->HasRegistered())
+    {
+        std::string errorMessage;
+
+        if (client->HasEnteredNickName())
+            errorMessage = BuildNotRegisteredMsg("TOPIC", client->GetNickName());
+        else
+            errorMessage = BuildNotRegisteredMsg("TOPIC");
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(topicRequest->GetChannelName());
+
+    // 채널이 없는 경우
+    if (!channel)
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), topicRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    // 채널에 속하지 않는 경우
+    if (!channel->CheckClientIsExist(client->GetNickName()))
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNotOnChannelMsg(client->GetNickName(), topicRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    // 채널이 ProtectedTopic 모드일때 ChannelOperator가 아닌 경우
+    if (channel->IsProtectedTopicMode() && !channel->CheckClientIsOperator(client->GetNickName()))
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNotChannelOperatorMsg(client->GetNickName(), topicRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+        return false;
+    }
+
+    return true;
+}
 
 // User Command 경우의 수 검증 완료
 bool Validator::Visit(UserRequest *userRequest) const
 {
     Client *client = userRequest->GetClient();
 
+    // 이미 UserInfo를 입력한 경우
     if (client->HasEnteredUserInfo())
     {
         std::string errorMessage;
@@ -117,6 +394,7 @@ bool Validator::Visit(UserRequest *userRequest) const
         return false;
     }
 
+    // Connection Password를 입력하지 않고 Register 하려는 경우
     if (client->HasEnteredNickName() && !client->HasEnteredPassword())
     {
         std::string errorMessage;
@@ -134,32 +412,86 @@ bool Validator::Visit(UserRequest *userRequest) const
 std::string Validator::BuildAlreadyRegisteredMsg(const std::string &nickName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
-    std::stringstream ErrorMessage;
+    std::stringstream errorMessage;
 
-    // TODO EnvManager에서 서버 이름 가져오기
-    ErrorMessage << ":" << envManager->GetServerName() << " 462 " << nickName << ":You may not reregister";
+    errorMessage << ":" << envManager->GetServerName() << " 462 " << nickName << ":You may not reregister";
 
-    return ErrorMessage.str();
+    return errorMessage.str();
 }
 
 // TODO 원래는 GetHostName()이 아니라 아이피 주소로 출력됨 방법 찾기
 // TODO AccessDenied 는 연결을 끊어야 함!!!!!
 std::string Validator::BuildAccessDeniedMsg(const std::string &userName, const std::string &hostName)
 {
-    std::stringstream ErrorMessage;
+    std::stringstream errorMessage;
 
-    ErrorMessage << "Error :Closing link: (" << userName << "@" << hostName << ") [Access denied by configuration]";
+    errorMessage << "Error :Closing link: (" << userName << "@" << hostName << ") [Access denied by configuration]";
 
-    return ErrorMessage.str();
+    return errorMessage.str();
 }
 
 std::string Validator::BuildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
-    std::stringstream ErrorMessage;
+    std::stringstream errorMessage;
 
-    ErrorMessage << ":" << envManager->GetServerName() << " 433 " << clientNickName << " " << newNickName
+    errorMessage << ":" << envManager->GetServerName() << " 433 " << clientNickName << " " << newNickName
                  << " :Nickname is already in use.";
 
-    return ErrorMessage.str();
+    return errorMessage.str();
+}
+
+std::string Validator::BuildNotRegisteredMsg(const std::string &commandType, const std::string &nickName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 451 " << nickName << " " << commandType
+                 << " :You have not registered.";
+
+    return errorMessage.str();
+}
+
+std::string Validator::BuildNoSuchChannelMsg(const std::string &nickName, const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 403 " << nickName << " " << channelName
+                 << " :No such channel";
+
+    return errorMessage.str();
+}
+
+std::string Validator::BuildNoSuchNickMsg(const std::string &nickName, const std::string &targetNickName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 401 " << nickName << " " << targetNickName
+                 << " :No such nick";
+
+    return errorMessage.str();
+}
+
+std::string Validator::BuildNotOnChannelMsg(const std::string &nickName, const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 442 " << nickName << " " << channelName
+                 << " :You're not on that channel!";
+
+    return errorMessage.str();
+}
+
+std::string Validator::BuildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 482 " << nickName << " " << channelName
+                 << " :You cannot send external messages to this channel.";
+
+    return errorMessage.str();
 }

@@ -18,6 +18,8 @@ class Client
 
     std::string GetClientInfo() const;
 
+    handle_t GetSocket() const;
+
     void SetChannel(Channel *channel);
     Channel *GetChannel() const;
 
