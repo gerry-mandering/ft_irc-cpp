@@ -5,9 +5,9 @@ PrivmsgRequest::PrivmsgRequest(handle_t socket, const std::vector<std::string> &
 {
 }
 
-void PrivmsgRequest::Accept(visitor_pattern::Visitor *visitor)
+bool PrivmsgRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void PrivmsgRequest::AddTarget(const std::string &target)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "parser_internal.h"
 #include <string>
 
 namespace Parser

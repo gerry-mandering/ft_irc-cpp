@@ -5,9 +5,9 @@ KickRequest::KickRequest(handle_t socket, const std::vector<std::string> &nickNa
 {
 }
 
-void KickRequest::Accept(visitor_pattern::Visitor *visitor)
+bool KickRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void KickRequest::SetNickName(const std::string &nickName)

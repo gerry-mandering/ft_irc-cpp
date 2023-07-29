@@ -2,9 +2,9 @@
 
 PassRequest::PassRequest(handle_t socket, const std::string &password) : Request(socket), mPassword(password) {}
 
-void PassRequest::Accept(visitor_pattern::Visitor *visitor)
+bool PassRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void PassRequest::SetPassword(const std::string &password)

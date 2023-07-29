@@ -2,9 +2,9 @@
 
 NickRequest::NickRequest(handle_t socket, const std::string &nickname) : Request(socket), mNickname(nickname) {}
 
-void NickRequest::Accept(visitor_pattern::Visitor *visitor)
+bool NickRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void NickRequest::SetNickName(const std::string &nickName)

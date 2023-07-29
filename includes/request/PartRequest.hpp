@@ -8,7 +8,7 @@ class PartRequest : public Request
   public:
     PartRequest(handle_t socket, const std::string &channelName, const std::string &reason);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetChannelName(const std::string &channelName);
     void SetReason(const std::string &reason);

@@ -5,9 +5,9 @@ PartRequest::PartRequest(handle_t socket, const std::string &channelName, const 
 {
 }
 
-void PartRequest::Accept(visitor_pattern::Visitor *visitor)
+bool PartRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void PartRequest::SetChannelName(const std::string &channelName)

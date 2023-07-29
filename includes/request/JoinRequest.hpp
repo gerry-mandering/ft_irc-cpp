@@ -8,7 +8,7 @@ class JoinRequest : public Request
 
   public:
     JoinRequest(handle_t socket, const std::string &mChannelName, const std::string &mKey);
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void setChannelName(const std::string &channelName);
     void setKey(const std::string &key);

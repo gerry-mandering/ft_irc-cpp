@@ -5,9 +5,9 @@ JoinRequest::JoinRequest(handle_t socket, const std::string &channelName, const 
 {
 }
 
-void JoinRequest::Accept(visitor_pattern::Visitor *visitor)
+bool JoinRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void JoinRequest::setChannelName(const std::string &channelName)

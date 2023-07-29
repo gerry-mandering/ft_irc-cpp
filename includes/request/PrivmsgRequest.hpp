@@ -9,7 +9,7 @@ class PrivmsgRequest : public Request
   public:
     PrivmsgRequest(handle_t socket, const std::vector<std::string> &targets, const std::string &message);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void AddTarget(const std::string &target);
     void SetMessage(const std::string &message);

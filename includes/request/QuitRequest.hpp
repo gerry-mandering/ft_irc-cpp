@@ -8,7 +8,7 @@ class QuitRequest : public Request
   public:
     QuitRequest(handle_t socket, const std::string &reason);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetReason(const std::string &reason);
 

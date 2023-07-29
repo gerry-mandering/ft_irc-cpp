@@ -8,7 +8,7 @@ class NickRequest : public Request
   public:
     NickRequest(handle_t socket, const std::string &nickname);
 
-    void Accept(visitor_pattern::Visitor *visitor);
+    bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetNickName(const std::string &nickName);
 

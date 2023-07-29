@@ -6,9 +6,9 @@ UserRequest::UserRequest(handle_t socket, const std::string &userName, const std
 {
 }
 
-void UserRequest::Accept(visitor_pattern::Visitor *visitor)
+bool UserRequest::Accept(visitor_pattern::Visitor *visitor)
 {
-    visitor->Visit(this);
+    return visitor->Visit(this);
 }
 
 void UserRequest::SetUserName(const std::string &userName)
