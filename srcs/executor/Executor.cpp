@@ -81,6 +81,7 @@ bool Executor::Visit(PartRequest *partRequest) const
     channel->BroadcastMessage(responseMessage.str());
 
     channel->RemoveClient(client);
+    // TODO Shared Ptr 이면 delete?
     client->SetChannel(NULL);
 
     return true;
