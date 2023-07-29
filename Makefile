@@ -7,6 +7,10 @@ ifdef DEBUG
 CXXFLAGS += -DDEBUG
 endif
 
+ifdef LOG
+CXXFLAGS += -DLOGGING -D LOG_LEVEL=LEVEL_$(LOG)
+endif
+
 NAME = ircserver
 
 DIR_INCLUDES = includes
@@ -33,6 +37,7 @@ DRIVER_OBJ := $(DRIVER_SRC:.cpp=.o)
 DIR_TESTS = tests
 TEST_FILENAMES = test_shared_ptr \
 					test_parser \
+					test_logger \
 					
 TEST_SRCS := $(addprefix $(DIR_SRCS)/$(DIR_TESTS)/, $(addsuffix .cpp, $(TEST_FILENAMES)))
 TEST_OBJS := $(TEST_SRCS:.cpp=.o)
@@ -90,6 +95,9 @@ test_shared_ptr: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_shared_ptr.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 test_parser: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_parser.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+test_logger: $(OBJS) $(DIR_SRCS)/$(DIR_TESTS)/test_logger.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:

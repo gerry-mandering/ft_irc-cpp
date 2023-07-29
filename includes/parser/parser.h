@@ -11,4 +11,4 @@ std::string invalidFormatMsg(Parser::eInvaldFormat type, const std::string &msg)
 void removeTrailingCRLF(std::string &str);
 bool isalnum(const std::string &str);
 bool hasMetaChar(const std::string &str);
-}
+} // namespace Parser
