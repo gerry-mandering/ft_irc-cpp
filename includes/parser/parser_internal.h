@@ -43,11 +43,10 @@ typedef enum eInvaldFormat
 std::string eTypeToString(eInvaldFormat code);
 std::string invalidFormatMsg(eInvaldFormat type, const std::string &msg);
 void removeTrailingCRLF(std::string &str);
+void removeTrailingCR(std::string &str);
 bool isLastToken(const std::string &token);
 bool isalnum(const std::string &str);
 bool hasMetaChar(const std::string &str);
-// TODO: isalph 필요성 여부
-// bool isalpha(const std::string &str);
 
 Request *parseRequest(const std::string &tcpStream, handle_t socket);
 Request *parsePass(const std::string &tcpStream, handle_t socket);

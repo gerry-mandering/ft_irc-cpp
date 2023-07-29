@@ -2,7 +2,6 @@
 #include "debug.h"
 #include "parser_internal.h"
 
-// TODO: 마지막토큰에 딸려있는 \r 지우기
 namespace Parser
 {
 
@@ -75,12 +74,19 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+#ifdef DEBUG
+    std::cout << "command: " << command << std::endl;
+#endif
     if (!(ss >> headOfLast))
-        return (new QuitRequest(socket, "")); // TODO: 디폴트 매개변수
+        // TODO: 디폴트 매개변수
+        return (new QuitRequest(socket, ""));
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + 1));
     removeTrailingCRLF(message);
+#ifdef DEBUG
+    std::cout << "message: " << message << std::endl;
+#endif
     return (new QuitRequest(socket, message));
 }
 
@@ -98,7 +104,6 @@ Request *parseTopic(const std::string &tcpStreams, handle_t socket)
     return (new TopicRequest(socket, channel, topic));
 }
 
-// TODO: 추후 구현
 Request *parseMode(const std::string &tcpStreams, handle_t socket)
 {
     (void)tcpStreams;
@@ -153,6 +158,11 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + channel.size() + 2));
     removeTrailingCRLF(message);
+#ifdef DEBUG
+    std ::cout << "command: " << command << std::endl;
+    std::cout << "channel: " << channel << std::endl;
+    std::cout << "message: " << message << std::endl;
+#endif
     return (new PartRequest(socket, channel, message));
 }
 
@@ -160,31 +170,54 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
     std::string command;
-    std::string receivers, message, token, headOfLast, junk;
+    std::string receivers, message, token, lastToken, headOfLast, junk;
     std::vector<std::string> receiverList;
     size_t start = 0;
     size_t end;
 
     if (!(ss >> command >> receivers))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+#ifdef DEBUG
+    std::cout << "command: " << command << std::endl;
+    std::cout << "receivers: " << receivers << std::endl;
+#endif
     end = receivers.find(',');
 
     // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
+    // TODO: 토큰에 :같은 특수문자가 있더라도 아무 상관없다. 어차피 검색해도 못찾을테니
     // ,가 연속으로 나오면 에러, / , 뒤에 아무것도 없으면 에러
     while (end != std::string::npos)
     {
+        // [start, end) substr 생성
         token = receivers.substr(start, end - start);
-        receiverList.push_back(token);
+        // receivers = receivers.substr(end + 1);
+        if (!token.empty())
+            receiverList.push_back(token);
         start = end + 1;
-        end = receivers.find(',');
+        end = receivers.find(',', start);
     }
-    receiverList.push_back(receivers.substr(start));
+    lastToken = receivers.substr(start);
+    if (!lastToken.empty())
+        receiverList.push_back(lastToken);
+#ifdef DEBUG
+    std::cout << "receiverList:" << std::endl;
+    std::vector<std::string>::iterator it;
+    int i = 0;
+    for (it = receiverList.begin(); it != receiverList.end(); it++)
+    {
+        std::cout << "token " << i << ": " << *it << std::endl;
+        i++;
+    }
+#endif
     if (!(ss >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(headOfLast, command.size() + receivers.size() + 2));
     removeTrailingCRLF(message);
+#ifdef DEBUG
+    std::cout << "message: " << message << std::endl;
+#endif
     return (new PrivmsgRequest(socket, receiverList, message));
 }
 

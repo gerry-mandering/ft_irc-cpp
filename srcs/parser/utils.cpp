@@ -62,8 +62,27 @@ void removeTrailingCRLF(std::string &str)
     pos = str.find("\r\n");
     if (pos != std::string::npos)
         str.erase(pos);
-    else // TODO: 추후 삭제
-        kprintf_debug("not found CRLF\n");
+    else
+    {
+#ifdef DEBUG
+        std::cerr << "not found CRLF\n";
+#endif
+    }
+}
+
+void removeTrailingCR(std::string &str)
+{
+    size_t pos;
+
+    pos = str.find('\r');
+    if (pos != std::string::npos)
+        str.erase(pos);
+    else
+    {
+#ifdef DEBUG
+        std::cerr << "not found CR\n";
+#endif
+    }
 }
 
 bool isalnum(const std::string &str)
@@ -86,4 +105,4 @@ bool hasMetaChar(const std::string &str)
     }
     return false;
 }
-}
+} // namespace Parser
