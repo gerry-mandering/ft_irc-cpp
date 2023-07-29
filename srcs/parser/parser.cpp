@@ -80,7 +80,7 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + 1));
-    // std::cout << "Quit, message: " << message << std::endl;
+    removeTrailingCRLF(message);
     return (new QuitRequest(socket, message));
 }
 
@@ -152,7 +152,7 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + channel.size() + 2));
-    // std::cout << "Part, message: " << message << std::endl;
+    removeTrailingCRLF(message);
     return (new PartRequest(socket, channel, message));
 }
 
@@ -184,6 +184,7 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(headOfLast, command.size() + receivers.size() + 2));
+    removeTrailingCRLF(message);
     return (new PrivmsgRequest(socket, receiverList, message));
 }
 
