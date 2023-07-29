@@ -46,10 +46,10 @@ class Client
     bool HasEnteredUserInfo() const;
 
   private:
-    const int REGISTERED_FLAG = 1 << 0;
-    const int PASSWORD_ENTERED_FLAG = 1 << 1;
-    const int NICKNAME_ENTERED_FLAG = 1 << 2;
-    const int USER_INFO_ENTERED_FLAG = 1 << 3;
+    static const int REGISTERED_FLAG = 1 << 0;
+    static const int PASSWORD_ENTERED_FLAG = 1 << 1;
+    static const int NICKNAME_ENTERED_FLAG = 1 << 2;
+    static const int USER_INFO_ENTERED_FLAG = 1 << 3;
 
     handle_t mSocket;
     std::queue<std::string> mResponseQueue;
