@@ -1,10 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(const std::string &name)
-    : mName(name), mTopic(std::string()), mbInviteOnlyMode(false), mbProtectedTopicMode(false), mbKeyMode(false),
-      mbClientLimitMode(false)
-{
-}
+Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0) {}
 
 void Channel::BroadcastMessage(const std::string &message)
 {
@@ -106,40 +102,40 @@ void Channel::SetTopic(const std::string &topic)
 
 bool Channel::IsInviteOnlyMode() const
 {
-    return mbInviteOnlyMode;
+    return (mModeFlags & INVITE_ONLY_FLAG) != 0;
 }
 
 bool Channel::IsProtectedTopicMode() const
 {
-    return mbProtectedTopicMode;
+    return (mModeFlags & PROTECTED_TOPIC_FLAG) != 0;
 }
 
 bool Channel::IsKeyMode() const
 {
-    return mbKeyMode;
+    return (mModeFlags & KEY_FLAG) != 0;
 }
 
 bool Channel::IsClientLimitMode() const
 {
-    return mbClientLimitMode;
+    return (mModeFlags & CLIENT_LIMIT_FLAG) != 0;
 }
 
 void Channel::ToggleInviteOnlyMode()
 {
-    mbInviteOnlyMode ^= true;
+    mModeFlags ^= INVITE_ONLY_FLAG;
 }
 
 void Channel::ToggleProtectedTopicMode()
 {
-    mbProtectedTopicMode ^= true;
+    mModeFlags ^= PROTECTED_TOPIC_FLAG;
 }
 
 void Channel::ToggleKeyMode()
 {
-    mbKeyMode ^= true;
+    mModeFlags ^= KEY_FLAG;
 }
 
 void Channel::ToggleClientLimitMode()
 {
-    mbClientLimitMode ^= true;
+    mModeFlags ^= CLIENT_LIMIT_FLAG;
 }

@@ -36,6 +36,11 @@ class Channel
     void ToggleClientLimitMode();
 
   private:
+    const int INVITE_ONLY_FLAG = 1 << 0;
+    const int PROTECTED_TOPIC_FLAG = 1 << 1;
+    const int KEY_FLAG = 1 << 2;
+    const int CLIENT_LIMIT_FLAG = 1 << 3;
+
     std::string mName;
 
     std::vector<Client *> mClients;
@@ -43,8 +48,5 @@ class Channel
 
     std::string mTopic;
 
-    bool mbInviteOnlyMode;
-    bool mbProtectedTopicMode;
-    bool mbKeyMode;
-    bool mbClientLimitMode;
+    int mModeFlags;
 };
