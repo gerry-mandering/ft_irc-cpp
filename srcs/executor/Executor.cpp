@@ -2,40 +2,57 @@
 
 bool Executor::Visit(CapRequest *capRequest) const
 {
+    LOG_TRACE("CapRequest Executed");
 
     return true;
 }
 
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
+    LOG_TRACE("InviteRequest Executed");
 
     return true;
 }
 
 bool Executor::Visit(JoinRequest *joinRequest) const
 {
+    LOG_TRACE("JoinRequest Executed");
 
     return true;
 }
 
 bool Executor::Visit(KickRequest *kickRequest) const
 {
+    LOG_TRACE("KickRequest Executed");
 
     return true;
 }
 
 bool Executor::Visit(ModeRequest *modeRequest) const
 {
+    LOG_TRACE("ModeRequest Executed");
 
     return true;
 }
 
 bool Executor::Visit(NickRequest *nickRequest) const
 {
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
     Client *client = nickRequest->GetClient();
 
-    client->SetNickName(nickRequest->GetNickName());
-    client->SetNickNameEntered();
+    // TODO NickNameToClients 맵에 넣어주는 시점 적당한지 검증해야함
+    if (!client->HasEnteredNickName())
+    {
+        client->SetNickName(nickRequest->GetNickName());
+        clientRepository->AddClientToNickNameMap(client);
+        client->SetNickNameEntered();
+    }
+    else
+    {
+        clientRepository->RemoveClientFromNickNameMap(client->GetNickName());
+        client->SetNickName(nickRequest->GetNickName());
+        clientRepository->AddClientToNickNameMap(client);
+    }
 
     if (client->HasRegistered())
     {
@@ -47,6 +64,8 @@ bool Executor::Visit(NickRequest *nickRequest) const
             channel->BroadcastMessage(responseMessage.str());
         else
             client->InsertResponse(responseMessage.str());
+
+        LOG_TRACE("NickRequest Executing - Registered User Changed NickName");
     }
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
@@ -60,7 +79,11 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
         client->InsertResponse(welcomeMessage.str());
         client->SetRegistered();
+
+        LOG_TRACE("NickRequest Executing - SetRegistered");
     }
+
+    LOG_TRACE("NickRequest Executed");
 
     return true;
 }
@@ -85,6 +108,8 @@ bool Executor::Visit(PartRequest *partRequest) const
     // TODO Shared Ptr 이면 delete?
     client->SetChannel(NULL);
 
+    LOG_TRACE("PartRequest Executed");
+
     return true;
 }
 
@@ -93,6 +118,8 @@ bool Executor::Visit(PassRequest *passRequest) const
     Client *client = passRequest->GetClient();
 
     client->SetPasswordEntered();
+
+    LOG_TRACE("PassRequest Executed");
 
     return true;
 }
@@ -107,6 +134,8 @@ bool Executor::Visit(PingRequest *pingRequest) const
 
     Client *client = pingRequest->GetClient();
     client->InsertResponse(responseMessage.str());
+
+    LOG_TRACE("PingRequest Executed");
 
     return true;
 }
@@ -133,10 +162,12 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         }
         else
         {
-            Client *targetClient = clientRepository->FindByNickname(*iter);
+            Client *targetClient = clientRepository->FindByNickName(*iter);
             targetClient->InsertResponse(responseMessage.str());
         }
     }
+
+    LOG_TRACE("PrivmsgRequest Executed");
 
     return true;
 }
@@ -172,6 +203,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 
         channel->BroadcastMessage(responseMessage.str());
         channel->RemoveClient(client->GetNickName());
+
+        LOG_TRACE("QuitRequest Executing - BroadcastMessage");
     }
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -179,6 +212,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
     // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
+
+    LOG_TRACE("QuitRequest Executed");
 
     return true;
 }
@@ -200,6 +235,9 @@ bool Executor::Visit(TopicRequest *topicRequest) const
                     << newTopic;
 
     channel->BroadcastMessage(topicChangedMsg.str());
+
+    LOG_TRACE("TopicRequest Executed");
+
     return true;
 }
 
@@ -224,7 +262,11 @@ bool Executor::Visit(UserRequest *userRequest) const
 
         client->InsertResponse(welcomeMessage.str());
         client->SetRegistered();
+
+        LOG_TRACE("UserRequest Executing - SetRegistered");
     }
+
+    LOG_TRACE("UserRequest Executed");
 
     return true;
 }

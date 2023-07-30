@@ -3,7 +3,7 @@
 PartRequest::PartRequest(handle_t socket, const std::string &channelName, const std::string &reason)
     : Request(socket), mChannelName(channelName), mReason(reason)
 {
-    LOG_TRACE("PartRequest constructor: " << *this);
+    LOG_TRACE("PartRequest constructor called | " << *this);
 }
 
 bool PartRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -33,7 +33,7 @@ const std::string &PartRequest::GetReason() const
 
 std::ostream &operator<<(std::ostream &os, const PartRequest &partRequest)
 {
-    os << "PartRequest - ChannelName: " << partRequest.mChannelName << ", Reason: " << partRequest.mReason;
+    os << "PartRequest = { ChannelName: " << partRequest.mChannelName << ", Reason: " << partRequest.mReason << " }";
 
     return os;
 }

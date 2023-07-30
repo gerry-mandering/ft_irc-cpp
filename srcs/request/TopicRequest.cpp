@@ -3,7 +3,7 @@
 TopicRequest::TopicRequest(handle_t socket, const std::string &channelName, const std::string &topic)
     : Request(socket), mChannelName(channelName), mTopic(topic)
 {
-    LOG_TRACE("TopicRequest constructor: " << *this);
+    LOG_TRACE("TopicRequest constructor called | " << *this);
 }
 
 bool TopicRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -33,7 +33,7 @@ const std::string &TopicRequest::GetTopic() const
 
 std::ostream &operator<<(std::ostream &os, const TopicRequest &topicRequest)
 {
-    os << "TopicRequest - ChannelName: " << topicRequest.mChannelName << ", Topic: " << topicRequest.mTopic;
+    os << "TopicRequest = { ChannelName: " << topicRequest.mChannelName << ", Topic: " << topicRequest.mTopic << " }";
 
     return os;
 }

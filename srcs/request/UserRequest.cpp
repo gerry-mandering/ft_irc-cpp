@@ -4,7 +4,7 @@ UserRequest::UserRequest(handle_t socket, const std::string &userName, const std
                          const std::string &serverName, const std::string &realName)
     : Request(socket), mUserName(userName), mHostName(hostName), mServerName(serverName), mRealName(realName)
 {
-    LOG_TRACE("UserRequest constructor: " << *this);
+    LOG_TRACE("UserRequest constructor called | " << *this);
 }
 
 bool UserRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -54,8 +54,8 @@ const std::string &UserRequest::GetRealName() const
 
 std::ostream &operator<<(std::ostream &os, const UserRequest &userRequest)
 {
-    os << "UserRequest - UserName: " << userRequest.mUserName << ", HostName: " << userRequest.mHostName
-       << ", ServerName: " << userRequest.mServerName << ", RealName: " << userRequest.mRealName;
+    os << "UserRequest = { UserName: " << userRequest.mUserName << ", HostName: " << userRequest.mHostName
+       << ", ServerName: " << userRequest.mServerName << ", RealName: " << userRequest.mRealName << " }";
 
     return os;
 }

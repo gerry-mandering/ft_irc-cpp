@@ -18,8 +18,6 @@ class Request
 
     Client *GetClient() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const Request &request);
-
   protected:
     virtual ~Request() {}
 

@@ -2,7 +2,7 @@
 
 PingRequest::PingRequest(handle_t socket, const std::string &token) : Request(socket), mToken(token)
 {
-    LOG_TRACE("PingRequest constructor: " << *this);
+    LOG_TRACE("PingRequest constructor called | " << *this);
 }
 
 bool PingRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -22,7 +22,7 @@ const std::string &PingRequest::GetToken() const
 
 std::ostream &operator<<(std::ostream &os, const PingRequest &pingRequest)
 {
-    os << "PingRequest - Token: " << pingRequest.mToken;
+    os << "PingRequest = { Token: " << pingRequest.mToken << " }";
 
     return os;
 }

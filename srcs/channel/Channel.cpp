@@ -1,6 +1,9 @@
 #include "Channel.hpp"
 
-Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0) {}
+Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0)
+{
+    LOG_TRACE("Channel constructor called | " << *this);
+}
 
 void Channel::BroadcastMessage(const std::string &message)
 {
@@ -138,4 +141,13 @@ void Channel::ToggleKeyMode()
 void Channel::ToggleClientLimitMode()
 {
     mModeFlags ^= CLIENT_LIMIT_FLAG;
+}
+
+std::ostream &operator<<(std::ostream &os, const Channel &channel)
+{
+    os << "Channel = { Name: " << channel.mName << ", Clients.size: " << channel.mClients.size()
+       << ", Operators.size: " << channel.mOperators.size() << ", Topic: " << channel.mTopic
+       << ", ModeFlags: " << channel.mModeFlags << " }";
+
+    return os;
 }

@@ -1,6 +1,11 @@
 #include "Client.hpp"
 
-Client::Client(handle_t socket) : mSocket(socket), mChannel(NULL), mRegistrationFlags(0) {}
+Client::Client(handle_t socket)
+    : mSocket(socket), mChannel(NULL), mNickName(std::string()), mUserName(std::string()), mHostName(std::string()),
+      mServerName(std::string()), mRealName(std::string()), mRegistrationFlags(0)
+{
+    LOG_TRACE("Client constructor called | " << *this);
+}
 
 void Client::InsertResponse(const std::string &response)
 {
@@ -127,4 +132,15 @@ bool Client::HasEnteredNickName() const
 bool Client::HasEnteredUserInfo() const
 {
     return (mRegistrationFlags & USER_INFO_ENTERED_FLAG) != 0;
+}
+
+std::ostream &operator<<(std::ostream &os, const Client &client)
+{
+    os << "Client = { Socket: " << client.mSocket << ", ResponseQueue.size: " << client.mResponseQueue.size()
+       << ", Channel: " << client.mChannel << ", NickName: " << client.mNickName << ", UserName: " << client.mUserName
+       << ", HostName: " << client.mHostName << ", ServerName: " << client.mServerName
+       << ", RealName: " << client.mRealName << ", RegistrationFlags: " << std::bitset<4>(client.mRegistrationFlags)
+       << " }";
+
+    return os;
 }

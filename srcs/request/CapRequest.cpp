@@ -2,7 +2,7 @@
 
 CapRequest::CapRequest(handle_t socket, const std::string &subCommand) : Request(socket), mSubCommand(subCommand)
 {
-    LOG_TRACE("CapRequest constructor: " << *this);
+    LOG_TRACE("CapRequest constructor called | " << *this);
 }
 
 bool CapRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -22,7 +22,7 @@ const std::string &CapRequest::GetSubCommand() const
 
 std::ostream &operator<<(std::ostream &os, const CapRequest &capRequest)
 {
-    os << "CapRequest - SubCommand: " << capRequest.mSubCommand;
+    os << "CapRequest = { SubCommand: " << capRequest.mSubCommand << " }";
 
     return os;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Channel.hpp"
+#include "LoggingHandler.hpp"
 #include "SingletonTemplate.hpp"
 #include <iostream>
 #include <map>
