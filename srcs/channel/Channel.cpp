@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 
+// TODO: dahkang mModeFlags 상수 define 추천
 Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0)
 {
     LOG_TRACE("Channel constructor called | " << *this);
