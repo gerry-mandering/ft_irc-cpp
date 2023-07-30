@@ -44,6 +44,7 @@ class Channel
     friend std::ostream &operator<<(std::ostream &os, const Channel &channel);
 
   private:
+    static const int EMPTY_FLAGS = 0;
     static const int INVITE_ONLY_FLAG = 1 << 0;
     static const int PROTECTED_TOPIC_FLAG = 1 << 1;
     static const int KEY_FLAG = 1 << 2;

@@ -1,7 +1,7 @@
 #include "Channel.hpp"
 
-// TODO: dahkang mkey, mClientlimit 생성자에 추가, mModeFlags 상수 define 추천
-Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0)
+Channel::Channel(const std::string &name)
+    : mName(name), mTopic(std::string()), mKey(std::string()), mClientLimit(0), mModeFlags(EMPTY_FLAGS)
 {
     LOG_TRACE("Channel constructor called | " << *this);
 }
