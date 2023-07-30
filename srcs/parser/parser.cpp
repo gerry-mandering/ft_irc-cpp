@@ -1,3 +1,4 @@
+#include "LoggingHandler.hpp"
 #include "ParseException.hpp"
 #include "debug.h"
 #include "parser_internal.h"
@@ -16,10 +17,8 @@ Request *parseRequest(const std::string &tcpStreams, handle_t socket)
     std::stringstream ss(tcpStreams);
     std::string command;
 
-    //    std::cerr << "tcpStream: " << tcpStreams << "\n";
-
     ss >> command;
-    //    std::cerr << "command: " << command << "\n";
+    LOG_TRACE("command: " << command);
     it = parsers.find(command);
     if (it != parsers.end())
         return (it->second)(tcpStreams, socket);

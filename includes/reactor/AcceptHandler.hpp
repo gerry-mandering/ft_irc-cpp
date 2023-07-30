@@ -9,6 +9,7 @@ class AcceptHandler : public EventHandler
     handle_t m_handle;
     int m_port;
     std::string m_password;
+    const static int BACK_LOG = 5;
 
   public:
     AcceptHandler(int port, std::string password);

@@ -20,24 +20,24 @@ handle_t LoggingHandler::getHandle(void) const
 
 int LoggingHandler::handleWrite(void)
 {
-    size_t len = m_writeBuf.length();
-    ssize_t w_bytes;
+    // size_t len = m_writeBuf.length();
+    // ssize_t nwrite;
 
-    w_bytes = write(m_handle, m_writeBuf.c_str(), len);
-    if (w_bytes < 0)
-    {
-        // TODO: 추후 삭제
-        perror("standard_output write failed");
-        exit(EXIT_FAILURE);
-    }
-    if (w_bytes == len)
-    {
-        m_writeBuf.clear();
-        // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
-        return 0;
-    }
-    m_writeBuf = m_writeBuf.substr(w_bytes);
-    return 0;
+    // nwrite = write(m_handle, m_writeBuf.c_str(), len);
+    // if (nwrite < 0)
+    // {
+    //     // TODO: 추후 삭제
+    //     perror("standard_output write failed");
+    //     exit(EXIT_FAILURE);
+    // }
+    // if (nwrite == len)
+    // {
+    //     m_writeBuf.clear();
+    //     // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+    //     return 0;
+    // }
+    // m_writeBuf = m_writeBuf.substr(nwrite);
+    // return 0;
 }
 
 // TODO: 로거 핸들 에러 처리

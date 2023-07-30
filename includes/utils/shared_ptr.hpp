@@ -1,7 +1,8 @@
 #pragma once
 
-#include <ostream>
+#include <sstream>
 
+// template 함수는 헤더에 구현을 해두는게 일반적
 namespace ft
 {
 template <typename T>
@@ -24,10 +25,7 @@ class shared_ptr
         }
     }
 
-    shared_ptr(const shared_ptr &other) : ptr(other.ptr), count(other.count)
-    {
-        ++(*count);
-    }
+    shared_ptr(const shared_ptr &other) : ptr(other.ptr), count(other.count) { ++(*count); }
 
     shared_ptr &operator=(const shared_ptr &other)
     {
@@ -51,11 +49,11 @@ class shared_ptr
     T *getPtr() { return ptr; }
     int getCount() { return *count; }
 
-    friend std::ostream &operator<<(std::ostream &os, ft::shared_ptr<T> &sp)
+    friend std::stringstream &operator<<(std::stringstream &iss, ft::shared_ptr<T> &sp)
     {
-        os << "Address pointed : " << sp.getPtr() << std::endl;
-        os << *(sp.count) << std::endl;
-        return os;
+        iss << "Address pointed : " << sp.getPtr() << "\n"
+            << "count: " << *(sp.count) << "\n";
+        return iss;
     }
 };
 
