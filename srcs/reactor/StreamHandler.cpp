@@ -1,4 +1,5 @@
 #include "StreamHandler.hpp"
+#include "ClientRepository.hpp"
 #include "LoggingHandler.hpp"
 #include "def.h"
 #include <cstring>
@@ -107,6 +108,7 @@ int StreamHandler::handleRead(void)
 int StreamHandler::handleWrite(void)
 {
     // handleWrite 로직 틀
+
     // ResponsePtr response;
 
     // response = m_responseQueue.front();
@@ -129,11 +131,38 @@ int StreamHandler::handleWrite(void)
     //     return (g_reactor().unregisterEvent(this, WRITE_EVENT));
     // return (OK);
 
-    // 기존 에코서버 로직
-    if (write(m_handle, m_buf.c_str(), m_buf.size()) < 0)
+    // TODO: 임시로 작성한 로직, 추후 clientrepo 함수들과 함께 수정
+    Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle);
+    std::string responseStr;
+    ssize_t nwrite;
+
+    if (!client)
+    {
+        LOG_ERROR("StreamHandler write event but no client found" << strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    // 일단 한번에 다 더해서 처리, irssi 내부구현 따라 될수도 안될수도
+    while (client->HasResponse())
+        responseStr += client->ExtractResponse();
+    nwrite = write(m_handle, responseStr.c_str(), responseStr.size());
+    if (nwrite < 0)
+    {
+        // TODO: 구현 권장 (웬만하면 partial write 발생 x)
         LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
-    m_buf.clear();
+        return (OK);
+    }
+    if (nwrite < responseStr.size())
+    {
+        LOG_ERROR("Partial write, NOT IMPLEMENTED YET");
+        exit(EXIT_FAILURE);
+    }
     return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+
+    // 기존 에코서버 로직
+    // if (write(m_handle, m_buf.c_str(), m_buf.size()) < 0)
+    //     LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
+    // m_buf.clear();
+    // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
 }
 
 int StreamHandler::handleError(void)

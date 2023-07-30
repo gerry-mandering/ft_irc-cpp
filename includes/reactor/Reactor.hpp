@@ -16,6 +16,7 @@ class Reactor : public Singleton<Reactor>
     Reactor();
     ~Reactor();
 
+    EventHandler *getHandler(handle_t handle) const;
     void setDemultiplexer(Demultiplexer *demultiplexer);
 
     int registerHandler(EventHandler *handler, eEventType type);

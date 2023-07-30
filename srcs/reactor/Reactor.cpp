@@ -9,6 +9,15 @@ Reactor::~Reactor()
     delete m_demultiplexer;
 }
 
+EventHandler *Reactor::getHandler(handle_t handle) const
+{
+    std::map<handle_t, EventHandler *>::const_iterator it = m_handlers.find(handle);
+
+    if (it == m_handlers.end())
+        return (NULL);
+    return (it->second);
+}
+
 void Reactor::setDemultiplexer(Demultiplexer *demultiplexer)
 {
     m_demultiplexer = demultiplexer;
