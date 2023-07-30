@@ -67,7 +67,7 @@ int AcceptHandler::handleRead(void)
         perror("accept failed");
         exit(EXIT_FAILURE);
     }
-    //    std::cerr << "Success AcceptHandler\n";
+    std::cerr << "Success AcceptHandler\n";
     return (g_reactor().registerHandler(new StreamHandler(newHandle), READ_EVENT));
 }
 
