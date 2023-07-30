@@ -3,7 +3,7 @@
 JoinRequest::JoinRequest(handle_t socket, const std::string &channelName, const std::string &key)
     : Request(socket), mChannelName(channelName), mKey(key)
 {
-    //    Logger::GetInstance()->Trace("JoinRequest constructor", *this);
+    LOG_TRACE("JoinRequest constructor: " << *this);
 }
 
 bool JoinRequest::Accept(visitor_pattern::Visitor *visitor)

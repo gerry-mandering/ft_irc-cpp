@@ -3,7 +3,7 @@
 InviteRequest::InviteRequest(handle_t socket, const std::string &nickName, const std::string &channelName)
     : Request(socket), mNickName(nickName), mChannelName(channelName)
 {
-    //    Logger::GetInstance()->Trace("InviteRequest constructor", *this);
+    LOG_TRACE("InviteRequest constructor: " << *this);
 }
 
 bool InviteRequest::Accept(visitor_pattern::Visitor *visitor)

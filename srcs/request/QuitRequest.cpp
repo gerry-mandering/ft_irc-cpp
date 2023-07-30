@@ -2,7 +2,7 @@
 
 QuitRequest::QuitRequest(handle_t socket, const std::string &reason) : Request(socket), mReason(reason)
 {
-    //    Logger::GetInstance()->Trace("QuitRequest constructor", *this);
+    LOG_TRACE("PrivmsgRequest constructor: " << *this);
 }
 
 bool QuitRequest::Accept(visitor_pattern::Visitor *visitor)

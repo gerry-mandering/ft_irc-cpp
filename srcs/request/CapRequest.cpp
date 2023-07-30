@@ -2,7 +2,7 @@
 
 CapRequest::CapRequest(handle_t socket, const std::string &subCommand) : Request(socket), mSubCommand(subCommand)
 {
-    //    Logger::GetInstance()->Trace("CapRequest constructor", *this);
+    LOG_TRACE("CapRequest constructor: " << *this);
 }
 
 bool CapRequest::Accept(visitor_pattern::Visitor *visitor)

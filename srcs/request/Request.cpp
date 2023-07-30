@@ -7,8 +7,6 @@ Request::Request(handle_t socket) : mSocket(socket)
 
     if (!mClient)
         mClient = clientRepository->CreateClient(socket);
-
-    Logger::GetInstance()->Trace("Request constructor", *this);
 }
 
 Client *Request::GetClient() const

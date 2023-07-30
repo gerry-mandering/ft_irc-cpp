@@ -5,7 +5,7 @@ ModeRequest::ModeRequest(handle_t socket, const std::string &channelName, const 
     : Request(socket), mChannelName(channelName), mPlusMinus(plusMinus), mModeChar(modeChar),
       mModeArgument(modeArgument)
 {
-    //    Logger::GetInstance()->Trace("ModeRequest constructor", *this);
+    LOG_TRACE("ModeRequest constructor: " << *this);
 }
 
 bool ModeRequest::Accept(visitor_pattern::Visitor *visitor)

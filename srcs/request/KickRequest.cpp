@@ -3,7 +3,7 @@
 KickRequest::KickRequest(handle_t socket, const std::vector<std::string> &nickNames, const std::string &message)
     : Request(socket), mNickNames(nickNames), mMessage(message)
 {
-    //    Logger::GetInstance()->Trace("KickRequest constructor", *this);
+    LOG_TRACE("KickRequest constructor: " << *this);
 }
 
 bool KickRequest::Accept(visitor_pattern::Visitor *visitor)

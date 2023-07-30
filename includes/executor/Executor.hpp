@@ -4,9 +4,10 @@
 #include "Client.hpp"
 #include "ClientRepository.hpp"
 #include "EnvManager.hpp"
+#include "LoggingHandler.hpp"
+#include "RequestConcrete.hpp"
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
-#include "requestConcrete.hpp"
 #include <sstream>
 
 class Executor : public TSingleton<Executor>, public visitor_pattern::Visitor

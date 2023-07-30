@@ -2,7 +2,7 @@
 
 PingRequest::PingRequest(handle_t socket, const std::string &token) : Request(socket), mToken(token)
 {
-    //    Logger::GetInstance()->Trace("PingRequest constructor", *this);
+    LOG_TRACE("PingRequest constructor: " << *this);
 }
 
 bool PingRequest::Accept(visitor_pattern::Visitor *visitor)

@@ -2,7 +2,7 @@
 
 PassRequest::PassRequest(handle_t socket, const std::string &password) : Request(socket), mPassword(password)
 {
-    //    Logger::GetInstance()->Trace("PassRequest constructor", *this);
+    LOG_TRACE("PassRequest constructor: " << *this);
 }
 
 bool PassRequest::Accept(visitor_pattern::Visitor *visitor)

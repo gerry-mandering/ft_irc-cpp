@@ -3,7 +3,7 @@
 PartRequest::PartRequest(handle_t socket, const std::string &channelName, const std::string &reason)
     : Request(socket), mChannelName(channelName), mReason(reason)
 {
-    //    Logger::GetInstance()->Trace("PartRequest constructor", *this);
+    LOG_TRACE("PartRequest constructor: " << *this);
 }
 
 bool PartRequest::Accept(visitor_pattern::Visitor *visitor)

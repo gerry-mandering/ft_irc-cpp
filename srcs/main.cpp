@@ -1,7 +1,6 @@
 #include "AcceptHandler.hpp"
 #include "EnvManager.hpp"
 #include "KqueueDemultiplexer.hpp"
-#include "Logger.hpp"
 #include "Reactor.hpp"
 #include "def.h"
 #include "parser.h"

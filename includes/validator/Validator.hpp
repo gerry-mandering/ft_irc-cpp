@@ -1,24 +1,13 @@
 #pragma once
 
-#include "CapRequest.hpp"
 #include "Channel.hpp"
 #include "ChannelRepository.hpp"
 #include "Client.hpp"
 #include "ClientRepository.hpp"
 #include "EnvManager.hpp"
-#include "InviteRequest.hpp"
-#include "JoinRequest.hpp"
-#include "KickRequest.hpp"
-#include "ModeRequest.hpp"
-#include "NickRequest.hpp"
-#include "PartRequest.hpp"
-#include "PassRequest.hpp"
-#include "PingRequest.hpp"
-#include "PrivmsgRequest.hpp"
-#include "QuitRequest.hpp"
+#include "LoggingHandler.hpp"
+#include "RequestConcrete.hpp"
 #include "SingletonTemplate.hpp"
-#include "TopicRequest.hpp"
-#include "UserRequest.hpp"
 #include "VisitorPattern.hpp"
 #include <sstream>
 

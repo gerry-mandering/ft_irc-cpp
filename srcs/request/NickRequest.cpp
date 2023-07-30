@@ -2,7 +2,7 @@
 
 NickRequest::NickRequest(handle_t socket, const std::string &nickname) : Request(socket), mNickName(nickname)
 {
-    //    Logger::GetInstance()->Trace("NickRequest constructor", *this);
+    LOG_TRACE("NickRequest constructor: " << *this);
 }
 
 bool NickRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -22,7 +22,7 @@ const std::string &NickRequest::GetNickName() const
 
 std::ostream &operator<<(std::ostream &os, const NickRequest &nickRequest)
 {
-    os << "NickRequest - : NickName" << nickRequest.mNickName;
+    os << "NickRequest - NickName: " << nickRequest.mNickName;
 
     return os;
 }

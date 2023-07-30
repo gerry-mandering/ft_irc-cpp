@@ -3,7 +3,7 @@
 TopicRequest::TopicRequest(handle_t socket, const std::string &channelName, const std::string &topic)
     : Request(socket), mChannelName(channelName), mTopic(topic)
 {
-    //    Logger::GetInstance()->Trace("TopicRequest constructor", *this);
+    LOG_TRACE("TopicRequest constructor: " << *this);
 }
 
 bool TopicRequest::Accept(visitor_pattern::Visitor *visitor)

@@ -4,7 +4,7 @@ UserRequest::UserRequest(handle_t socket, const std::string &userName, const std
                          const std::string &serverName, const std::string &realName)
     : Request(socket), mUserName(userName), mHostName(hostName), mServerName(serverName), mRealName(realName)
 {
-    //    Logger::GetInstance()->Trace("UserRequest constructor", *this);
+    LOG_TRACE("UserRequest constructor: " << *this);
 }
 
 bool UserRequest::Accept(visitor_pattern::Visitor *visitor)

@@ -3,7 +3,7 @@
 #include "Client.hpp"
 #include "ClientRepository.hpp"
 #include "EventHandler.hpp"
-#include "Logger.hpp"
+#include "LoggingHandler.hpp"
 #include "VisitorPattern.hpp"
 #include <iostream>
 #include <sstream>
