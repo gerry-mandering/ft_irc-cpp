@@ -10,6 +10,14 @@
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
 #include <sstream>
+#include <string>
+
+namespace ft_validator
+{
+bool keyModeOK(Channel *channel, const std::string &key);
+bool limitModeOK(Channel *channel);
+bool notAlreadyInChan(Client *client, Channel *channel);
+} // namespace ft_validator
 
 class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
 {

@@ -1,4 +1,5 @@
 #include "Executor.hpp"
+#include "ChannelRepository.hpp"
 #include "Reactor.hpp"
 #include "def.h"
 
@@ -18,9 +19,61 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
 
 bool Executor::Visit(JoinRequest *joinRequest) const
 {
-    LOG_TRACE("JoinRequest Executed");
+    ChannelRepository *channelRepo = ChannelRepository::GetInstance();
+    Channel *channel;
+    Client *client = joinRequest->GetClient();
 
+    LOG_TRACE("JoinRequest Executing");
+
+    channel = channelRepo->FindByName(joinRequest->getChannelName());
+    // 채널에 처음 입장할 때
+    if (!channel)
+    {
+        LOG_TRACE("First Join: create new channel");
+        channel = channelRepo->CreateChannel(joinRequest->getChannelName());
+        LOG_TRACE("call SetClient, SetOperator");
+        channel->SetClient(client);
+        channel->SetOperator(client);
+        return true;
+    }
+    LOG_TRACE("Join already existing channel");
+    channel->SetClient(client);
     return true;
+
+    // 레거시.. 지울게요
+    // only invite mode일 때
+    // if (channel->IsInviteOnlyMode())
+    // {
+    //     LOG_TRACE("channel is invite only mode");
+    //     return true;
+    // }
+
+    // // key mode일 때
+    // if (channel->IsKeyMode())
+    // {
+    //     LOG_TRACE("channel is key mode");
+    //     if (channel->GetKey() != joinRequest->GetKey())
+    //     {
+    //         LOG_TRACE("key is not matched");
+    //         return true;
+    //     }
+    //     LOG_TRACE("key is matched");
+    //     join_only_if_not_in(client, channel);
+    //     return (true);
+    // }
+
+    // if (channel->IsClientLimitMode() && channel->GetClientLimit() <= channel->GetClientCount())
+    // {
+    //     LOG_TRACE("channel is full");
+    //     return true;
+    // }
+    // // 1. 아무런 모드도 설정되지 않았거나, limit mode이면서 limit에 도달하지 않았을 때
+    // else
+    // {
+    //     LOG_TRACE("client limit mode but not full, try join");
+    //     join_only_if_not_in(client, channel);
+    //     return true;
+    // }
 }
 
 bool Executor::Visit(KickRequest *kickRequest) const
@@ -263,7 +316,7 @@ bool Executor::Visit(UserRequest *userRequest) const
 
         // TODO: 연결시켜보려고 welcomeMessage 이겆저것 해봄...
 
-                // :irc.local NOTICE * :*** Looking up your hostname...
+        // :irc.local NOTICE * :*** Looking up your hostname...
         // 127.000.000.001.57268-127.000.000.001.06667: PING irc.local^M$
         // :irc.local 376 dah :End of message of the day.
         // :dah!root@127.0.0.1 MODE dah :+i
