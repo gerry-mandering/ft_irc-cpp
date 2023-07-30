@@ -1,4 +1,5 @@
 #include "KqueueDemultiplexer.hpp"
+#include "LoggingHandler.hpp"
 #include "def.h"
 #include <iostream>
 #include <unistd.h>
@@ -55,6 +56,7 @@ int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers
     // TODO: kevent 반환값 예외처리
     int numEvents = kevent(m_kq, &m_changeList[0], m_changePos, &m_kEventList[0], m_kEventList.size(), NULL);
     m_changePos = 0;
+    LOG_TRACE("\nnumEvents: " << numEvents);
     assert(numEvents != -1);
     // TODO: EV_EOF 플래그 검사(예외처리)
     for (int i = 0; i < numEvents; ++i)
@@ -62,26 +64,26 @@ int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers
         struct kevent &event = m_kEventList[i];
         EventHandler *handler = reinterpret_cast<EventHandler *>(event.udata);
 
-        //        std::cerr << "event data: " << event.data << std::endl;
+        LOG_TRACE("event ident: " << event.ident);
+        // 클라이언트 프로세스가 종료되면 해당 플래그로 온다
         if (event.flags & EV_EOF)
         {
-            std::cerr << "EOF event\n";
+            LOG_TRACE("EOF event");
             close(event.ident);
             continue;
         }
         if (event.filter == EVFILT_READ)
         {
-            //            std::cerr << "read event\n";
+            LOG_TRACE("read event");
             handler->handleRead();
         }
         if (event.filter == EVFILT_WRITE)
         {
-            //            std::cerr << "write event\n";
+            LOG_TRACE("write event");
             handler->handleWrite();
         }
-        //        std::cerr << "in event\n";
+        LOG_TRACE("event loop");
     }
     (void)handlers;
-    //    std::cerr << "numEvents: " << numEvents << std::endl;
     return (numEvents);
 }
