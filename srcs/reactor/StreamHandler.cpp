@@ -45,6 +45,7 @@ int StreamHandler::handleRead(void)
 
     m_buf.clear();
 
+    // Log_TRACE("socket fd: " << m_handle << " is closed\n");
     return true;
     //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 }
