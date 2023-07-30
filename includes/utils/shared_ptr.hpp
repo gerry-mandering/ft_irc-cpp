@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-// TODO: 구현부, 선언부 분리
+// template 함수는 헤더에 구현을 해두는게 일반적
 namespace ft
 {
 template <typename T>

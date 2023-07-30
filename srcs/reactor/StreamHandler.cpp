@@ -48,7 +48,7 @@ int StreamHandler::handleRead(void)
     nread = read(m_handle, tmpBuf, sizeof(tmpBuf));
     if (nread <= 0)
     {
-        LOG_DEBUG(strerror(errno));
+        LOG_DEBUG("StreamHandler read failed: " << strerror(errno));
         // TODO: 리턴 코드 (어차피 0이긴 할텐데..)
         return (OK);
     }
@@ -69,7 +69,7 @@ int StreamHandler::handleRead(void)
     {
         LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
     }
-   return (g_reactor().registerEvent(this, WRITE_EVENT));
+    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
     // TODO: 민석님이 작성하실 부분
 
@@ -97,7 +97,6 @@ int StreamHandler::handleRead(void)
     // return true;
     //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
-
     // std::cerr << "before validating\n";
     // Validator *validator = Validator::GetInstance();
     // if (request->Accept(validator))
@@ -112,13 +111,36 @@ int StreamHandler::handleRead(void)
     // return true;
 }
 
+// TODO: 시간 나면 partial write까지 처리
+// TODO: response는 어떤 형태로 관리할지 고민
 int StreamHandler::handleWrite(void)
 {
+    // handleWrite 로직 틀
+    // ResponsePtr response;
+
+    // response = m_responseQueue.front();
+    // std::string responseStr = response->toString();
+    // ssize_t nwrite;
+
+    // nwrite = write(m_handle, responseStr.c_str(), responseStr.size());
+    // if (nwrite < 0)
+    // {
+    //     LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
+    //     return (OK);
+    // }
+    // if (nwrite < responseStr.size())
+    // {
+    //     LOG_ERROR("Partial write, NOT IMPLEMENTED YET");
+    //     exit(EXIT_FAILURE);
+    // }
+    // m_responseQueue.pop();
+    // if (m_responseQueue.empty())
+    //     return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+    // return (OK);
+
+    // 기존 에코서버 로직
     if (write(m_handle, m_buf.c_str(), m_buf.size()) < 0)
-    {
-        perror("write failed");
-        exit(EXIT_FAILURE);
-    }
+        LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
     m_buf.clear();
     return (g_reactor().unregisterEvent(this, WRITE_EVENT));
 }
