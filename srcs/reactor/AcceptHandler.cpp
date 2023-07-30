@@ -1,4 +1,5 @@
 #include "AcceptHandler.hpp"
+#include "LoggingHandler.hpp"
 #include "StreamHandler.hpp"
 #include "def.h"
 #include <netdb.h>
@@ -44,7 +45,7 @@ bool AcceptHandler::init()
         return false;
     }
 
-    if (listen(m_handle, 5) == -1)
+    if (listen(m_handle, BACK_LOG) == -1)
     {
         perror("listen failed");
         return false;
@@ -64,12 +65,11 @@ int AcceptHandler::handleRead(void)
     // TODO: 예외처리 고민
     if (newHandle < 0)
     {
-        perror("accept failed");
+        LOG_ERROR("accept failed " << strerror(errno));
         exit(EXIT_FAILURE);
     }
-    std::cerr << "Success AcceptHandler\n";
-    return (
-        g_reactor().registerHandler(new StreamHandler(newHandle), READ_EVENT));
+    LOG_TRACE("new connection: " << newHandle);
+    return (g_reactor().registerHandler(new StreamHandler(newHandle), READ_EVENT));
 }
 
 int AcceptHandler::handleWrite(void)

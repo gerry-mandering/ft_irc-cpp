@@ -15,6 +15,9 @@ class StreamHandler : public EventHandler
     // TODO: 민석2 responce 큐 clientRepo에 두기
     handle_t m_handle;
     std::string m_buf;
+    const static int MAX_MSG_SIZE = 512;
+    const static std::string CRLF;
+    const static int CRLF_LEN = 2;
 
   public:
     StreamHandler(handle_t handle);
@@ -24,4 +27,6 @@ class StreamHandler : public EventHandler
     virtual int handleRead(void);
     virtual int handleWrite(void);
     virtual int handleError(void);
+
+    bool hasRequest(std::string &requestStr);
 };
