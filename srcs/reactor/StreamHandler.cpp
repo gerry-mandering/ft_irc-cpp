@@ -69,32 +69,21 @@ int StreamHandler::handleRead(void)
     {
         LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
     }
-    return (g_reactor().registerEvent(this, WRITE_EVENT));
+    //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
-    // TODO: 민석님이 작성하실 부분
+    //     TODO: 민석님이 작성하실 부분
 
-    // std::cerr << "before validating\n";
-    // Validator *validator = Validator::GetInstance();
-    // if (request->Accept(validator))
-    // {
-    //     std::cerr << "after validating\n";
-    //     Executor *executor = Executor::GetInstance();
-    //     request->Accept(executor);
-    // }
-    // std::cerr << "after execution\n";
+    Validator *validator = Validator::GetInstance();
+    if (request->Accept(validator))
+    {
+        Executor *executor = Executor::GetInstance();
+        request->Accept(executor);
+    }
 
-    // 기존 민석님 코드
-    //   Validator *validator = Validator::GetInstance();
-    // if (request->Accept(validator))
-    // {
-    //     Executor *executor = Executor::GetInstance();
-    //     request->Accept(executor);
-    // }
+    m_buf.clear();
 
-    // m_buf.clear();
-
-    // // Log_TRACE("socket fd: " << m_handle << " is closed\n");
-    // return true;
+    // Log_TRACE("socket fd: " << m_handle << " is closed\n");
+    return true;
     //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
     // std::cerr << "before validating\n";
