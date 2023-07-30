@@ -16,6 +16,48 @@
 
 #include "Validator.hpp"
 
+using namespace ft_validator;
+
+namespace ft_validator
+{
+// 로그 찍기 위해 exp 분할
+bool keyModeOK(Channel *channel, const std::string &key)
+{
+    if (!channel->IsKeyMode())
+    {
+        LOG_DEBUG("Joining channel is not in key mode");
+        return true;
+    }
+    LOG_DEBUG("Joining channel is in key mode");
+    return (channel->GetKey() == key);
+    // return (!channel->IsKeyMode() || channel->GetKey() == key);
+}
+
+bool limitModeOK(Channel *channel)
+{
+    if (!channel->IsClientLimitMode())
+    {
+        LOG_DEBUG("Joining channel is not in limit mode");
+        return true;
+    }
+    LOG_DEBUG("Joining channel is in limit mode");
+    return (channel->GetClientLimit() > channel->GetClientCount());
+    // return (!channel->IsClientLimitMode() || channel->GetClientLimit() > channel->GetClientCount());
+}
+
+bool notAlreadyInChan(Client *client, Channel *channel)
+{
+    if (!channel->CheckClientIsExist(client->GetNickName()))
+    {
+        LOG_DEBUG("Client is not in channel");
+        return true;
+    }
+    LOG_DEBUG("Client is already in channel");
+    return (false);
+    // return (!channel->CheckClientIsExist(client->GetNickName()));
+}
+} // namespace ft_validator
+
 bool Validator::Visit(CapRequest *capRequest) const
 {
     return true;
@@ -49,6 +91,9 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
 
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
+
+    ChannelRepository *channelRepo = ChannelRepository::GetInstance();
+    Channel *channel;
     Client *client = joinRequest->GetClient();
 
     // Registered 하지 않은 경우
@@ -63,14 +108,28 @@ bool Validator::Visit(JoinRequest *joinRequest) const
 
         client->InsertResponse(errorMessage);
 
-        LOG_TRACE("JoinRequest Invalid - NotRegistered");
+        LOG_DEBUG("JoinRequest Invalid - NotRegistered");
 
         return false;
     }
 
-    LOG_TRACE("JoinRequest Validated");
+    channel = channelRepo->FindByName(joinRequest->getChannelName());
+    // 채널에 처음 입장할 때(즉 생성)
+    if (channel == NULL)
+    {
+        LOG_DEBUG("JoinRequest is valid: Channel name is not exist");
+        return true;
+    }
+    if (keyModeOK(channel, joinRequest->getKey()) && limitModeOK(channel) && notAlreadyInChan(client, channel))
+    {
+        LOG_DEBUG("JoinRequest is valid: pass all condition");
+        return true;
+    }
+    // TODO: 메시지 형식 만들것, 세분화 할 필요 없다고 생각함
+    // client->InsertResponse("에러코드 + 메시지");
+    LOG_DEBUG("JoinRequest is not valid");
 
-    return true;
+    return false;
 }
 
 bool Validator::Visit(KickRequest *kickRequest) const

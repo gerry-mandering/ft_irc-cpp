@@ -1,8 +1,19 @@
 #include "Channel.hpp"
 
+// TODO: dahkang mkey, mClientlimit 생성자에 추가, mModeFlags 상수 define 추천
 Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0)
 {
     LOG_TRACE("Channel constructor called | " << *this);
+}
+
+size_t Channel::GetClientCount() const
+{
+    return mClients.size();
+}
+
+size_t Channel::GetClientLimit() const
+{
+    return mClientLimit;
 }
 
 // TODO: dahkang 현재 mClients 벡터만 순회중
@@ -103,6 +114,11 @@ const std::string &Channel::GetTopic() const
 void Channel::SetTopic(const std::string &topic)
 {
     mTopic = topic;
+}
+
+const std::string &Channel::GetKey() const
+{
+    return mKey;
 }
 
 bool Channel::IsInviteOnlyMode() const

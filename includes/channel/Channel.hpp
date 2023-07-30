@@ -9,8 +9,13 @@
 class Channel
 {
 
+    // TODO: dahkang 소멸자 정의할것
   public:
     Channel(const std::string &name);
+
+    size_t GetClientCount() const;
+    size_t GetClientLimit() const;
+    const std::string &GetKey() const;
 
     void BroadcastMessage(const std::string &message);
 
@@ -53,6 +58,8 @@ class Channel
     std::vector<Client *> mOperators;
 
     std::string mTopic;
+    std::string mKey;
+    size_t mClientLimit;
 
     int mModeFlags;
 };
