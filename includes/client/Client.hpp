@@ -17,6 +17,7 @@ class Client
 
     void InsertResponse(const std::string &response);
     std::string ExtractResponse();
+    bool HasResponse() const;
 
     std::string GetClientInfo() const;
 

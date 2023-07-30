@@ -20,6 +20,11 @@ std::string Client::ExtractResponse()
     return response;
 }
 
+bool Client::HasResponse() const
+{
+    return !mResponseQueue.empty();
+}
+
 std::string Client::GetClientInfo() const
 {
     std::stringstream clientInfo;
