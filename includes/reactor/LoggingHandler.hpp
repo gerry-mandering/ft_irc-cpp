@@ -27,7 +27,7 @@
 #define LOG_TRACE(log)                                                                                                 \
     do                                                                                                                 \
     {                                                                                                                  \
-        if (LOG_LEVEL >= LEVEL_TRACE)                                                                                  \
+        if (LOG_LEVEL <= LEVEL_TRACE)                                                                                  \
         {                                                                                                              \
             *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_TRACE) << log << "\n";               \
         }                                                                                                              \
@@ -36,7 +36,7 @@
 #define LOG_DEBUG(log)                                                                                                 \
     do                                                                                                                 \
     {                                                                                                                  \
-        if (LOG_LEVEL >= LEVEL_DEBUG)                                                                                  \
+        if (LOG_LEVEL <= LEVEL_DEBUG)                                                                                  \
         {                                                                                                              \
             *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_DEBUG) << log << "\n";               \
         }                                                                                                              \
@@ -45,7 +45,7 @@
 #define LOG_INFO(log)                                                                                                  \
     do                                                                                                                 \
     {                                                                                                                  \
-        if (LOG_LEVEL >= LEVEL_INFO)                                                                                   \
+        if (LOG_LEVEL <= LEVEL_INFO)                                                                                   \
         {                                                                                                              \
             *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_INFO) << log << "\n";                \
         }                                                                                                              \
@@ -54,7 +54,7 @@
 #define LOG_WARN(log)                                                                                                  \
     do                                                                                                                 \
     {                                                                                                                  \
-        if (LOG_LEVEL >= LEVEL_WARN)                                                                                   \
+        if (LOG_LEVEL <= LEVEL_WARN)                                                                                   \
         {                                                                                                              \
             *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_WARN) << log << "\n";                \
         }                                                                                                              \
@@ -63,7 +63,7 @@
 #define LOG_ERROR(log)                                                                                                 \
     do                                                                                                                 \
     {                                                                                                                  \
-        if (LOG_LEVEL >= LEVEL_ERROR)                                                                                  \
+        if (LOG_LEVEL <= LEVEL_ERROR)                                                                                  \
         {                                                                                                              \
             *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_ERROR) << log << "\n";               \
         }                                                                                                              \
