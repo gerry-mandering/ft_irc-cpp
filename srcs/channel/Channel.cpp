@@ -106,6 +106,44 @@ void Channel::RemoveOperator(const std::string &nickName)
     }
 }
 
+bool Channel::CheckClientIsInvited(const std::string &nickName)
+{
+    std::vector<Client *>::iterator iter;
+
+    iter = mInvitedClients.begin();
+    while (iter != mInvitedClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+            return true;
+
+        iter++;
+    }
+
+    return false;
+}
+
+void Channel::AddToInvitedClient(Client *invitedClient)
+{
+    mInvitedClients.push_back(invitedClient);
+}
+
+void Channel::RemoveFromInvitedClient(const std::string &nickName)
+{
+    std::vector<Client *>::iterator iter;
+
+    iter = mInvitedClients.begin();
+    while (iter != mInvitedClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+        {
+            mInvitedClients.erase(iter);
+            break;
+        }
+
+        iter++;
+    }
+}
+
 const std::string &Channel::GetTopic() const
 {
     return mTopic;

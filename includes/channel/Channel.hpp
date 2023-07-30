@@ -28,6 +28,10 @@ class Channel
     void SetOperator(Client *newOperator);
     void RemoveOperator(const std::string &nickName);
 
+    void AddToInvitedClient(Client *invitedClient);
+    void RemoveFromInvitedClient(const std::string &nickName);
+    bool CheckClientIsInvited(const std::string &nickName);
+
     const std::string &GetTopic() const;
     void SetTopic(const std::string &topic);
 
@@ -58,6 +62,8 @@ class Channel
     std::vector<Client *> mClients;
     std::vector<Client *> mOperators;
 
+    // 닉네임이 변경되어도 InviteOnly 모드에서 채널 진입이 가능하므로 Client *사용
+    std::vector<Client *> mInvitedClients;
     std::string mTopic;
     std::string mKey;
     size_t mClientLimit;
