@@ -28,6 +28,18 @@ void Channel::BroadcastMessage(const std::string &message)
     }
 }
 
+void Channel::BroadcastMessageExcludingRequestor(const std::string &message, const std::string &requestorNickName)
+{
+    std::vector<Client *>::iterator iter = mClients.begin();
+
+    while (iter != mClients.end())
+    {
+        if ((*iter)->GetNickName() != requestorNickName)
+            (*iter)->InsertResponse(message);
+        iter++;
+    }
+}
+
 // TODO: dahkang mOpeartor 벡터는 순회하지 않고 있음.
 bool Channel::CheckClientIsExist(const std::string &nickName)
 {

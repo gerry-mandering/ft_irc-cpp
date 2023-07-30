@@ -18,6 +18,7 @@ class Channel
     const std::string &GetKey() const;
 
     void BroadcastMessage(const std::string &message);
+    void BroadcastMessageExcludingRequestor(const std::string &message, const std::string &requestorNickName);
 
     bool CheckClientIsExist(const std::string &nickName);
     bool CheckClientIsOperator(const std::string &nickName);
