@@ -1,5 +1,7 @@
 #include "ClientRepository.hpp"
 
+// TODO: dahkang Register NickName 함수가 필요할듯?, NickToClient map 에 등록하는 함수가 없음 
+
 ClientRepository::ClientRepository() {}
 
 ClientRepository::~ClientRepository() {}
