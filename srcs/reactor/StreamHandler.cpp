@@ -56,34 +56,35 @@ int StreamHandler::handleRead(void)
     LOG_TRACE("[ " << m_handle << " ]"
                    << " sent data: " << tcpStreams);
     m_buf += tcpStreams;
-    if (hasRequest(requestStr) == false)
-        return (OK);
-    Request *request;
-    try
+    while (hasRequest(requestStr) != false)
     {
-        LOG_DEBUG("Try parse: " << requestStr);
-        request = Parser::parseRequest(requestStr, m_handle);
-        LOG_DEBUG("Parsing success");
-    }
-    catch (std::exception &e)
-    {
-        LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
-    }
-    //    return (g_reactor().registerEvent(this, WRITE_EVENT));
+        Request *request;
 
-    //     TODO: 민석님이 작성하실 부분
+        try
+        {
+            LOG_DEBUG("Try parse: " << requestStr);
+            request = Parser::parseRequest(requestStr, m_handle);
+            LOG_DEBUG("Parsing success");
+        }
+        catch (std::exception &e)
+        {
+            LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
+            continue;
+        }
+        // TODO: registerEvent(handler, WRITE_EVENT)는 다른 곳에서 필요할 때 등록 (response 큐에 집어넣고 호출하면 될듯)
+        // handler는 reactor가 싱글톤이니 map에서 fd로 찾으면 됨
+        //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
-    Validator *validator = Validator::GetInstance();
-    if (request->Accept(validator))
-    {
-        Executor *executor = Executor::GetInstance();
-        request->Accept(executor);
+        //     TODO: 민석님이 작성하실 부분
+        Validator *validator = Validator::GetInstance();
+        if (request->Accept(validator))
+        {
+            Executor *executor = Executor::GetInstance();
+            request->Accept(executor);
+        }
     }
-
-    m_buf.clear();
 
     // Log_TRACE("socket fd: " << m_handle << " is closed\n");
-    return true;
     //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
     // std::cerr << "before validating\n";
@@ -98,6 +99,7 @@ int StreamHandler::handleRead(void)
 
     // Log_TRACE("socket fd: " << m_handle << " is closed\n");
     // return true;
+    return (0);
 }
 
 // TODO: 시간 나면 partial write까지 처리
