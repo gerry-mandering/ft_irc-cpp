@@ -2,6 +2,7 @@
 
 Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0) {}
 
+// TODO: dahkang 현재 mClients 벡터만 순회중
 void Channel::BroadcastMessage(const std::string &message)
 {
     std::vector<Client *>::iterator iter = mClients.begin();
@@ -13,6 +14,7 @@ void Channel::BroadcastMessage(const std::string &message)
     }
 }
 
+// TODO: dahkang mOpeartor 벡터는 순회하지 않고 있음.
 bool Channel::CheckClientIsExist(const std::string &nickName)
 {
     std::vector<Client *>::iterator iter = mClients.begin();
@@ -120,6 +122,7 @@ bool Channel::IsClientLimitMode() const
     return (mModeFlags & CLIENT_LIMIT_FLAG) != 0;
 }
 
+// TODO: dahkang ^= 로 키면 다른 플래그가 꺼질 수 있음. |= 로 수정해야할듯.
 void Channel::ToggleInviteOnlyMode()
 {
     mModeFlags ^= INVITE_ONLY_FLAG;

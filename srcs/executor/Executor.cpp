@@ -30,6 +30,7 @@ bool Executor::Visit(ModeRequest *modeRequest) const
     return true;
 }
 
+// TODO: dahkang 레포에 등록하거나 레포에서 NICK 변경하는 로직이 빠져있는 것 같음.
 bool Executor::Visit(NickRequest *nickRequest) const
 {
     Client *client = nickRequest->GetClient();

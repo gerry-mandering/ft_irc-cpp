@@ -112,7 +112,7 @@ int StreamHandler::handleRead(void)
 }
 
 // TODO: 시간 나면 partial write까지 처리
-// TODO: response는 어떤 형태로 관리할지 고민
+// TODO: 클라이언트를 fd로 검색해서 가져와야 response 큐에서 갖고와야 함.
 int StreamHandler::handleWrite(void)
 {
     // handleWrite 로직 틀

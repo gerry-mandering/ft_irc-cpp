@@ -20,6 +20,7 @@ const std::string &NickRequest::GetNickName() const
     return mNickName;
 }
 
+// TODO: dahkang ostream은 사용하면 비동기 i/o로 처리되지 않음. stringstream으로 변경 필요
 std::ostream &operator<<(std::ostream &os, const NickRequest &nickRequest)
 {
     os << "NickRequest - NickName: " << nickRequest.mNickName;

@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+// TODO: dahkang _NOEXCEPT 키워드는 cpp11 cpp98은 nothrow
 class AddrInfoException : public std::exception
 {
 
