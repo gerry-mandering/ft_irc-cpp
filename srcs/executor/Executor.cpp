@@ -1,4 +1,6 @@
 #include "Executor.hpp"
+#include "Reactor.hpp"
+#include "def.h"
 
 bool Executor::Visit(CapRequest *capRequest) const
 {
@@ -258,10 +260,46 @@ bool Executor::Visit(UserRequest *userRequest) const
         EnvManager *envManager = EnvManager::GetInstance();
 
         std::stringstream welcomeMessage;
-        welcomeMessage << ":" << envManager->GetServerName() << " 001 " << client->GetNickName()
+
+        // TODO: 연결시켜보려고 welcomeMessage 이겆저것 해봄...
+
+                // :irc.local NOTICE * :*** Looking up your hostname...
+        // 127.000.000.001.57268-127.000.000.001.06667: PING irc.local^M$
+        // :irc.local 376 dah :End of message of the day.
+        // :dah!root@127.0.0.1 MODE dah :+i
+        // 127.000.000.001.06667-127.000.000.001.46614: :irc.local NOTICE dah :*** Could not resolve your hostname:
+        // Request timed out; using your IP address (127.0.0.1) instead. :irc.local 001 dah :Welcome to the Localnet IRC
+        // Network dah!root@127.0.0.1 :irc.local 002 dah :Your host is irc.local, running version InspIRCd-3 :irc.local
+        // 003 dah :This server was created 11:01:07 Jul 29 2023 :irc.local 004 dah irc.local InspIRCd-3 iosw
+        // biklmnopstv :bklov :irc.local 005 dah AWAYLEN=200 CASEMAPPING=rfc1459 CHANLIMIT=#:20 CHANMODES=b,k,l,imnpst
+        // CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU HOSTLEN=64 KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=b:100 :are
+        // supported by this server
+
+        // welcomeMessage << "irc.local" << " NOTICE " << client->GetNickName()
+        //                << " :*** Looking up your hostname...\r\n"
+        //                << "irc.local" << " 001 " << client->GetNickName() << " :Welcome\r\n"
+        //                << "irc.local" << " 002 " << client->GetNickName() << " :Your host is "
+        //                << "irc.local" << "\r\n"
+        //                << "irc.local" << " 003 " << client->GetNickName()
+        //                << " :This server was created 11:01:07 Jul 29 2023\r\n"
+        //                << "irc.local" << " 004 " << client->GetNickName() << " "
+        //                << "irc.local" << " InspIRCd-3 iosw biklmnopstv :bklov\r\n"
+        //                << "irc.local" << " 005 " << client->GetNickName() << " tmp\r\n"
+        //                << "irc.local" << " 376 " << client->GetNickName()
+        //                << " :End of message of the day.\r\n";
+
+        //    << client->GetNickName() << "!" << "root@127.0.0.1 "
+        //    << "MODE " << client->GetNickName() << " :+i\r\n";
+
+        // 기존 welcome message
+        welcomeMessage << envManager->GetServerName() << " 001 " << client->GetNickName()
                        << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
 
+        Reactor &reactor = g_reactor();
+
         client->InsertResponse(welcomeMessage.str());
+        reactor.registerEvent(reactor.getHandler(client->GetSocket()), WRITE_EVENT);
+
         client->SetRegistered();
 
         LOG_TRACE("UserRequest Executing - SetRegistered");
