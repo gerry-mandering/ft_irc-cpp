@@ -29,6 +29,7 @@ DIR_REQUEST = request
 DIR_UTILS = utils
 DIR_VALIDATOR = validator
 DIR_VISITOR = visitor_pattern
+DIR_LOGGER = logger
 
 
 DRIVER_SRC := $(DIR_SRCS)/main.cpp
@@ -59,7 +60,8 @@ TEST_OBJS := $(TEST_SRCS:.cpp=.o)
   					$(DIR_SRCS)/$(DIR_UTILS)/*.cpp \
   					$(DIR_SRCS)/$(DIR_VALIDATOR)/*.cpp \
   					$(DIR_SRCS)/$(DIR_VISITOR)/*.cpp \
- 					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp) \
+ 					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp \
+ 					$(DIR_SRCS)/$(DIR_LOGGER)/*.cpp) \
 
 # SRCS := $(filter-out $(DRIVER) $(VAR),$(SRCS))
 OBJS := $(SRCS:.cpp=.o)
@@ -78,7 +80,8 @@ INCLUDE_PATH := $(addprefix -I, $(DIR_INCLUDES) \
 								$(DIR_INCLUDES)/$(DIR_REQUEST) \
 								$(DIR_INCLUDES)/$(DIR_UTILS) \
 								$(DIR_INCLUDES)/$(DIR_VALIDATOR) \
-								$(DIR_INCLUDES)/$(DIR_VISITOR)) \
+								$(DIR_INCLUDES)/$(DIR_VISITOR) \
+								$(DIR_INCLUDES)/$(DIR_LOGGER)) \
 
 all: $(NAME)
 

@@ -17,6 +17,8 @@ class PrivmsgRequest : public Request
     std::vector<std::string> &GetTargets();
     const std::string &GetMessage() const;
 
+    friend std::ostream &operator<<(std::ostream &os, PrivmsgRequest &privmsgRequest);
+
   private:
     std::vector<std::string> mTargets;
     std::string mMessage;

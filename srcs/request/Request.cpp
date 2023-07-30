@@ -13,3 +13,10 @@ Client *Request::GetClient() const
 {
     return mClient;
 }
+
+std::ostream &operator<<(std::ostream &os, const Request &request)
+{
+    os << "Request - Socket: " << request.mSocket;
+
+    return os;
+}

@@ -3,6 +3,7 @@
 KickRequest::KickRequest(handle_t socket, const std::vector<std::string> &nickNames, const std::string &message)
     : Request(socket), mNickNames(nickNames), mMessage(message)
 {
+    LOG_TRACE("KickRequest constructor: " << *this);
 }
 
 bool KickRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -28,4 +29,18 @@ std::vector<std::string> &KickRequest::GetNickNames()
 const std::string &KickRequest::GetMessage() const
 {
     return mMessage;
+}
+
+// TODO const 아니여도 ㄱㅊ?
+std::ostream &operator<<(std::ostream &os, KickRequest &kickRequest)
+{
+    os << "KickRequest - NickNames: ";
+
+    std::vector<std::string>::iterator iter;
+    for (iter = kickRequest.mNickNames.begin(); iter != kickRequest.mNickNames.end(); iter++)
+        os << *iter << ", ";
+
+    os << "Message: " << kickRequest.mMessage;
+
+    return os;
 }

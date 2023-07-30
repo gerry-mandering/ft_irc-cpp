@@ -182,7 +182,7 @@ bool Validator::Visit(PassRequest *passRequest) const
 {
     Client *client = passRequest->GetClient();
 
-    // Registered 하지 않은 경우
+    // Registered 한 경우
     if (client->HasRegistered())
     {
         std::string errorMessage;

@@ -3,6 +3,7 @@
 JoinRequest::JoinRequest(handle_t socket, const std::string &channelName, const std::string &key)
     : Request(socket), mChannelName(channelName), mKey(key)
 {
+    LOG_TRACE("JoinRequest constructor: " << *this);
 }
 
 bool JoinRequest::Accept(visitor_pattern::Visitor *visitor)
@@ -28,4 +29,11 @@ const std::string &JoinRequest::getChannelName() const
 const std::string &JoinRequest::getKey() const
 {
     return mKey;
+}
+
+std::ostream &operator<<(std::ostream &os, const JoinRequest &joinRequest)
+{
+    os << "JoinRequest - ChannelName: " << joinRequest.mChannelName << ", Key: " << joinRequest.mKey;
+
+    return os;
 }

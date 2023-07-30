@@ -16,6 +16,8 @@ class TopicRequest : public Request
     const std::string &GetChannelName() const;
     const std::string &GetTopic() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const TopicRequest &topicRequest);
+
   private:
     std::string mChannelName;
     std::string mTopic;

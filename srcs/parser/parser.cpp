@@ -16,10 +16,10 @@ Request *parseRequest(const std::string &tcpStreams, handle_t socket)
     std::stringstream ss(tcpStreams);
     std::string command;
 
-    std::cerr << "tcpStream: " << tcpStreams << "\n";
+    //    std::cerr << "tcpStream: " << tcpStreams << "\n";
 
     ss >> command;
-    std::cerr << "command: " << command << "\n";
+    //    std::cerr << "command: " << command << "\n";
     it = parsers.find(command);
     if (it != parsers.end())
         return (it->second)(tcpStreams, socket);

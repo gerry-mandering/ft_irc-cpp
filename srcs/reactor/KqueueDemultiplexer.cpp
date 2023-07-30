@@ -1,11 +1,10 @@
 #include "KqueueDemultiplexer.hpp"
 #include "def.h"
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
 
 // TODO: fd 생성후 전부 nonblocking에 넣기
-KqueueDemultiplexer::KqueueDemultiplexer()
-    : m_kEventList(8), m_changeList(16), m_changePos(0), m_numHandlers(0)
+KqueueDemultiplexer::KqueueDemultiplexer() : m_kEventList(8), m_changeList(16), m_changePos(0), m_numHandlers(0)
 {
     // TODO: 예외처리
     m_kq = kqueue();
@@ -51,12 +50,10 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
     return (OK);
 }
 
-int KqueueDemultiplexer::waitEvents(
-    std::map<handle_t, EventHandler *> &handlers)
+int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers)
 {
     // TODO: kevent 반환값 예외처리
-    int numEvents = kevent(m_kq, &m_changeList[0], m_changePos,
-                           &m_kEventList[0], m_kEventList.size(), NULL);
+    int numEvents = kevent(m_kq, &m_changeList[0], m_changePos, &m_kEventList[0], m_kEventList.size(), NULL);
     m_changePos = 0;
     assert(numEvents != -1);
     // TODO: EV_EOF 플래그 검사(예외처리)
@@ -65,7 +62,7 @@ int KqueueDemultiplexer::waitEvents(
         struct kevent &event = m_kEventList[i];
         EventHandler *handler = reinterpret_cast<EventHandler *>(event.udata);
 
-        std::cerr << "event data: " << event.data << std::endl;
+        //        std::cerr << "event data: " << event.data << std::endl;
         if (event.flags & EV_EOF)
         {
             std::cerr << "EOF event\n";
@@ -74,17 +71,17 @@ int KqueueDemultiplexer::waitEvents(
         }
         if (event.filter == EVFILT_READ)
         {
-            std::cerr << "read event\n";
+            //            std::cerr << "read event\n";
             handler->handleRead();
         }
         if (event.filter == EVFILT_WRITE)
         {
-            std::cerr << "write event\n";
+            //            std::cerr << "write event\n";
             handler->handleWrite();
         }
-        std::cerr << "in event\n";
+        //        std::cerr << "in event\n";
     }
     (void)handlers;
-    std::cerr << "numEvents: " << numEvents << std::endl;
+    //    std::cerr << "numEvents: " << numEvents << std::endl;
     return (numEvents);
 }

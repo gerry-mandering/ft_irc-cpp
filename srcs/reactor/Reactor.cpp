@@ -1,5 +1,6 @@
 #include "Reactor.hpp"
 #include "KqueueDemultiplexer.hpp"
+#include <iostream>
 
 Reactor::Reactor() : m_numHandlers(0) {}
 

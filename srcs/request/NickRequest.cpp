@@ -1,6 +1,9 @@
 #include "NickRequest.hpp"
 
-NickRequest::NickRequest(handle_t socket, const std::string &nickname) : Request(socket), mNickname(nickname) {}
+NickRequest::NickRequest(handle_t socket, const std::string &nickname) : Request(socket), mNickName(nickname)
+{
+    LOG_TRACE("NickRequest constructor: " << *this);
+}
 
 bool NickRequest::Accept(visitor_pattern::Visitor *visitor)
 {
@@ -9,10 +12,17 @@ bool NickRequest::Accept(visitor_pattern::Visitor *visitor)
 
 void NickRequest::SetNickName(const std::string &nickName)
 {
-    mNickname = nickName;
+    mNickName = nickName;
 }
 
 const std::string &NickRequest::GetNickName() const
 {
-    return mNickname;
+    return mNickName;
+}
+
+std::ostream &operator<<(std::ostream &os, const NickRequest &nickRequest)
+{
+    os << "NickRequest - NickName: " << nickRequest.mNickName;
+
+    return os;
 }
