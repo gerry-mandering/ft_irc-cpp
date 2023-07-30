@@ -1,4 +1,5 @@
 #include "LoggingHandler.hpp"
+#include "color.h"
 #include "def.h"
 #include <ctime>
 #include <iomanip>
@@ -72,10 +73,11 @@ std::string LoggingHandler::buildPrefix(int level)
     std::tm *localTime = std::localtime(&t);
     // Create a string stream
     std::ostringstream oss;
+    const char *levelColor[] = {COLOR_RESET, COLOR_RESET, BWHT, BYEL, BRED};
 
     // Write hour and minute with leading zeroes to the string stream
-    oss << std::setfill('0') << std::setw(2) << localTime->tm_hour << ":" << std::setfill('0') << std::setw(2)
-        << localTime->tm_min << ":" << std::setfill('0') << std::setw(2) << localTime->tm_sec;
+    oss << levelColor[level] << std::setfill('0') << std::setw(2) << localTime->tm_hour << ":" << std::setfill('0')
+        << std::setw(2) << localTime->tm_min << ":" << std::setfill('0') << std::setw(2) << localTime->tm_sec;
     std::string prefix = oss.str() + " [" + LoggingHandler::logLevelToString(level) + "] ";
     return prefix;
 }
@@ -83,4 +85,12 @@ std::string LoggingHandler::buildPrefix(int level)
 void LoggingHandler::addWriteBuf(const std::string &str)
 {
     m_writeBuf += str;
+    // TODO: 이후 출력 kqueue에 등록해서 처리
+    std::cout << m_writeBuf;
+    m_writeBuf = "";
+}
+
+const std::string &LoggingHandler::getWriteBuf(void) const
+{
+    return m_writeBuf;
 }

@@ -5,17 +5,17 @@ int main(void)
 {
     int i = 0;
 
-    LOG_TRACE("trace" << i);
-    LOG_DEBUG("debug" << i);
-    LOG_INFO("info");
-    LOG_WARN("warn");
-    LOG_ERROR("error");
+    LOG_TRACE("trace log " << i);
+    LOG_DEBUG("debug log " << i);
+    LOG_INFO("info log ");
+    LOG_WARN("warn log ");
+    LOG_ERROR("error log ");
     // LoggingHandler tmp;
     // LoggingHandler &logger = *(LoggingHandler::GetInstance());
 
     // logger << LoggingHandler::buildPrefix(LEVEL_TRACE);
     // logger << "trace\n";
-    std::cout << LoggingHandler::GetInstance()->m_writeBuf << std::endl;
+    // std::cout << LoggingHandler::GetInstance()->getWriteBuf();
 
     return 0;
 }

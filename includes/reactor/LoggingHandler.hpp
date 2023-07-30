@@ -21,14 +21,15 @@
 #define LOG_LEVEL LEVEL_OFF
 #endif
 
-#define REGISTER_EVENT g_reactor().registerEvent(LoggingHandler::GetInstance(), WRITE_EVENT);
+// TODO: 로거 리액터에 등록
+// #define REGISTER_EVENT g_reactor().registerEvent(LoggingHandler::GetInstance(), WRITE_EVENT);
 
 #define LOG_TRACE(log)                                                                                                 \
     do                                                                                                                 \
     {                                                                                                                  \
         if (LOG_LEVEL >= LEVEL_TRACE)                                                                                  \
         {                                                                                                              \
-            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_TRACE) << log << "\n";               \
         }                                                                                                              \
     } while (0);
 
@@ -37,7 +38,7 @@
     {                                                                                                                  \
         if (LOG_LEVEL >= LEVEL_DEBUG)                                                                                  \
         {                                                                                                              \
-            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_DEBUG) << log << "\n";               \
         }                                                                                                              \
     } while (0);
 
@@ -46,7 +47,7 @@
     {                                                                                                                  \
         if (LOG_LEVEL >= LEVEL_INFO)                                                                                   \
         {                                                                                                              \
-            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_INFO) << log << "\n";                \
         }                                                                                                              \
     } while (0);
 
@@ -55,7 +56,7 @@
     {                                                                                                                  \
         if (LOG_LEVEL >= LEVEL_WARN)                                                                                   \
         {                                                                                                              \
-            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_WARN) << log << "\n";                \
         }                                                                                                              \
     } while (0);
 
@@ -64,7 +65,7 @@
     {                                                                                                                  \
         if (LOG_LEVEL >= LEVEL_ERROR)                                                                                  \
         {                                                                                                              \
-            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LOG_LEVEL) << log;                         \
+            *(LoggingHandler::GetInstance()) << LoggingHandler::buildPrefix(LEVEL_ERROR) << log << "\n";               \
         }                                                                                                              \
     } while (0);
 
@@ -85,6 +86,7 @@ class LoggingHandler : public EventHandler, public TSingleton<LoggingHandler>
     static std::string buildPrefix(int level);
     static std::string logLevelToString(int level);
     void addWriteBuf(std::string const &str);
+    const std::string &getWriteBuf(void) const;
 };
 
 template <typename T>
