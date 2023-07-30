@@ -2,6 +2,7 @@
 
 #include "Client.hpp"
 #include <algorithm>
+#include <bitset>
 #include <iostream>
 #include <vector>
 
@@ -34,6 +35,8 @@ class Channel
     void ToggleProtectedTopicMode();
     void ToggleKeyMode();
     void ToggleClientLimitMode();
+
+    friend std::ostream &operator<<(std::ostream &os, const Channel &channel);
 
   private:
     static const int INVITE_ONLY_FLAG = 1 << 0;

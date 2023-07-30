@@ -36,8 +36,15 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
             errorMessage = BuildNotRegisteredMsg("INVITE");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("InviteRequest Invalid - NotRegistered");
+
         return false;
     }
+
+    LOG_TRACE("InviteRequest Validated");
+
+    return true;
 }
 
 bool Validator::Visit(JoinRequest *joinRequest) const
@@ -55,8 +62,15 @@ bool Validator::Visit(JoinRequest *joinRequest) const
             errorMessage = BuildNotRegisteredMsg("JOIN");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("JoinRequest Invalid - NotRegistered");
+
         return false;
     }
+
+    LOG_TRACE("JoinRequest Validated");
+
+    return true;
 }
 
 bool Validator::Visit(KickRequest *kickRequest) const
@@ -74,8 +88,15 @@ bool Validator::Visit(KickRequest *kickRequest) const
             errorMessage = BuildNotRegisteredMsg("KICK");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("KickRequest Invalid - NotRegistered");
+
         return false;
     }
+
+    LOG_TRACE("KickRequest Validated");
+
+    return true;
 }
 
 bool Validator::Visit(ModeRequest *modeRequest) const
@@ -93,8 +114,15 @@ bool Validator::Visit(ModeRequest *modeRequest) const
             errorMessage = BuildNotRegisteredMsg("MODE");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("ModeRequest Invalid - NotRegistered");
+
         return false;
     }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
 
 // NICK Command 경우의 수 검증 완료
@@ -103,8 +131,16 @@ bool Validator::Visit(NickRequest *nickRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     Client *client = nickRequest->GetClient();
 
+    // 자신의 닉네임과 동일한 경우 동작 X
+    if (nickRequest->GetNickName() == client->GetNickName())
+    {
+        LOG_TRACE("NickRequest Invalid - SameAsSelf");
+
+        return false;
+    }
+
     // 이미 해당 닉네임을 사용하는 클라이언트가 존재하는 경우
-    if (clientRepository->FindByNickname(nickRequest->GetNickName()) != NULL)
+    if (clientRepository->FindByNickName(nickRequest->GetNickName()) != NULL)
     {
         std::string errorMessage;
 
@@ -114,6 +150,9 @@ bool Validator::Visit(NickRequest *nickRequest) const
             errorMessage = BuildNickNameInUseMsg(nickRequest->GetNickName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("NickRequest Invalid - NickNameIsUse");
+
         return false;
     }
 
@@ -121,12 +160,16 @@ bool Validator::Visit(NickRequest *nickRequest) const
     if (client->HasEnteredUserInfo() && !client->HasEnteredPassword())
     {
         std::string errorMessage;
-
         errorMessage = BuildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("NickRequest Invalid - AccessDenied");
+
         return false;
     }
+
+    LOG_TRACE("NickRequest Validated");
 
     return true;
 }
@@ -146,6 +189,9 @@ bool Validator::Visit(PartRequest *partRequest) const
             errorMessage = BuildNotRegisteredMsg("PART");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PartRequest Invalid - NotRegistered");
+
         return false;
     }
 
@@ -156,10 +202,12 @@ bool Validator::Visit(PartRequest *partRequest) const
     if (!channel)
     {
         std::string errorMessage;
-
         errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), partRequest->GetChannelName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PartRequest Invalid - NoSuchChannel");
+
         return false;
     }
 
@@ -167,12 +215,16 @@ bool Validator::Visit(PartRequest *partRequest) const
     if (!channel->CheckClientIsExist(client->GetNickName()))
     {
         std::string errorMessage;
-
         errorMessage = BuildNotOnChannelMsg(client->GetNickName(), partRequest->GetChannelName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PartRequest Invalid - NotOnChannel");
+
         return false;
     }
+
+    LOG_TRACE("PartRequest Validated");
 
     return true;
 }
@@ -193,6 +245,9 @@ bool Validator::Visit(PassRequest *passRequest) const
             errorMessage = BuildAlreadyRegisteredMsg();
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PassRequest Invalid - AlreadyRegistered");
+
         return false;
     }
 
@@ -209,8 +264,13 @@ bool Validator::Visit(PassRequest *passRequest) const
             errorMessage = BuildAccessDeniedMsg(); // TODO 사용자 hostname 은 가져와서 넣기
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PassRequest Invalid - AccessDenied");
+
         return false;
     }
+
+    LOG_TRACE("PassRequest Validated");
 
     return true;
 }
@@ -230,8 +290,13 @@ bool Validator::Visit(PingRequest *pingRequest) const
             errorMessage = BuildNotRegisteredMsg("PING");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PingRequest Invalid - NotRegistered");
+
         return false;
     }
+
+    LOG_TRACE("PingRequest Validated");
 
     return true;
 }
@@ -251,14 +316,16 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
             errorMessage = BuildNotRegisteredMsg("PRIVMSG");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("PrivmsgRequest Invalid - NotRegistered");
+
         return false;
     }
-
-    bool executeFlag = true;
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
+    std::vector<std::string> validatedTargets;
     std::vector<std::string> &targets = privmsgRequest->GetTargets();
     std::vector<std::string>::iterator iter;
 
@@ -272,52 +339,66 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
             if (!targetChannel)
             {
                 std::string errorMessage;
-
                 errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), *iter);
 
                 client->InsertResponse(errorMessage);
-                targets.erase(iter);
 
-                executeFlag ^= true;
+                LOG_TRACE("PrivmsgRequest Invalid - NoSuchChannel");
             }
-
-            // 채널에 속하지 않는 경우
-            if (!targetChannel->CheckClientIsExist(client->GetNickName()))
+            else if (!targetChannel->CheckClientIsExist(client->GetNickName()))
             {
+                // 채널에 속하지 않는 경우
                 std::string errorMessage;
-
                 errorMessage = BuildCannotSendToChannelMsg(client->GetNickName(), *iter);
 
                 client->InsertResponse(errorMessage);
-                targets.erase(iter);
 
-                executeFlag ^= true;
+                LOG_TRACE("PrivmsgRequest Invalid - CannotSendToChannel");
+            }
+            else
+            {
+                validatedTargets.push_back(*iter);
             }
         }
         else
         {
-            Client *targetClient = clientRepository->FindByNickname(*iter);
+            Client *targetClient = clientRepository->FindByNickName(*iter);
 
             // 닉네임이 존재하지 않는 경우
             if (!targetClient)
             {
                 std::string errorMessage;
-
                 errorMessage = BuildNoSuchNickMsg(client->GetNickName(), *iter);
 
                 client->InsertResponse(errorMessage);
-                targets.erase(iter);
 
-                executeFlag ^= true;
+                LOG_TRACE("PrivmsgRequest Invalid - NoSuchNick");
+            }
+            else
+            {
+                validatedTargets.push_back(*iter);
             }
         }
     }
 
-    return executeFlag;
+    if (validatedTargets.empty())
+    {
+        LOG_TRACE("PrivmsgRequest Invalid - TargetsEmpty");
+        return false;
+    }
+    else
+    {
+        targets = validatedTargets;
+
+        LOG_TRACE("PrivmsgRequest Validated");
+        return true;
+    }
 }
 
 bool Validator::Visit(QuitRequest *quitRequest) const
 {
+    LOG_TRACE("QuitRequest Validated");
+
     return true;
 }
 
@@ -336,6 +417,9 @@ bool Validator::Visit(TopicRequest *topicRequest) const
             errorMessage = BuildNotRegisteredMsg("TOPIC");
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("TopicRequest Invalid - NotRegistered");
+
         return false;
     }
 
@@ -346,10 +430,12 @@ bool Validator::Visit(TopicRequest *topicRequest) const
     if (!channel)
     {
         std::string errorMessage;
-
         errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), topicRequest->GetChannelName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("TopicRequest Invalid - NoSuchChannel");
+
         return false;
     }
 
@@ -357,10 +443,12 @@ bool Validator::Visit(TopicRequest *topicRequest) const
     if (!channel->CheckClientIsExist(client->GetNickName()))
     {
         std::string errorMessage;
-
         errorMessage = BuildNotOnChannelMsg(client->GetNickName(), topicRequest->GetChannelName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("TopicRequest Invalid - NotOnChannel");
+
         return false;
     }
 
@@ -368,12 +456,16 @@ bool Validator::Visit(TopicRequest *topicRequest) const
     if (channel->IsProtectedTopicMode() && !channel->CheckClientIsOperator(client->GetNickName()))
     {
         std::string errorMessage;
-
         errorMessage = BuildNotChannelOperatorMsg(client->GetNickName(), topicRequest->GetChannelName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("TopicRequest Invalid - NotChannelOperator");
+
         return false;
     }
+
+    LOG_TRACE("TopicRequest Validated");
 
     return true;
 }
@@ -394,6 +486,9 @@ bool Validator::Visit(UserRequest *userRequest) const
             errorMessage = BuildAlreadyRegisteredMsg();
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("UserRequest Invalid - AlreadyRegistered");
+
         return false;
     }
 
@@ -401,13 +496,17 @@ bool Validator::Visit(UserRequest *userRequest) const
     if (client->HasEnteredNickName() && !client->HasEnteredPassword())
     {
         std::string errorMessage;
-
         // TODO hostname Ip로 알아오기
         errorMessage = BuildAccessDeniedMsg(userRequest->GetUserName(), userRequest->GetHostName());
 
         client->InsertResponse(errorMessage);
+
+        LOG_TRACE("UserRequest Invalid - AccessDenied");
+
         return false;
     }
+
+    LOG_TRACE("UserRequest Validated");
 
     return true;
 }

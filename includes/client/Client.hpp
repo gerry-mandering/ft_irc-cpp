@@ -1,6 +1,8 @@
 #pragma once
 
 #include "EventHandler.hpp"
+#include "LoggingHandler.hpp"
+#include <bitset>
 #include <iostream>
 #include <queue>
 #include <sstream>
@@ -44,6 +46,8 @@ class Client
     bool HasEnteredPassword() const;
     bool HasEnteredNickName() const;
     bool HasEnteredUserInfo() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Client &client);
 
   private:
     static const int REGISTERED_FLAG = 1 << 0;
