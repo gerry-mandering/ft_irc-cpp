@@ -2,7 +2,7 @@
 
 KickRequest::KickRequest(handle_t socket, const std::string &channelName, const std::vector<std::string> &nickNames,
                          const std::string &message)
-    : Request(socket), mChannelName(channelName), mNickNames(nickNames), mMessage(message)
+    : Request(socket), mChannelName(channelName), mTargets(nickNames), mMessage(message)
 {
     LOG_TRACE("KickRequest constructor called | " << *this);
 }
@@ -17,9 +17,9 @@ void KickRequest::SetChannelName(const std::string &channelName)
     mChannelName = channelName;
 }
 
-void KickRequest::SetNickName(const std::string &nickName)
+void KickRequest::SetTarget(const std::string &target)
 {
-    mNickNames.push_back(nickName);
+    mTargets.push_back(target);
 }
 
 void KickRequest::SetMessage(const std::string &message)
@@ -32,9 +32,9 @@ const std::string &KickRequest::GetChannelName() const
     return mChannelName;
 }
 
-std::vector<std::string> &KickRequest::GetNickNames()
+std::vector<std::string> &KickRequest::GetTargets()
 {
-    return mNickNames;
+    return mTargets;
 }
 
 const std::string &KickRequest::GetMessage() const
@@ -48,7 +48,7 @@ std::ostream &operator<<(std::ostream &os, KickRequest &kickRequest)
     os << "KickRequest = { ChannelName: " << kickRequest.mChannelName << ", NickNames: ";
 
     std::vector<std::string>::iterator iter;
-    for (iter = kickRequest.mNickNames.begin(); iter != kickRequest.mNickNames.end(); iter++)
+    for (iter = kickRequest.mTargets.begin(); iter != kickRequest.mTargets.end(); iter++)
         os << *iter << ", ";
 
     os << "Message: " << kickRequest.mMessage << " }";

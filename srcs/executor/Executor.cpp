@@ -104,6 +104,23 @@ bool Executor::Visit(JoinRequest *joinRequest) const
 
 bool Executor::Visit(KickRequest *kickRequest) const
 {
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(kickRequest->GetChannelName());
+
+    Client *client = kickRequest->GetClient();
+    std::string responseMessage;
+
+    std::vector<std::string> targets = kickRequest->GetTargets();
+    std::vector<std::string>::iterator iter;
+
+    for (iter = targets.begin(); iter != targets.end(); iter++)
+    {
+        responseMessage = BuildKickoutMsg(client, kickRequest->GetChannelName(), *iter, kickRequest->GetMessage());
+
+        channel->BroadcastMessage(responseMessage);
+        channel->RemoveClient(*iter);
+    }
+
     LOG_TRACE("KickRequest Executed");
 
     return true;
@@ -188,6 +205,8 @@ bool Executor::Visit(PartRequest *partRequest) const
     channel->RemoveClient(client->GetNickName());
     // TODO Shared Ptr 이면 delete?
     client->SetChannel(NULL);
+
+    // TODO channel에 사용자가 다 나가면 repository에서 비워주고 channel delete
 
     LOG_TRACE("PartRequest Executed");
 
@@ -392,8 +411,8 @@ std::string Executor::BuildReplyInvitingMsg(const std::string &nickName, const s
                                             const std::string &channelName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
-    std::stringstream replyMessage;
 
+    std::stringstream replyMessage;
     replyMessage << ":" << envManager->GetServerName() << " 341 " << nickName << " " << targetNickName << " "
                  << channelName;
 
@@ -404,8 +423,8 @@ std::string Executor::BuildInvitedIntoChannelMsg(const std::string &nickName, co
                                                  const std::string &channelName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
-    std::stringstream replyMessage;
 
+    std::stringstream replyMessage;
     replyMessage << ":" << envManager->GetServerName() << " NOTICE " << channelName << " :*** " << nickName
                  << " invited " << targetNickName << " into the channel";
 
@@ -416,8 +435,16 @@ std::string Executor::BuildInvitationMsg(Client *client, const std::string &targ
                                          const std::string &channelName)
 {
     std::stringstream invitationMessage;
-
     invitationMessage << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
 
     return invitationMessage.str();
+}
+
+std::string Executor::BuildKickoutMsg(Client *client, const std::string &channelName, const std::string &targetNickName,
+                                      const std::string &message)
+{
+    std::stringstream kickoutMessage;
+    kickoutMessage << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " :" << message;
+
+    return kickoutMessage.str();
 }

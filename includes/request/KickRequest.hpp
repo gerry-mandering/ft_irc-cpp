@@ -13,17 +13,17 @@ class KickRequest : public Request
     bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetChannelName(const std::string &channelName);
-    void SetNickName(const std::string &nickName);
+    void SetTarget(const std::string &target);
     void SetMessage(const std::string &message);
 
     const std::string &GetChannelName() const;
-    std::vector<std::string> &GetNickNames();
+    std::vector<std::string> &GetTargets();
     const std::string &GetMessage() const;
 
     friend std::ostream &operator<<(std::ostream &os, KickRequest &kickRequest);
 
   private:
     std::string mChannelName;
-    std::vector<std::string> mNickNames;
+    std::vector<std::string> mTargets;
     std::string mMessage;
 };

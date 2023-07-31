@@ -35,4 +35,6 @@ class Executor : public TSingleton<Executor>, public visitor_pattern::Visitor
                                                   const std::string &channelName);
     static std::string BuildInvitationMsg(Client *client, const std::string &targetNickName,
                                           const std::string &channelName);
+    static std::string BuildKickoutMsg(Client *client, const std::string &channelName,
+                                       const std::string &targetNickName, const std::string &message);
 };
