@@ -3,6 +3,7 @@
 #include "StreamHandler.hpp"
 #include "def.h"
 #include "wrapper.h"
+#include <fcntl.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -14,6 +15,7 @@ AcceptHandler::AcceptHandler(int port, std::string password)
     int opt = 1;
 
     m_handle = Wrapper::socket(AF_INET, SOCK_STREAM, 0);
+    fcntl(m_handle, F_SETFL, O_NONBLOCK);
     Wrapper::setsockopt(m_handle, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY; // h local ip에 바인
@@ -38,6 +40,7 @@ int AcceptHandler::handleRead(void)
 
     newHandle = Wrapper::accept(m_handle, (struct sockaddr *)&addr, &addrSize);
     LOG_TRACE("new connection: " << newHandle);
+    fcntl(newHandle, F_SETFL, O_NONBLOCK);
     return (g_reactor().registerHandler(new StreamHandler(newHandle), READ_EVENT));
 }
 
