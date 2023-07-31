@@ -22,6 +22,8 @@ class ClientRepository : public TSingleton<ClientRepository>
     Client *FindBySocket(handle_t socket);
     Client *FindByNickName(std::string nickName);
 
+    int GetNumberOfClients() const;
+
   private:
     std::map<handle_t, Client *> mSocketToClients;
     std::map<std::string, Client *> mNickNameToClients;

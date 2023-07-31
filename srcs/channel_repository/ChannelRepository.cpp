@@ -24,3 +24,8 @@ Channel *ChannelRepository::FindByName(const std::string &name)
 
     return NULL;
 }
+
+int ChannelRepository::GetNumberOfChannels() const
+{
+    return mChannels.size();
+}
