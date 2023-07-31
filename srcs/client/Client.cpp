@@ -7,7 +7,7 @@ Client::Client(handle_t socket)
     LOG_TRACE("Client constructor called | " << *this);
 }
 
-void Client::InsertResponse(const std::string &response)
+void Client::addResponseToBuf(const std::string &response)
 {
     mResponseQueue.push(response);
 }
