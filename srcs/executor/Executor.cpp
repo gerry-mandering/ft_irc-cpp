@@ -12,11 +12,37 @@ bool Executor::Visit(CapRequest *capRequest) const
 
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+    Client *client = inviteRequest->GetClient();
+    std::string replyInvitingMessage =
+        BuildReplyInvitingMsg(client->GetNickName(), inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+
+    // RPL_INVITING 메세지 요청자에게 보내기
+    client->InsertResponse(replyInvitingMessage);
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(inviteRequest->GetChannelName());
+    std::string InvitedIntoChannelMessage = BuildInvitedIntoChannelMsg(
+        client->GetNickName(), inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+
+    // 채널에 속한 클라이언트들에게 초대 알리기
+    channel->BroadcastMessageExcludingRequestor(InvitedIntoChannelMessage, client->GetNickName());
+
+    Client *targetClient = clientRepository->FindByNickName(inviteRequest->GetNickName());
+    std::string invitationMessage =
+        BuildInvitationMsg(client, inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+
+    // 초대를 받은 사람에게 초대장 메세지 보내기
+    targetClient->InsertResponse(invitationMessage);
+
+    channel->AddToInvitedClient(targetClient);
+
     LOG_TRACE("InviteRequest Executed");
 
     return true;
 }
 
+// TODO InvitedClients vector에 있으면 제거
 bool Executor::Visit(JoinRequest *joinRequest) const
 {
     ChannelRepository *channelRepo = ChannelRepository::GetInstance();
@@ -360,4 +386,38 @@ bool Executor::Visit(UserRequest *userRequest) const
     LOG_TRACE("UserRequest Executed");
 
     return true;
+}
+
+std::string Executor::BuildReplyInvitingMsg(const std::string &nickName, const std::string &targetNickName,
+                                            const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream replyMessage;
+
+    replyMessage << ":" << envManager->GetServerName() << " 341 " << nickName << " " << targetNickName << " "
+                 << channelName;
+
+    return replyMessage.str();
+}
+
+std::string Executor::BuildInvitedIntoChannelMsg(const std::string &nickName, const std::string &targetNickName,
+                                                 const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream replyMessage;
+
+    replyMessage << ":" << envManager->GetServerName() << " NOTICE " << channelName << " :*** " << nickName
+                 << " invited " << targetNickName << " into the channel";
+
+    return replyMessage.str();
+}
+
+std::string Executor::BuildInvitationMsg(Client *client, const std::string &targetNickName,
+                                         const std::string &channelName)
+{
+    std::stringstream invitationMessage;
+
+    invitationMessage << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
+
+    return invitationMessage.str();
 }

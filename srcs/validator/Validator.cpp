@@ -84,11 +84,89 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         return false;
     }
 
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(inviteRequest->GetChannelName());
+
+    // 채널이 없는 경우
+    if (!channel)
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNoSuchChannelMsg(client->GetNickName(), inviteRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+
+        LOG_TRACE("InviteRequest Invalid - NoSuchChannel");
+
+        return false;
+    }
+
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+    Client *targetClient = clientRepository->FindByNickName(inviteRequest->GetNickName());
+
+    // 해당 닉네임을 가진 유저가 없는 경우
+    if (!targetClient)
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNoSuchNickMsg(client->GetNickName(), inviteRequest->GetNickName());
+
+        client->InsertResponse(errorMessage);
+
+        LOG_TRACE("InviteRequest Invalid - NoSuchNick");
+
+        return false;
+    }
+
+    // 요청을 한 클라이언트가 채널 들어가 있지 않는 경우
+    if (!channel->CheckClientIsExist(client->GetNickName()))
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNotOnChannelMsg(client->GetNickName(), inviteRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+
+        LOG_TRACE("InviteRequest Invalid - NotOnChannel");
+
+        return false;
+    }
+
+    // 이미 초대한 유저가 채널에 존재하는 경우
+    if (channel->CheckClientIsExist(inviteRequest->GetNickName()))
+    {
+        std::string errorMessage;
+
+        errorMessage =
+            BuildUserOnChannelMsg(client->GetNickName(), inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+
+        LOG_TRACE("InviteRequest Invalid - UserOnChannel");
+
+        return false;
+    }
+
+    // 채널 operator가 아닌 경우
+    if (channel->CheckClientIsOperator(client->GetNickName()))
+    {
+        std::string errorMessage;
+
+        errorMessage = BuildNotChannelOperatorMsg(client->GetNickName(), inviteRequest->GetChannelName());
+
+        client->InsertResponse(errorMessage);
+
+        LOG_TRACE("InviteRequest Invalid - NotChannelOperator");
+
+        return false;
+    }
+
     LOG_TRACE("InviteRequest Validated");
 
     return true;
 }
 
+// TODO InviteOnlyMode 일때 초대 받은 사람인지 검증하는 로직 추가
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
 
@@ -642,6 +720,18 @@ std::string Validator::BuildNotOnChannelMsg(const std::string &nickName, const s
 
     errorMessage << ":" << envManager->GetServerName() << " 442 " << nickName << " " << channelName
                  << " :You're not on that channel!";
+
+    return errorMessage.str();
+}
+
+std::string Validator::BuildUserOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
+                                             const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    std::stringstream errorMessage;
+
+    errorMessage << ":" << envManager->GetServerName() << " 443 " << nickName << " " << targetNickName << " "
+                 << channelName << " :is already on channel";
 
     return errorMessage.str();
 }
