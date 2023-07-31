@@ -15,6 +15,7 @@ class StreamHandler : public EventHandler
     handle_t m_handle;
     std::string m_readBuf;
     std::string m_writeBuf;
+
     const static int MAX_MSG_SIZE = 512;
     const static std::string CRLF;
     const static int CRLF_LEN = 2;

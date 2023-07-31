@@ -9,7 +9,7 @@
 
 const std::string StreamHandler::CRLF = "\r\n";
 
-StreamHandler::StreamHandler(handle_t handle) : m_handle(handle) {}
+StreamHandler::StreamHandler(handle_t handle) : EventHandler(OFF_EVENT), m_handle(handle) {}
 
 StreamHandler::~StreamHandler() {}
 

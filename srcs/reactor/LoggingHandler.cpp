@@ -8,10 +8,11 @@
 
 #include <iostream>
 
-// TODO: fcntl 추가
-LoggingHandler::LoggingHandler() : m_handle(STDOUT_FILENO)
+// TODO: fcntl 추가, 로거는 생성자에서 registerHandler를 스스로 호출해서 등록
+LoggingHandler::LoggingHandler() : EventHandler(OFF_EVENT), m_handle(STDOUT_FILENO)
 {
     // fcntl(m_handle, F_SETFL, O_NONBLOCK);
+    // g_reactor().registerHandler(this, WRITE_EVENT);
 }
 
 LoggingHandler::~LoggingHandler() {}
@@ -90,7 +91,7 @@ void LoggingHandler::addWriteBuf(const std::string &str)
     m_writeBuf += str;
     // TODO: 이후 출력 kqueue에 등록해서 처리
     std::cout << m_writeBuf;
-    m_writeBuf = "";
+    m_writeBuf.clear();
 }
 
 const std::string &LoggingHandler::getWriteBuf(void) const

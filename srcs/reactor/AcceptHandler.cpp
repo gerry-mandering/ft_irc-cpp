@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 AcceptHandler::AcceptHandler(int port, std::string password)
-    : EventHandler(), m_handle(-1), m_port(port), m_password(password)
+    : EventHandler(OFF_EVENT), m_handle(-1), m_port(port), m_password(password)
 {
     struct sockaddr_in addr;
     int opt = 1;

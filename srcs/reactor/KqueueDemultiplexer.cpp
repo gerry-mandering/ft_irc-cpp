@@ -22,9 +22,23 @@ void KqueueDemultiplexer::setNumHandlers(size_t nHandlers)
         m_kEventList.resize(m_numHandlers * 2);
 }
 
-// TODO: kqueue에 플래그를 두어서 이미 등록된 이벤트의 경우 재등록하지 않도록 로직 수정
+static std::string eventTypeToString(eEventType type)
+{
+    if (type == READ_EVENT)
+        return ("READ_EVENT");
+    if (type == WRITE_EVENT)
+        return ("WRITE_EVENT");
+    return ("UNKNOWN");
+}
+
 int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
 {
+    // hanlder가 이미 이벤트를 감시중이라면 굳이 새로 등록하지 않는다
+    if (handler->getEventFlag() & type)
+    {
+        LOG_WARN(__func__ << " [ " << handler->getHandle() << " ] already monitor " << eventTypeToString(type));
+        return (OK);
+    }
     if (m_changePos >= m_changeList.size())
         m_changeList.resize(m_changeList.size() * 2);
     struct kevent &event = m_changeList[m_changePos++];
@@ -33,12 +47,20 @@ int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
         EV_SET(&event, handle, EVFILT_READ, EV_ADD, 0, 0, handler);
     if (type & WRITE_EVENT)
         EV_SET(&event, handle, EVFILT_WRITE, EV_ADD, 0, 0, handler);
+    eEventType newFlag = static_cast<eEventType>(handler->getEventFlag() | type);
+    handler->setEventFlag(newFlag);
+    LOG_DEBUG("[ " << handler->getHandle() << " ] register " << eventTypeToString(type));
     return (OK);
 }
 
-// TODO: changlist에 EV_ADD, EV_DEL 두가지 kevent가 등록되있는 경우 확인
 int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
 {
+    // handler가 이미 이벤트를 감시하고 있지 않다면 굳이 삭제하지 않는다
+    if ((handler->getEventFlag() & type) == OFF_EVENT)
+    {
+        LOG_WARN(__func__ << " [ " << handler->getHandle() << " ] already not monitor " << eventTypeToString(type));
+        return (OK);
+    }
     if (m_changePos >= m_changeList.size())
         m_changeList.resize(m_changeList.size() * 2);
     struct kevent &event = m_changeList[m_changePos++];
@@ -47,6 +69,9 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
         EV_SET(&event, handle, EVFILT_READ, EV_DELETE, 0, 0, 0);
     if (type & WRITE_EVENT)
         EV_SET(&event, handle, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+    eEventType newFlag = static_cast<eEventType>(handler->getEventFlag() & ~type);
+    handler->setEventFlag(newFlag);
+    LOG_DEBUG("[ " << handler->getHandle() << " ] unregister " << eventTypeToString(type));
     return (OK);
 }
 
