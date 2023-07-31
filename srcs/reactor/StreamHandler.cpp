@@ -20,18 +20,20 @@ handle_t StreamHandler::getHandle(void) const
 
 int StreamHandler::handleRead(void)
 {
-    char tmpBuf[4096];
+    char tmpBuf[TMP_BUF_SIZE];
     ssize_t nread;
     size_t crlf_pos;
     std::string requestStr;
 
     std::memset(tmpBuf, 0, sizeof(tmpBuf));
     // TODO: nc에서 eof만 보내면 연결 끊김
-    nread = read(m_handle, tmpBuf, sizeof(tmpBuf));
+    nread = read(m_handle, tmpBuf, sizeof(tmpBuf) - 1);
+    LOG_TRACE("nread: " << nread);
     if (nread <= 0)
     {
         LOG_DEBUG("StreamHandler read failed: " << strerror(errno));
         // TODO: 리턴 코드 (어차피 0이긴 할텐데..)
+        // TODO: eof일 때 처리
         return (OK);
     }
     std::string tcpStreams(tmpBuf);
@@ -129,6 +131,7 @@ int StreamHandler::handleWrite(void)
     nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
     if (nwrite < 0)
     {
+        // TODO: strerror cstring 사용
         LOG_DEBUG("StreamHandler write failed write again or disconnect: " << strerror(errno));
         return (OK);
     }
