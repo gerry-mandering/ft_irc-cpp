@@ -1,7 +1,7 @@
 #include "Channel.hpp"
 
-// TODO: dahkang mkey, mClientlimit 생성자에 추가, mModeFlags 상수 define 추천
-Channel::Channel(const std::string &name) : mName(name), mTopic(std::string()), mModeFlags(0)
+Channel::Channel(const std::string &name)
+    : mName(name), mTopic(std::string()), mKey(std::string()), mClientLimit(0), mModeFlags(EMPTY_FLAGS)
 {
     LOG_TRACE("Channel constructor called | " << *this);
 }
@@ -24,6 +24,18 @@ void Channel::BroadcastMessage(const std::string &message)
     while (iter != mClients.end())
     {
         (*iter)->InsertResponse(message);
+        iter++;
+    }
+}
+
+void Channel::BroadcastMessageExcludingRequestor(const std::string &message, const std::string &requestorNickName)
+{
+    std::vector<Client *>::iterator iter = mClients.begin();
+
+    while (iter != mClients.end())
+    {
+        if ((*iter)->GetNickName() != requestorNickName)
+            (*iter)->InsertResponse(message);
         iter++;
     }
 }
@@ -99,6 +111,44 @@ void Channel::RemoveOperator(const std::string &nickName)
         if ((*iter)->GetNickName() == nickName)
         {
             mOperators.erase(iter);
+            break;
+        }
+
+        iter++;
+    }
+}
+
+bool Channel::CheckClientIsInvited(const std::string &nickName)
+{
+    std::vector<Client *>::iterator iter;
+
+    iter = mInvitedClients.begin();
+    while (iter != mInvitedClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+            return true;
+
+        iter++;
+    }
+
+    return false;
+}
+
+void Channel::AddToInvitedClient(Client *invitedClient)
+{
+    mInvitedClients.push_back(invitedClient);
+}
+
+void Channel::RemoveFromInvitedClient(const std::string &nickName)
+{
+    std::vector<Client *>::iterator iter;
+
+    iter = mInvitedClients.begin();
+    while (iter != mInvitedClients.end())
+    {
+        if ((*iter)->GetNickName() == nickName)
+        {
+            mInvitedClients.erase(iter);
             break;
         }
 

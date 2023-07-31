@@ -7,19 +7,23 @@ class KickRequest : public Request
 {
 
   public:
-    KickRequest(handle_t socket, const std::vector<std::string> &nickNames, const std::string &message);
+    KickRequest(handle_t socket, const std::string &channelName, const std::vector<std::string> &nickNames,
+                const std::string &message);
 
     bool Accept(visitor_pattern::Visitor *visitor);
 
-    void SetNickName(const std::string &nickName);
+    void SetChannelName(const std::string &channelName);
+    void SetTarget(const std::string &target);
     void SetMessage(const std::string &message);
 
-    std::vector<std::string> &GetNickNames();
+    const std::string &GetChannelName() const;
+    std::vector<std::string> &GetTargets();
     const std::string &GetMessage() const;
 
     friend std::ostream &operator<<(std::ostream &os, KickRequest &kickRequest);
 
   private:
-    std::vector<std::string> mNickNames;
+    std::string mChannelName;
+    std::vector<std::string> mTargets;
     std::string mMessage;
 };
