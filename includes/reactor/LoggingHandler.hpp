@@ -7,8 +7,7 @@
 #include <sstream>
 #include <string>
 #include <utility>
-
-#include <iostream>
+#include <vector>
 
 #define LEVEL_OFF -1
 #define LEVEL_TRACE 0
@@ -94,6 +93,31 @@ inline LoggingHandler &operator<<(LoggingHandler &logger, T content)
 {
     std::stringstream ss;
     ss << content;
+    if (ss.fail())
+        LOG_ERROR(__func__ << " Loggin failed conten type is invalid");
     logger.addWriteBuf(ss.str());
+    return (logger);
+}
+
+template <typename T>
+std::string convertVectorToString(const std::vector<T> &vec)
+{
+    std::stringstream ss;
+    typename std::vector<T>::const_iterator it = vec.begin();
+    ss << "[ ";
+    for (; it != vec.end(); it++)
+    {
+        if (it != vec.begin())
+            ss << ", ";
+        ss << *it;
+    }
+    ss << " ]";
+    return ss.str();
+}
+
+template <typename T>
+inline LoggingHandler &operator<<(LoggingHandler &logger, const std::vector<T> &vec)
+{
+    logger.addWriteBuf(convertVectorToString(vec));
     return (logger);
 }
