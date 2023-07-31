@@ -3,10 +3,6 @@
 
 CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
 
-ifdef DEBUG
-CXXFLAGS += -DDEBUG
-endif
-
 ifdef LOG
 CXXFLAGS += -DLOGGING -D LOG_LEVEL=LEVEL_$(LOG)
 endif

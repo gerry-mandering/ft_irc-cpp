@@ -1,3 +1,4 @@
+#include "LoggingHandler.hpp"
 #include "parser_internal.h"
 
 namespace Parser
@@ -63,11 +64,7 @@ void removeTrailingCRLF(std::string &str)
     if (pos != std::string::npos)
         str.erase(pos);
     else
-    {
-#ifdef DEBUG
-        std::cerr << "not found CRLF\n";
-#endif
-    }
+        LOG_WARN("not found CRLF");
 }
 
 void removeTrailingCR(std::string &str)
@@ -78,11 +75,7 @@ void removeTrailingCR(std::string &str)
     if (pos != std::string::npos)
         str.erase(pos);
     else
-    {
-#ifdef DEBUG
-        std::cerr << "not found CR\n";
-#endif
-    }
+        LOG_WARN("not found CR");
 }
 
 bool isalnum(const std::string &str)

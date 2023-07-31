@@ -87,9 +87,7 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-#ifdef DEBUG
-    std::cout << "command: " << command << std::endl;
-#endif
+    LOG_TRACE(__func__ << " command: " << command);
     if (!(ss >> headOfLast))
         // TODO: 디폴트 매개변수
         return (new QuitRequest(socket, ""));
@@ -97,9 +95,7 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + 1));
     removeTrailingCRLF(message);
-#ifdef DEBUG
-    std::cout << "message: " << message << std::endl;
-#endif
+    LOG_TRACE(__func__ << " message: " << message);
     return (new QuitRequest(socket, message));
 }
 
@@ -171,11 +167,9 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + channel.size() + 2));
     removeTrailingCRLF(message);
-#ifdef DEBUG
-    std ::cout << "command: " << command << std::endl;
-    std::cout << "channel: " << channel << std::endl;
-    std::cout << "message: " << message << std::endl;
-#endif
+    LOG_TRACE(__func__ << " command: " << command);
+    LOG_TRACE(__func__ << " channel: " << channel);
+    LOG_TRACE(__func__ << " message: " << message);
     return (new PartRequest(socket, channel, message));
 }
 
@@ -190,10 +184,8 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command >> receivers))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-#ifdef DEBUG
-    std::cout << "command: " << command << std::endl;
-    std::cout << "receivers: " << receivers << std::endl;
-#endif
+    LOG_TRACE(__func__ << " command: " << command);
+    LOG_TRACE(__func__ << " receivers: " << receivers);
     end = receivers.find(',');
 
     // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
@@ -212,25 +204,15 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     lastToken = receivers.substr(start);
     if (!lastToken.empty())
         receiverList.push_back(lastToken);
-#ifdef DEBUG
-    std::cout << "receiverList:" << std::endl;
-    std::vector<std::string>::iterator it;
-    int i = 0;
-    for (it = receiverList.begin(); it != receiverList.end(); it++)
-    {
-        std::cout << "token " << i << ": " << *it << std::endl;
-        i++;
-    }
-#endif
+    LOG_TRACE(__func__ << " receiverList size: " << receiverList.size());
+    LOG_TRACE(receiverList);
     if (!(ss >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(headOfLast, command.size() + receivers.size() + 2));
     removeTrailingCRLF(message);
-#ifdef DEBUG
-    std::cout << "message: " << message << std::endl;
-#endif
+    LOG_TRACE(__func__ << " message: " << message);
     return (new PrivmsgRequest(socket, receiverList, message));
 }
 
