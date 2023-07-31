@@ -14,6 +14,8 @@ class ChannelRepository : public TSingleton<ChannelRepository>
     Channel *CreateChannel(const std::string &name);
     Channel *FindByName(const std::string &name);
 
+    int GetNumberOfChannels() const;
+
   private:
     // TODO shared_ptr
     std::map<std::string, Channel *> mChannels;

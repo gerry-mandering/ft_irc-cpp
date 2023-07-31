@@ -20,6 +20,7 @@ int main(int argc, char **argv)
     }
     EnvManager::GetInstance()->SetPortNumber(std::string(argv[1]));
     EnvManager::GetInstance()->SetConnectionPassword(std::string(argv[2]));
+    EnvManager::GetInstance()->SetServerBootTime();
 
     Parser::initParsers();
 
