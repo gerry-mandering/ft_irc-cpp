@@ -168,14 +168,7 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
-        // TODO Welcome message 뿌려주기
-        EnvManager *envManager = EnvManager::GetInstance();
-
-        std::stringstream welcomeMessage;
-        welcomeMessage << ":" << envManager->GetServerName() << " 001 " << client->GetNickName()
-                       << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
-
-        client->addResponseToBuf(welcomeMessage.str());
+        client->addResponseToBuf(BuildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("NickRequest Executing - SetRegistered");
@@ -353,12 +346,7 @@ bool Executor::Visit(UserRequest *userRequest) const
 
     if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
-        // TODO Welcome message 뿌려주기
-        EnvManager *envManager = EnvManager::GetInstance();
-
-        std::string welcomeMessage = BuildWelcomeMsg(client);
-
-        client->addResponseToBuf(welcomeMessage);
+        client->addResponseToBuf(BuildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("UserRequest Executing - SetRegistered");
