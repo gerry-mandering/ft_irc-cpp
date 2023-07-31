@@ -18,25 +18,6 @@ handle_t StreamHandler::getHandle(void) const
     return (m_handle);
 }
 
-bool StreamHandler::hasRequest(std::string &requestStr)
-{
-    size_t crlf_pos = m_buf.find(CRLF);
-    if (crlf_pos == std::string::npos)
-        return (false);
-    LOG_TRACE("crlf_pos: " << crlf_pos)
-    while (crlf_pos > MAX_MSG_SIZE - CRLF_LEN)
-    {
-        m_buf = m_buf.substr(MAX_MSG_SIZE - CRLF_LEN);
-        crlf_pos = m_buf.find(CRLF);
-        LOG_TRACE("crlf_pos: " << crlf_pos)
-    }
-    requestStr = m_buf.substr(0, crlf_pos + CRLF_LEN);
-    LOG_DEBUG("Extracted request: " << requestStr);
-    m_buf = m_buf.substr(crlf_pos + CRLF_LEN);
-    LOG_DEBUG("Reamin buffer len: " << m_buf.size() << ", " << m_buf);
-    return (true);
-}
-
 int StreamHandler::handleRead(void)
 {
     char tmpBuf[4096];
@@ -56,7 +37,7 @@ int StreamHandler::handleRead(void)
     std::string tcpStreams(tmpBuf);
     LOG_TRACE("[ " << m_handle << " ]"
                    << " sent data: " << tcpStreams);
-    m_buf += tcpStreams;
+    m_readBuf += tcpStreams;
     while (hasRequest(requestStr) != false)
     {
         Request *request;
@@ -103,18 +84,21 @@ int StreamHandler::handleRead(void)
     return (0);
 }
 
-// TODO: 시간 나면 partial write까지 처리
-// TODO: 클라이언트를 fd로 검색해서 가져와야 response 큐에서 갖고와야 함.
 int StreamHandler::handleWrite(void)
 {
-    // handleWrite 로직 틀
-
-    // ResponsePtr response;
-
-    // response = m_responseQueue.front();
-    // std::string responseStr = response->toString();
+    // 레거시 추후 삭제 예정
+    // Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle);
+    // std::string responseStr;
     // ssize_t nwrite;
 
+    // if (!client)
+    // {
+    //     LOG_ERROR("StreamHandler write event but no client found" << strerror(errno));
+    //     exit(EXIT_FAILURE);
+    // }
+    // // 일단 한번에 다 더해서 처리, irssi 내부구현 따라 될수도 안될수도
+    // while (client->HasResponse())
+    //     responseStr += client->ExtractResponse();
     // nwrite = write(m_handle, responseStr.c_str(), responseStr.size());
     // if (nwrite < 0)
     // {
@@ -126,46 +110,76 @@ int StreamHandler::handleWrite(void)
     //     LOG_ERROR("Partial write, NOT IMPLEMENTED YET");
     //     exit(EXIT_FAILURE);
     // }
-    // m_responseQueue.pop();
-    // if (m_responseQueue.empty())
-    //     return (g_reactor().unregisterEvent(this, WRITE_EVENT));
-    // return (OK);
+    // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
 
-    // TODO: 임시로 작성한 로직, 추후 clientrepo 함수들과 함께 수정
     Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle);
-    std::string responseStr;
     ssize_t nwrite;
 
+    // TODO: 일단 한번에 버퍼에 있는 내용 다 클라이언트에 보내봄. 아마 에러 없을 것임
     if (!client)
     {
         LOG_ERROR("StreamHandler write event but no client found" << strerror(errno));
         exit(EXIT_FAILURE);
     }
-    // 일단 한번에 다 더해서 처리, irssi 내부구현 따라 될수도 안될수도
-    while (client->HasResponse())
-        responseStr += client->ExtractResponse();
-    nwrite = write(m_handle, responseStr.c_str(), responseStr.size());
-    if (nwrite < 0)
+    if (m_writeBuf.empty())
     {
-        // TODO: 구현 권장 (웬만하면 partial write 발생 x)
-        LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
-        return (OK);
-    }
-    if (nwrite < responseStr.size())
-    {
-        LOG_ERROR("Partial write, NOT IMPLEMENTED YET");
+        LOG_ERROR("StreamHandler write event but buf is empty");
         exit(EXIT_FAILURE);
     }
-    return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+    nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
+    if (nwrite < 0)
+    {
+        LOG_DEBUG("StreamHandler write failed write again or disconnect: " << strerror(errno));
+        return (OK);
+    }
+    if (nwrite < m_writeBuf.size())
+    {
+        LOG_ERROR("Partial write");
+        m_writeBuf = m_writeBuf.substr(nwrite);
+        return (OK);
+    }
+    if (nwrite == m_writeBuf.size())
+    {
+        LOG_DEBUG("StreamHandler write success fully: " << m_writeBuf);
+        m_writeBuf.clear();
+        return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+    }
+    LOG_ERROR("StreamHandler write: should not reach here " << strerror(errno));
+    return (OK);
 
     // 기존 에코서버 로직
-    // if (write(m_handle, m_buf.c_str(), m_buf.size()) < 0)
+    // if (write(m_handle, m_readBuf.c_str(), m_readBuf.size()) < 0)
     //     LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
-    // m_buf.clear();
+    // m_readBuf.clear();
     // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
 }
 
 int StreamHandler::handleError(void)
 {
     return (0);
+}
+
+bool StreamHandler::hasRequest(std::string &requestStr)
+{
+    size_t crlf_pos = m_readBuf.find(CRLF);
+    if (crlf_pos == std::string::npos)
+        return (false);
+    LOG_TRACE("crlf_pos: " << crlf_pos)
+    while (crlf_pos > MAX_MSG_SIZE - CRLF_LEN)
+    {
+        m_readBuf = m_readBuf.substr(MAX_MSG_SIZE - CRLF_LEN);
+        crlf_pos = m_readBuf.find(CRLF);
+        LOG_TRACE("crlf_pos: " << crlf_pos)
+    }
+    requestStr = m_readBuf.substr(0, crlf_pos + CRLF_LEN);
+    LOG_DEBUG("Extracted request: " << requestStr);
+    m_readBuf = m_readBuf.substr(crlf_pos + CRLF_LEN);
+    LOG_DEBUG("Reamin buffer len: " << m_readBuf.size() << ", " << m_readBuf);
+    return (true);
+}
+
+void StreamHandler::addResponseToBuf(const std::string &responseStr)
+{
+    LOG_DEBUG("Add response to handler's wrbuf: " << responseStr);
+    m_writeBuf += responseStr;
 }

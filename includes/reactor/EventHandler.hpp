@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 typedef enum eEventType
 {
     READ_EVENT = 0x01,
@@ -21,4 +23,5 @@ class EventHandler
     virtual int handleWrite(void) { return 0; }
     // TODO: Error 처리 구현
     virtual int handleError(void) { return 0; }
+    inline virtual void addResponseToBuf(const std::string &response) {}
 };

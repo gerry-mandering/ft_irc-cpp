@@ -1,4 +1,7 @@
 #include "Client.hpp"
+#include "def.h"
+
+const std::string Client::CRLF = "\r\n";
 
 Client::Client(handle_t socket)
     : mSocket(socket), mChannel(NULL), mNickName(std::string()), mUserName(std::string()), mHostName(std::string()),
@@ -7,22 +10,11 @@ Client::Client(handle_t socket)
     LOG_TRACE("Client constructor called | " << *this);
 }
 
-void Client::InsertResponse(const std::string &response)
+void Client::addResponseToBuf(const std::string &response)
 {
-    mResponseQueue.push(response);
-}
+    EventHandler *handler = g_reactor().getHandler(mSocket);
 
-std::string Client::ExtractResponse()
-{
-    std::string response = mResponseQueue.front();
-    mResponseQueue.pop();
-
-    return response;
-}
-
-bool Client::HasResponse() const
-{
-    return !mResponseQueue.empty();
+    handler->addResponseToBuf(response + CRLF);
 }
 
 std::string Client::GetClientInfo() const
@@ -141,11 +133,10 @@ bool Client::HasEnteredUserInfo() const
 
 std::ostream &operator<<(std::ostream &os, const Client &client)
 {
-    os << "Client = { Socket: " << client.mSocket << ", ResponseQueue.size: " << client.mResponseQueue.size()
-       << ", Channel: " << client.mChannel << ", NickName: " << client.mNickName << ", UserName: " << client.mUserName
-       << ", HostName: " << client.mHostName << ", ServerName: " << client.mServerName
-       << ", RealName: " << client.mRealName << ", RegistrationFlags: " << std::bitset<4>(client.mRegistrationFlags)
-       << " }";
+    os << "Client = { Socket: " << client.mSocket << ", Channel: " << client.mChannel
+       << ", NickName: " << client.mNickName << ", UserName: " << client.mUserName << ", HostName: " << client.mHostName
+       << ", ServerName: " << client.mServerName << ", RealName: " << client.mRealName
+       << ", RegistrationFlags: " << std::bitset<4>(client.mRegistrationFlags) << " }";
 
     return os;
 }

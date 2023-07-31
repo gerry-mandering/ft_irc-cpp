@@ -39,6 +39,7 @@ Request *parsePass(const std::string &tcpStreams, handle_t socket)
     return (new PassRequest(socket, password));
 }
 
+// TODO: 길이 제한 추가
 Request *parseNick(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
@@ -53,6 +54,7 @@ Request *parseNick(const std::string &tcpStreams, handle_t socket)
     return (new NickRequest(socket, nickname));
 }
 
+// TODO: 길이 제한 추가
 Request *parseUser(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);

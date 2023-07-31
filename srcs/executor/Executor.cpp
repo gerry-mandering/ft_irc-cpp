@@ -18,7 +18,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
         BuildReplyInvitingMsg(client->GetNickName(), inviteRequest->GetNickName(), inviteRequest->GetChannelName());
 
     // RPL_INVITING 메세지 요청자에게 보내기
-    client->InsertResponse(replyInvitingMessage);
+    client->addResponseToBuf(replyInvitingMessage);
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     Channel *channel = channelRepository->FindByName(inviteRequest->GetChannelName());
@@ -33,7 +33,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
         BuildInvitationMsg(client, inviteRequest->GetNickName(), inviteRequest->GetChannelName());
 
     // 초대를 받은 사람에게 초대장 메세지 보내기
-    targetClient->InsertResponse(invitationMessage);
+    targetClient->addResponseToBuf(invitationMessage);
 
     channel->AddToInvitedClient(targetClient);
 
@@ -161,7 +161,7 @@ bool Executor::Visit(NickRequest *nickRequest) const
         if (channel)
             channel->BroadcastMessage(responseMessage.str());
         else
-            client->InsertResponse(responseMessage.str());
+            client->addResponseToBuf(responseMessage.str());
 
         LOG_TRACE("NickRequest Executing - Registered User Changed NickName");
     }
@@ -175,7 +175,7 @@ bool Executor::Visit(NickRequest *nickRequest) const
         welcomeMessage << ":" << envManager->GetServerName() << " 001 " << client->GetNickName()
                        << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
 
-        client->InsertResponse(welcomeMessage.str());
+        client->addResponseToBuf(welcomeMessage.str());
         client->SetRegistered();
 
         LOG_TRACE("NickRequest Executing - SetRegistered");
@@ -233,7 +233,7 @@ bool Executor::Visit(PingRequest *pingRequest) const
     responseMessage << ":" << serverName << " PONG " << serverName << " :" << pingRequest->GetToken();
 
     Client *client = pingRequest->GetClient();
-    client->InsertResponse(responseMessage.str());
+    client->addResponseToBuf(responseMessage.str());
 
     LOG_TRACE("PingRequest Executed");
 
@@ -263,7 +263,8 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         else
         {
             Client *targetClient = clientRepository->FindByNickName(*iter);
-            targetClient->InsertResponse(responseMessage.str());
+            targetClient->addResponseToBuf(responseMessage.str());
+            g_reactor().registerEvent(g_reactor().getHandler(targetClient->GetSocket()), WRITE_EVENT);
         }
     }
 
@@ -286,7 +287,7 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     else
         responseMessage << " [Quit: " << quitRequest->GetReason() << "]";
 
-    client->InsertResponse(responseMessage.str());
+    client->addResponseToBuf(responseMessage.str());
 
     Channel *channel = client->GetChannel();
 
@@ -394,7 +395,7 @@ bool Executor::Visit(UserRequest *userRequest) const
 
         Reactor &reactor = g_reactor();
 
-        client->InsertResponse(welcomeMessage.str());
+        client->addResponseToBuf(welcomeMessage.str());
         reactor.registerEvent(reactor.getHandler(client->GetSocket()), WRITE_EVENT);
 
         client->SetRegistered();
