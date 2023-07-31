@@ -1,6 +1,6 @@
 #include "ClientRepository.hpp"
 
-// TODO: dahkang Register NickName 함수가 필요할듯?, NickToClient map 에 등록하는 함수가 없음 
+// TODO: dahkang Register NickName 함수가 필요할듯?, NickToClient map 에 등록하는 함수가 없음
 
 ClientRepository::ClientRepository() {}
 
@@ -72,4 +72,9 @@ Client *ClientRepository::FindByNickName(std::string nickName)
     LOG_TRACE("ClientRepository FindByNickName() - NotFound");
 
     return NULL;
+}
+
+int ClientRepository::GetNumberOfClients() const
+{
+    return mSocketToClients.size();
 }
