@@ -9,7 +9,10 @@
 #include <iostream>
 
 // TODO: fcntl 추가
-LoggingHandler::LoggingHandler() : m_handle(STDIN_FILENO) {}
+LoggingHandler::LoggingHandler() : m_handle(STDOUT_FILENO)
+{
+    // fcntl(m_handle, F_SETFL, O_NONBLOCK);
+}
 
 LoggingHandler::~LoggingHandler() {}
 
