@@ -117,7 +117,6 @@ static void test_quit()
     test_parseGeneral("", RESERT_CNT);
 }
 
-// TODO: privmsg 하드테스트, 인자 3개 이상 테스트
 static void test_privmsg()
 {
     cout << "\n---- Privmsg test ----\n";

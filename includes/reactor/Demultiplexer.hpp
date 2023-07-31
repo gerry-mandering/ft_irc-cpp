@@ -5,7 +5,6 @@
 
 class Demultiplexer
 {
-    // TODO: 민석2 핸들러변수 kqdemultiplexer로 옮기기
   public:
     Demultiplexer() {}
     virtual ~Demultiplexer() {}

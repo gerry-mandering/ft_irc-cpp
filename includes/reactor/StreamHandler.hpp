@@ -19,8 +19,6 @@ class StreamHandler : public EventHandler
     typedef ft::shared_ptr<Response> RequestPtr;
 
   private:
-    // TODO: string 버퍼로 변경, respone 큐 추가
-    // TODO: 민석2 responce 큐 clientRepo에 두기
     handle_t m_handle;
     std::string m_readBuf;
     std::string m_writeBuf;
