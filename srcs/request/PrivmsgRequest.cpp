@@ -1,5 +1,7 @@
 #include "PrivmsgRequest.hpp"
 
+// TODO: dahkang 자기 자신한테 메시지 보낼 때 처리
+
 PrivmsgRequest::PrivmsgRequest(handle_t socket, const std::vector<std::string> &targets, const std::string &message)
     : Request(socket), mTargets(targets), mMessage(message)
 {
