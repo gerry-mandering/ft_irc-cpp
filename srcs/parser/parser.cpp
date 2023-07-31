@@ -6,6 +6,17 @@
 namespace Parser
 {
 
+enum
+{
+    MAX_NICKNAME_LEN = 9,
+    MAX_USERNAME_LEN = 9,
+    MAX_HOSTNAME_LEN = 63,
+    MAX_TOPIC_LEN = 50,
+    MAX_CHANNEL_LEN = 200,
+    // TODO: mode 명령어에서 키 설정할 때 키 길이 반드시 설정
+    MAX_KEY_LEN = 15,
+};
+
 extern std::map<std::string, parser_t> parsers;
 
 // parserRequest는 반드시 \r\n으로 끝나는 문자열을 인자로 받는다.
@@ -39,7 +50,6 @@ Request *parsePass(const std::string &tcpStreams, handle_t socket)
     return (new PassRequest(socket, password));
 }
 
-// TODO: 길이 제한 추가
 Request *parseNick(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
@@ -49,12 +59,11 @@ Request *parseNick(const std::string &tcpStreams, handle_t socket)
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
-    if (!std::isalpha(nickname.front()) || !isalnum(nickname))
+    if (nickname.length() > MAX_NICKNAME_LEN || !std::isalpha(nickname.front()) || !isalnum(nickname))
         throw InvalidFormat(socket, MSG_INVALID_NICKNAME + command, INVALID_NICKNAME);
     return (new NickRequest(socket, nickname));
 }
 
-// TODO: 길이 제한 추가
 Request *parseUser(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
@@ -64,9 +73,9 @@ Request *parseUser(const std::string &tcpStreams, handle_t socket)
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
-    if (!std::isalpha(username.front()) || !isalnum(username))
+    if (username.length() > MAX_USERNAME_LEN || !std::isalpha(username.front()) || !isalnum(username))
         throw InvalidFormat(socket, MSG_INVALID_USER + command, INVALID_USER);
-    if (!std::isalpha(hostname.front()) || !isalnum(hostname))
+    if (hostname.length() > MAX_HOSTNAME_LEN || !std::isalpha(hostname.front()) || !isalnum(hostname))
         throw InvalidFormat(socket, MSG_INVALID_HOSTNAME + command, INVALID_HOSTNAME);
     return (new UserRequest(socket, username, hostname, servername, realname));
 }
@@ -101,7 +110,7 @@ Request *parseTopic(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command >> channel >> topic))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-    if (!isalnum(topic))
+    if (topic.length() > MAX_TOPIC_LEN || !isalnum(topic))
         throw InvalidFormat(socket, MSG_INVALID_TOPIC + command, INVALID_TOPIC);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
@@ -136,7 +145,7 @@ Request *parseJoin(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command >> channel))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-    if (channel.front() != '#' || !isalnum(channel.substr(1)))
+    if (channel.length() > MAX_CHANNEL_LEN || channel.front() != '#' || !isalnum(channel.substr(1)))
         throw InvalidFormat(socket, MSG_INVALID_CHANNEL + command, INVALID_CHANNEL);
     if (!(ss >> key))
         return (new JoinRequest(socket, channel, ""));
