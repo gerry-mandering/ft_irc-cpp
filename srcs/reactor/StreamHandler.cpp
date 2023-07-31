@@ -181,5 +181,6 @@ bool StreamHandler::hasRequest(std::string &requestStr)
 void StreamHandler::addResponseToBuf(const std::string &responseStr)
 {
     LOG_DEBUG("Add response to handler's wrbuf: " << responseStr);
+    g_reactor().registerEvent(this, WRITE_EVENT);
     m_writeBuf += responseStr;
 }
