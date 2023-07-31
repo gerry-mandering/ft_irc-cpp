@@ -29,7 +29,6 @@ class Executor : public TSingleton<Executor>, public visitor_pattern::Visitor
     bool Visit(UserRequest *userRequest) const;
 
   private:
-    static std::string BuildWelcomeMsg(Client *client);
     static std::string BuildReplyInvitingMsg(const std::string &nickName, const std::string &targetNickName,
                                              const std::string &channelName);
     static std::string BuildInvitedIntoChannelMsg(const std::string &nickName, const std::string &targetNickName,

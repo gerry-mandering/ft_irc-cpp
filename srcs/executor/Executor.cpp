@@ -168,7 +168,14 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
-        client->addResponseToBuf(BuildWelcomeMsg(client));
+        // TODO Welcome message 뿌려주기
+        EnvManager *envManager = EnvManager::GetInstance();
+
+        std::stringstream welcomeMessage;
+        welcomeMessage << ":" << envManager->GetServerName() << " 001 " << client->GetNickName()
+                       << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
+
+        client->addResponseToBuf(welcomeMessage.str());
         client->SetRegistered();
 
         LOG_TRACE("NickRequest Executing - SetRegistered");
@@ -246,7 +253,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        responseMessage << client->GetClientInfo() << " PRIVMSG " << *iter << privmsgRequest->GetMessage();
+        responseMessage << client->GetClientInfo() << " PRIVMSG " << *iter << ":" << privmsgRequest->GetMessage();
 
         if (iter->front() == '#')
         {
@@ -346,7 +353,18 @@ bool Executor::Visit(UserRequest *userRequest) const
 
     if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
-        client->addResponseToBuf(BuildWelcomeMsg(client));
+        // TODO Welcome message 뿌려주기
+        EnvManager *envManager = EnvManager::GetInstance();
+
+        std::stringstream welcomeMessage;
+
+        welcomeMessage << envManager->GetServerName() << " 001 " << client->GetNickName()
+                       << " :Welcome to the PingPong IRC Network " << client->GetClientInfo();
+
+        Reactor &reactor = g_reactor();
+
+        client->addResponseToBuf(welcomeMessage.str());
+
         client->SetRegistered();
 
         LOG_TRACE("UserRequest Executing - SetRegistered");
@@ -355,44 +373,6 @@ bool Executor::Visit(UserRequest *userRequest) const
     LOG_TRACE("UserRequest Executed");
 
     return true;
-}
-
-std::string Executor::BuildWelcomeMsg(Client *client)
-{
-    EnvManager *envManager = EnvManager::GetInstance();
-    ClientRepository *clientRepository = ClientRepository::GetInstance();
-    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-
-    std::string serverName = envManager->GetServerName();
-
-    std::stringstream welcomeMessage;
-    welcomeMessage
-        << ":" << serverName << " 001 " << client->GetNickName() << " :Welcome to the PingPong IRC Network "
-        << client->GetClientInfo() << "\r\n"
-        << ":" << serverName << " 002 " << client->GetNickName() << " :Your host is " << serverName
-        << ", running version InspIRCd-3\r\n"
-        << ":" << serverName << " 003 " << client->GetNickName() << " :This server was created "
-        << envManager->GetServerBootTime() << "\r\n"
-        << ":" << serverName << " 004 " << client->GetNickName() << " " << serverName << " InspIRCd-3 iklt\r\n"
-        << ":" << serverName << " 255 " << client->GetNickName() << " :I have "
-        << clientRepository->GetNumberOfClients() << " clients and " << channelRepository->GetNumberOfChannels()
-        << " channels\r\n"
-        << ":" << serverName << " 375 " << client->GetNickName() << " :" << serverName << " message of the day\r\n"
-        << ":" << serverName << " 372 " << client->GetNickName() << " "
-        << "__________.__                       __________                      ________                \r\n"
-        << ":" << serverName << " 372 " << client->GetNickName() << " "
-        << "\\______   |__| ____   ____          \\______   \\____   ____   ____   \\______ \\  __ __  ____  \r\n"
-        << ":" << serverName << " 372 " << client->GetNickName() << " "
-        << " |     ___|  |/    \\ / ___\\   ______ |     ___/  _ \\ /    \\ / ___\\   |    |  \\|  |  \\/  _ \\ \r\n"
-        << ":" << serverName << " 372 " << client->GetNickName() << " "
-        << " |    |   |  |   |  / /_/  > /_____/ |    |  (  <_> |   |  / /_/  >  |    `   |  |  (  <_> )\r\n"
-        << ":" << serverName << " 372 " << client->GetNickName() << " "
-        << " |____|   |__|___|  \\___  /          |____|   \\____/|___|  \\___  /  /_______  |____/ \\____/ \r\n"
-        << ":" << serverName << " 372 " << client->GetNickName() << " "
-        << "                  \\/_____/                               \\/_____/           \\/              \r\n"
-        << ":" << serverName << " 376 " << client->GetNickName() << " :End of message of the day.\r\n";
-
-    return welcomeMessage.str();
 }
 
 std::string Executor::BuildReplyInvitingMsg(const std::string &nickName, const std::string &targetNickName,
