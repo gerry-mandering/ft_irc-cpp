@@ -27,6 +27,24 @@ static bool invalid_input(const std::string &port, const std::string &password)
     return (false);
 }
 
+// TODO: 로깅 핸들러 추가 처리
+static void init_server(const std::string &portStr, const std::string &password)
+{
+    int portInt = 0;
+
+    for (size_t i = 0; i < portStr.length(); i++)
+    {
+        portInt *= 10;
+        portInt += portStr[i] - '0';
+    }
+    Parser::initParsers();
+    EnvManager::GetInstance()->SetPortNumber(portStr);
+    EnvManager::GetInstance()->SetConnectionPassword(password);
+    g_reactor().setDemultiplexer(new KqueueDemultiplexer());
+    AcceptHandler *acceptHandler = new AcceptHandler(portInt, password);
+    g_reactor().registerHandler(acceptHandler, READ_EVENT);
+}
+
 int main(int argc, char **argv)
 {
     // TODO: singleton atexit 처리 고민할것
@@ -41,20 +59,15 @@ int main(int argc, char **argv)
                   << "port should be integer and password should be alphanumeric\n";
         return (EXIT_FAILURE);
     }
-    }
-    EnvManager::GetInstance()->SetPortNumber(std::string(argv[1]));
-    EnvManager::GetInstance()->SetConnectionPassword(std::string(argv[2]));
-
-    Parser::initParsers();
-
-    // TODO AcceptHandler 내부에서 불러오는 방식으로 수정?
-    AcceptHandler acceptHandler(PORT, PASSWORD);
-    g_reactor().setDemultiplexer(new KqueueDemultiplexer());
-
-    if (!acceptHandler.init())
+    try
     {
-        std::cerr << "Failed to initialize accept handler." << std::endl;
-        return (1);
+        init_server(argv[1], argv[2]);
+    }
+    catch (const std::exception &e)
+    {
+        // TODO: 에러 발생시 출력문, 종료여부 고민
+        std::cerr << e.what() << "\n";
+        return (EXIT_FAILURE);
     }
     while (true)
         g_reactor().handleEvents();

@@ -19,5 +19,4 @@ class AcceptHandler : public EventHandler
     virtual int handleRead(void);
     virtual int handleWrite(void);
     virtual int handleError(void);
-    bool init(void);
 };
