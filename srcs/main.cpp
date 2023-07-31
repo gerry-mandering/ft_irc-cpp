@@ -27,6 +27,7 @@ static bool invalid_input(const std::string &port, const std::string &password)
     return (false);
 }
 
+// TODO: 로깅 핸들러 추가 처리
 static void init_server(const std::string &portStr, const std::string &password)
 {
     int portInt = 0;
@@ -62,17 +63,9 @@ int main(int argc, char **argv)
     {
         init_server(argv[1], argv[2]);
     }
-    EnvManager::GetInstance()->SetPortNumber(std::string(argv[1]));
-    EnvManager::GetInstance()->SetConnectionPassword(std::string(argv[2]));
-
-    Parser::initParsers();
-
-    // TODO AcceptHandler 내부에서 불러오는 방식으로 수정?
-    AcceptHandler acceptHandler(PORT, PASSWORD);
-    g_reactor().setDemultiplexer(new KqueueDemultiplexer());
-
-    if (!acceptHandler.init())
+    catch (const std::exception &e)
     {
+        // TODO: 에러 발생시 출력문, 종료여부 고민
         std::cerr << e.what() << "\n";
         return (EXIT_FAILURE);
     }
