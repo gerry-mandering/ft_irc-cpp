@@ -12,6 +12,11 @@
  * PRIVMSG
  * QUIT
  * INVITE
+ * KICK
+ *
+ * <Validator 미완료 명령어>
+ * JOIN
+ * MODE
  *
  * */
 
