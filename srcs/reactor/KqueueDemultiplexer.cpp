@@ -1,15 +1,14 @@
 #include "KqueueDemultiplexer.hpp"
 #include "LoggingHandler.hpp"
 #include "def.h"
+#include "wrapper.h"
 #include <iostream>
 #include <unistd.h>
 
 // TODO: fd 생성후 전부 nonblocking에 넣기
 KqueueDemultiplexer::KqueueDemultiplexer() : m_kEventList(8), m_changeList(16), m_changePos(0), m_numHandlers(0)
 {
-    // TODO: 예외처리
-    m_kq = kqueue();
-    assert(m_kq != -1);
+    m_kq = Wrapper::kqueue();
 }
 
 KqueueDemultiplexer::~KqueueDemultiplexer()
@@ -24,6 +23,7 @@ void KqueueDemultiplexer::setNumHandlers(size_t nHandlers)
         m_kEventList.resize(m_numHandlers * 2);
 }
 
+// TODO: kqueue에 플래그를 두어서 이미 등록된 이벤트의 경우 재등록하지 않도록 로직 수정
 int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
 {
     if (m_changePos >= m_changeList.size())
