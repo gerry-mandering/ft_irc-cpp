@@ -27,7 +27,8 @@ int StreamHandler::handleRead(void)
 
     std::memset(tmpBuf, 0, sizeof(tmpBuf));
     // TODO: nc에서 eof만 보내면 연결 끊김
-    nread = read(m_handle, tmpBuf, sizeof(tmpBuf));
+    nread = read(m_handle, tmpBuf, sizeof(tmpBuf) - 1);
+    LOG_TRACE("nread: " << nread);
     if (nread <= 0)
     {
         LOG_DEBUG("StreamHandler read failed: " << strerror(errno));
