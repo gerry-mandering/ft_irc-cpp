@@ -264,6 +264,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         {
             Client *targetClient = clientRepository->FindByNickName(*iter);
             targetClient->addResponseToBuf(responseMessage.str());
+            g_reactor().registerEvent(g_reactor().getHandler(targetClient->GetSocket()), WRITE_EVENT);
         }
     }
 
