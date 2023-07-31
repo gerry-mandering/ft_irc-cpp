@@ -15,12 +15,7 @@ class Client
   public:
     Client(handle_t socket);
 
-    void InsertResponse(const std::string &response);
-    std::string ExtractResponse();
-    bool HasResponse() const;
-
     std::string GetClientInfo() const;
-
     handle_t GetSocket() const;
 
     void SetChannel(Channel *channel);
@@ -58,8 +53,9 @@ class Client
     static const int NICKNAME_ENTERED_FLAG = 1 << 2;
     static const int USER_INFO_ENTERED_FLAG = 1 << 3;
 
+    static const std::string CRLF;
+
     handle_t mSocket;
-    std::queue<std::string> mResponseQueue;
 
     Channel *mChannel;
 
