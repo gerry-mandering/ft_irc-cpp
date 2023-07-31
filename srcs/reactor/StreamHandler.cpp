@@ -26,14 +26,17 @@ int StreamHandler::handleRead(void)
     std::string requestStr;
 
     std::memset(tmpBuf, 0, sizeof(tmpBuf));
-    // TODO: nc에서 eof만 보내면 연결 끊김
     nread = read(m_handle, tmpBuf, sizeof(tmpBuf) - 1);
     LOG_TRACE("nread: " << nread);
-    if (nread <= 0)
+    if (nread < 0)
     {
         LOG_DEBUG("StreamHandler read failed: " << strerror(errno));
-        // TODO: 리턴 코드 (어차피 0이긴 할텐데..)
-        // TODO: eof일 때 처리
+        return (OK);
+    }
+    if (nread == 0)
+    {
+        LOG_DEBUG("StreamHandler read eof: " << strerror(errno));
+        // TODO: disconnect(구현 자유롭게 하면 될듯 되도록 disconnect 하도록)
         return (OK);
     }
     std::string tcpStreams(tmpBuf);
