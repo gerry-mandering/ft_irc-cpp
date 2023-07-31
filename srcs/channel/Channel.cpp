@@ -23,7 +23,7 @@ void Channel::BroadcastMessage(const std::string &message)
 
     while (iter != mClients.end())
     {
-        (*iter)->InsertResponse(message);
+        (*iter)->addResponseToBuf(message);
         iter++;
     }
 }
@@ -35,7 +35,7 @@ void Channel::BroadcastMessageExcludingRequestor(const std::string &message, con
     while (iter != mClients.end())
     {
         if ((*iter)->GetNickName() != requestorNickName)
-            (*iter)->InsertResponse(message);
+            (*iter)->addResponseToBuf(message);
         iter++;
     }
 }
