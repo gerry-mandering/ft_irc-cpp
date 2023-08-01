@@ -252,23 +252,28 @@ Request *parseKick(const std::string &tcpStreams, handle_t socket)
 
 Request *parseInvite(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
+    std::stringstream ss(tcpStreams);
+    std::string command, nickname, channel, junk;
+
+    if (!(ss >> command >> nickname >> channel))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (ss >> junk)
+        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    return (new InviteRequest(socket, nickname, channel));
 }
 
 Request *parsePing(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
-}
+    std::stringstream ss(tcpStreams);
+    std::string command, servername, junk;
 
-Request *parsePong(const std::string &tcpStreams, handle_t socket)
-{
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
+    if (!(ss >> command >> servername))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (hasMetaChar(servername))
+        throw InvalidFormat(socket, MSG_INVALID_SERVERNAME + command, INVALID_MSG);
+    if (ss >> junk)
+        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    return (new PingRequest(socket, servername));
 }
 
 } // namespace Parser
