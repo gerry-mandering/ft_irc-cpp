@@ -47,7 +47,7 @@ class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
     static std::string buildNotOnChannelMsg(const std::string &nickName, const std::string &channelName);
     static std::string buildUserOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
                                              const std::string &channelName);
-    static std::string buildUserNotOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
+    static std::string buildUserNotInChannelMsg(const std::string &nickName, const std::string &targetNickName,
                                                 const std::string &channelName);
     static std::string buildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName);
     static std::string buildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName);

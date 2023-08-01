@@ -351,7 +351,7 @@ std::string Executor::buildWelcomeMsg(Client *client)
         << ", running version InspIRCd-3\r\n"
         << ":" << serverName << " 003 " << client->GetNickName() << " :This server was created "
         << envManager->GetServerBootTime() << "\r\n"
-        << ":" << serverName << " 004 " << client->GetNickName() << " " << serverName << " InspIRCd-3 iklt\r\n"
+        << ":" << serverName << " 004 " << client->GetNickName() << " " << serverName << " InspIRCd-3 itkol\r\n"
         << ":" << serverName << " 255 " << client->GetNickName() << " :I have "
         << clientRepository->GetNumberOfClients() << " clients and " << channelRepository->GetNumberOfChannels()
         << " channels\r\n"

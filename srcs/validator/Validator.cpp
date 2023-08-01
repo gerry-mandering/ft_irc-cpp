@@ -292,7 +292,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
         if (!channel->CheckClientIsExist(*iter))
         {
             std::string errorMessage;
-            errorMessage = buildUserNotOnChannelMsg(nickName, *iter, channelName);
+            errorMessage = buildUserNotInChannelMsg(nickName, *iter, channelName);
 
             client->addResponseToBuf(errorMessage);
 
@@ -842,7 +842,7 @@ std::string Validator::buildUserOnChannelMsg(const std::string &nickName, const 
     return errorMessage.str();
 }
 
-std::string Validator::buildUserNotOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
+std::string Validator::buildUserNotInChannelMsg(const std::string &nickName, const std::string &targetNickName,
                                                 const std::string &channelName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
