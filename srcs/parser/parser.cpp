@@ -173,44 +173,52 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
     return (new PartRequest(socket, channel, message));
 }
 
+static void commaToknizer(const std::string &targets, std::vector<std::string> &targetList)
+{
+    std::string token, lastToken;
+    size_t start = 0;
+    size_t end;
+
+    end = targets.find(',');
+    while (end != std::string::npos)
+    {
+        token = targets.substr(start, end - start);
+        if (!token.empty())
+            targetList.push_back(token);
+        start = end + 1;
+        end = targets.find(',', start);
+    }
+    lastToken = targets.substr(start);
+    if (!lastToken.empty())
+        targetList.push_back(lastToken);
+}
+
 Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
     std::string command;
-    std::string receivers, message, token, lastToken, headOfLast, junk;
+    std::string receivers, message, headOfLast, junk;
     std::vector<std::string> receiverList;
-    size_t start = 0;
-    size_t end;
+    const size_t numSpace = 2;
+    size_t preLastTokenLen;
 
     if (!(ss >> command >> receivers))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     LOG_TRACE(__func__ << " command: " << command);
     LOG_TRACE(__func__ << " receivers: " << receivers);
-    end = receivers.find(',');
 
     // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
     // TODO: 토큰에 :같은 특수문자가 있더라도 아무 상관없다. 어차피 검색해도 못찾을테니
     // ,가 연속으로 나오면 에러, / , 뒤에 아무것도 없으면 에러
-    while (end != std::string::npos)
-    {
-        // [start, end) substr 생성
-        token = receivers.substr(start, end - start);
-        // receivers = receivers.substr(end + 1);
-        if (!token.empty())
-            receiverList.push_back(token);
-        start = end + 1;
-        end = receivers.find(',', start);
-    }
-    lastToken = receivers.substr(start);
-    if (!lastToken.empty())
-        receiverList.push_back(lastToken);
+    commaToknizer(receivers, receiverList);
     LOG_TRACE(__func__ << " receiverList size: " << receiverList.size());
     LOG_TRACE(receiverList);
     if (!(ss >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
-    message = tcpStreams.substr(tcpStreams.find(headOfLast, command.size() + receivers.size() + 2));
+    preLastTokenLen = command.size() + receivers.size() + numSpace;
+    message = tcpStreams.substr(tcpStreams.find(headOfLast, preLastTokenLen));
     removeTrailingCRLF(message);
     LOG_TRACE(__func__ << " message: " << message);
     return (new PrivmsgRequest(socket, receiverList, message));
