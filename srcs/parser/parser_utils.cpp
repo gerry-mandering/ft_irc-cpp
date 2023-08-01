@@ -12,12 +12,11 @@ void initParsers(void)
         make_pair("QUIT", parseQuit), make_pair("TOPIC", parseTopic),     make_pair("MODE", parseMode),
         make_pair("JOIN", parseJoin), make_pair("PART", parsePart),       make_pair("INVITE", parseInvite),
         make_pair("KICK", parseKick), make_pair("PRIVMSG", parsePrivmsg), make_pair("PING", parsePing),
-        make_pair("PONG", parsePong),
     };
     const int size = sizeof(commands) / sizeof(commands[0]);
 
     for (int i = 0; i < size; i++)
-        parsers[std::string(commands[i].first)] = commands[i].second;
+        parsers[commands[i].first] = commands[i].second;
 }
 
 std::string eTypeToString(eInvaldFormat type)
@@ -90,12 +89,8 @@ bool isalnum(const std::string &str)
 
 bool hasMetaChar(const std::string &str)
 {
-    for (size_t i = 0; i < str.length(); i++)
-    {
-        if (str.find('#') != std::string::npos || str.find(':') != std::string::npos ||
-            str.find(',') != std::string::npos)
-            return true;
-    }
+    if (str.find('#') != std::string::npos || str.find(':') != std::string::npos || str.find(',') != std::string::npos)
+        return true;
     return false;
 }
 } // namespace Parser
