@@ -16,6 +16,8 @@ class Channel
     void SetClientLimit(int limit);
     int GetClientCount() const;
     int GetClientLimit() const;
+
+    void SetKey(const std::string &key);
     const std::string &GetKey() const;
 
     void BroadcastMessage(const std::string &message);

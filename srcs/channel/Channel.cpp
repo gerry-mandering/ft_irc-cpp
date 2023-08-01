@@ -171,6 +171,11 @@ const std::string &Channel::GetTopic() const
     return mTopic;
 }
 
+void Channel::SetKey(const std::string &key)
+{
+    mKey = key;
+}
+
 const std::string &Channel::GetKey() const
 {
     return mKey;
