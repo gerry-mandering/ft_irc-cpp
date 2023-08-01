@@ -335,6 +335,10 @@ bool Validator::Visit(ModeRequest *modeRequest) const
 {
     Client *client = modeRequest->GetClient();
     const std::string &nickName = client->GetNickName();
+    const std::string &channelName = modeRequest->GetChannelName();
+    const std::string &sign = modeRequest->GetSign();
+    const std::string &modeChar = modeRequest->GetModeChar();
+    const std::string &modeArgument = modeRequest->GetModeArgument();
 
     // Registered 하지 않은 경우
     if (!client->HasRegistered())
@@ -351,6 +355,101 @@ bool Validator::Visit(ModeRequest *modeRequest) const
         LOG_TRACE("ModeRequest Invalid - NotRegistered");
 
         return false;
+    }
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(channelName);
+
+    if (!channel)
+    {
+        std::string errorMessage = buildNoSuchChannelMsg(nickName, channelName);
+
+        client->AddResponseToBuf(errorMessage);
+
+        LOG_TRACE("ModeRequest Invalid - NoSuchChannel");
+
+        return false;
+    }
+
+    if (!channel->CheckClientIsOperator(nickName))
+    {
+        std::string errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
+
+        client->AddResponseToBuf(errorMessage);
+
+        LOG_TRACE("ModeRequest Invalid - NotChannelOperator");
+
+        return false;
+    }
+
+    if (modeChar == "o")
+    {
+        ClientRepository *clientRepository = ClientRepository::GetInstance();
+        Client *targetClient = clientRepository->FindByNickName(modeArgument);
+
+        if (!targetClient)
+        {
+            std::string errorMessage = buildNoSuchNickMsg(nickName, modeArgument);
+
+            client->AddResponseToBuf(errorMessage);
+
+            LOG_TRACE("ModeRequest Invalid - NoSuchNick");
+
+            return false;
+        }
+
+        if (!channel->CheckClientIsExist(modeArgument))
+        {
+            std::string errorMessage = buildUserNotInChannelMsg(nickName, modeArgument, channelName);
+
+            client->AddResponseToBuf(errorMessage);
+
+            LOG_TRACE("ModeRequest Invalid - UserNotInChannel");
+
+            return false;
+        }
+
+        bool targetIsOperator = channel->CheckClientIsOperator(modeArgument);
+        if ((targetIsOperator && (sign == "+")) || (!targetIsOperator && (sign == "-")))
+        {
+            LOG_TRACE("ModeRequest Invalid - NoAction");
+
+            return false;
+        }
+    }
+
+    if (sign == "+")
+    {
+        if (((modeChar == "i") && channel->IsInviteOnlyMode()) ||
+            ((modeChar == "t") && channel->IsProtectedTopicMode()) || ((modeChar == "k") && channel->IsKeyMode()) ||
+            ((modeChar == "l") && (atoi(modeArgument.c_str()) == channel->GetClientLimit())))
+        {
+            LOG_TRACE("ModeRequest Invalid - NoAction");
+
+            return false;
+        }
+    }
+    else
+    {
+        if (((modeChar == "i") && !channel->IsInviteOnlyMode()) ||
+            ((modeChar == "t") && !channel->IsProtectedTopicMode()) || ((modeChar == "k") && !channel->IsKeyMode()) ||
+            ((modeChar == "l") && !channel->IsClientLimitMode()))
+        {
+            LOG_TRACE("ModeRequest Invalid - NoAction");
+
+            return false;
+        }
+
+        if ((modeChar == "k") && (modeArgument != channel->GetKey()))
+        {
+            std::string errorMessage = buildKeySetMsg(nickName, channelName);
+
+            client->AddResponseToBuf(errorMessage);
+
+            LOG_TRACE("ModeRequest Invalid - KeySet");
+
+            return false;
+        }
     }
 
     LOG_TRACE("ModeRequest Validated");
@@ -872,6 +971,17 @@ std::string Validator::buildCannotSendToChannelMsg(const std::string &nickName, 
     std::stringstream errorMessage;
     errorMessage << ":" << envManager->GetServerName() << " 404 " << nickName << " " << channelName
                  << " :You cannot send external messages to this channel";
+
+    return errorMessage.str();
+}
+
+std::string Validator::buildKeySetMsg(const std::string &nickName, const std::string &channelName)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+
+    std::stringstream errorMessage;
+    errorMessage << ":" << envManager->GetServerName() << " 467 " << nickName << " " << channelName
+                 << " :Channel key already set";
 
     return errorMessage.str();
 }

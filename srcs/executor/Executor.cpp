@@ -130,6 +130,49 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
 bool Executor::Visit(ModeRequest *modeRequest) const
 {
+    Client *client = modeRequest->GetClient();
+    const std::string &channelName = modeRequest->GetChannelName();
+    const std::string &sign = modeRequest->GetSign();
+    const std::string &modeChar = modeRequest->GetModeChar();
+    const std::string &modeArgument = modeRequest->GetModeArgument();
+
+    ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+    Channel *channel = channelRepository->FindByName(channelName);
+
+    std::string responseMessage;
+
+    if (modeChar == "o")
+    {
+        ClientRepository *clientRepository = ClientRepository::GetInstance();
+        Client *targetClient = clientRepository->FindByNickName(modeArgument);
+
+        if (sign == "+")
+            channel->SetOperator(targetClient);
+        else
+            channel->RemoveOperator(targetClient->GetNickName());
+    }
+    else if (modeChar == "i")
+    {
+        channel->ToggleInviteOnlyMode();
+    }
+    else if (modeChar == "t")
+    {
+        channel->ToggleProtectedTopicMode();
+    }
+    else if (modeChar == "k")
+    {
+        channel->SetKey(modeArgument);
+        channel->ToggleKeyMode();
+    }
+    else if (modeChar == "l")
+    {
+        channel->SetClientLimit(atoi(modeArgument.c_str()));
+        channel->ToggleClientLimitMode();
+    }
+
+    responseMessage = buildModeChangedMsg(client, channelName, sign, modeChar, modeArgument);
+    channel->BroadcastMessage(responseMessage);
+
     LOG_TRACE("ModeRequest Executed");
 
     return true;
@@ -477,4 +520,18 @@ std::string Executor::buildPartMsg(Client *client, const std::string &channelNam
         partMessage << ":" << reason;
 
     return partMessage.str();
+}
+
+std::string Executor::buildModeChangedMsg(Client *client, const std::string &channelName, const std::string &sign,
+                                          const std::string &modeChar, const std::string &modeArgument)
+{
+    std::stringstream modeChangedMsg;
+    modeChangedMsg << ":" << client->GetClientInfo() << " MODE " << channelName;
+
+    if (modeArgument.empty())
+        modeChangedMsg << " :" << sign << modeChar;
+    else
+        modeChangedMsg << " " << sign << modeChar << " :" << modeArgument;
+
+    return modeChangedMsg.str();
 }

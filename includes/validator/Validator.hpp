@@ -9,6 +9,7 @@
 #include "RequestConcrete.hpp"
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
+#include <cstdlib>
 #include <sstream>
 #include <string>
 
@@ -51,4 +52,5 @@ class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
                                                 const std::string &channelName);
     static std::string buildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName);
     static std::string buildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName);
+    static std::string buildKeySetMsg(const std::string &nickName, const std::string &channelName);
 };

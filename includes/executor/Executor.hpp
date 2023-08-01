@@ -8,6 +8,7 @@
 #include "RequestConcrete.hpp"
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
+#include <cstdlib>
 #include <sstream>
 
 class Executor : public TSingleton<Executor>, public visitor_pattern::Visitor
@@ -45,4 +46,6 @@ class Executor : public TSingleton<Executor>, public visitor_pattern::Visitor
     static std::string buildPrivateMsg(Client *client, const std::string &target, const std::string &message);
     static std::string buildPongMsg(const std::string &token);
     static std::string buildPartMsg(Client *client, const std::string &channelName, const std::string &reason);
+    static std::string buildModeChangedMsg(Client *client, const std::string &channelName, const std::string &sign,
+                                           const std::string &modeChar, const std::string &modeArgument);
 };
