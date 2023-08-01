@@ -53,4 +53,10 @@ class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
     std::string buildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName) const;
     std::string buildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName) const;
     std::string buildKeySetMsg(const std::string &nickName, const std::string &channelName) const;
+
+    bool validateOperUserMode(ModeRequest *modeRequest) const;
+    bool validateClientLimitMode(ModeRequest *modeRequest) const;
+    bool validateInviteOnlyMode(ModeRequest *modeRequest) const;
+    bool validateKeyMode(ModeRequest *modeRequest) const;
+    bool validateProtectedChannelMode(ModeRequest *modeRequest) const;
 };
