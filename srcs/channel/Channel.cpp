@@ -6,12 +6,17 @@ Channel::Channel(const std::string &name)
     LOG_TRACE("Channel constructor called | " << *this);
 }
 
-size_t Channel::GetClientCount() const
+void Channel::SetClientLimit(int limit)
+{
+    mClientLimit = limit;
+}
+
+int Channel::GetClientCount() const
 {
     return mClients.size();
 }
 
-size_t Channel::GetClientLimit() const
+int Channel::GetClientLimit() const
 {
     return mClientLimit;
 }
@@ -156,14 +161,14 @@ void Channel::RemoveFromInvitedClient(const std::string &nickName)
     }
 }
 
-const std::string &Channel::GetTopic() const
-{
-    return mTopic;
-}
-
 void Channel::SetTopic(const std::string &topic)
 {
     mTopic = topic;
+}
+
+const std::string &Channel::GetTopic() const
+{
+    return mTopic;
 }
 
 const std::string &Channel::GetKey() const
