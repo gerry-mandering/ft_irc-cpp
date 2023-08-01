@@ -38,17 +38,17 @@ class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
     bool Visit(UserRequest *userRequest) const;
 
   private:
-    static std::string BuildAlreadyRegisteredMsg(const std::string &nickName = "*");
-    static std::string BuildAccessDeniedMsg(const std::string &userName = "*", const std::string &hostName = "*");
-    static std::string BuildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName = "*");
-    static std::string BuildNotRegisteredMsg(const std::string &commandType, const std::string &nickName = "*");
-    static std::string BuildNoSuchChannelMsg(const std::string &nickName, const std::string &channelName);
-    static std::string BuildNoSuchNickMsg(const std::string &nickName, const std::string &targetNickName);
-    static std::string BuildNotOnChannelMsg(const std::string &nickName, const std::string &channelName);
-    static std::string BuildUserOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
+    static std::string buildAlreadyRegisteredMsg(const std::string &nickName = "*");
+    static std::string buildAccessDeniedMsg(const std::string &userName = "*", const std::string &hostName = "*");
+    static std::string buildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName = "*");
+    static std::string buildNotRegisteredMsg(const std::string &commandType, const std::string &nickName = "*");
+    static std::string buildNoSuchChannelMsg(const std::string &nickName, const std::string &channelName);
+    static std::string buildNoSuchNickMsg(const std::string &nickName, const std::string &targetNickName);
+    static std::string buildNotOnChannelMsg(const std::string &nickName, const std::string &channelName);
+    static std::string buildUserOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
                                              const std::string &channelName);
-    static std::string BuildUserNotOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
+    static std::string buildUserNotOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
                                                 const std::string &channelName);
-    static std::string BuildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName);
-    static std::string BuildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName);
+    static std::string buildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName);
+    static std::string buildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName);
 };

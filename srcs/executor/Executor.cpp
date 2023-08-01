@@ -14,25 +14,26 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
 {
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     Client *client = inviteRequest->GetClient();
-    std::string replyInvitingMessage =
-        BuildReplyInvitingMsg(client->GetNickName(), inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+
+    const std::string &nickName = client->GetNickName();
+    const std::string &targetNickName = inviteRequest->GetNickName();
+    const std::string &channelName = inviteRequest->GetChannelName();
 
     // RPL_INVITING 메세지 요청자에게 보내기
+    std::string replyInvitingMessage = buildReplyInvitingMsg(nickName, targetNickName, channelName);
     client->addResponseToBuf(replyInvitingMessage);
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(inviteRequest->GetChannelName());
-    std::string InvitedIntoChannelMessage = BuildInvitedIntoChannelMsg(
-        client->GetNickName(), inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+    Channel *channel = channelRepository->FindByName(channelName);
 
     // 채널에 속한 클라이언트들에게 초대 알리기
-    channel->BroadcastMessageExcludingRequestor(InvitedIntoChannelMessage, client->GetNickName());
+    std::string InvitedIntoChannelMessage = buildInvitedIntoChannelMsg(nickName, targetNickName, channelName);
+    channel->BroadcastMessageExcludingRequestor(InvitedIntoChannelMessage, nickName);
 
-    Client *targetClient = clientRepository->FindByNickName(inviteRequest->GetNickName());
-    std::string invitationMessage =
-        BuildInvitationMsg(client, inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+    Client *targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 초대를 받은 사람에게 초대장 메세지 보내기
+    std::string invitationMessage = buildInvitationMsg(client, targetNickName, channelName);
     targetClient->addResponseToBuf(invitationMessage);
 
     channel->AddToInvitedClient(targetClient);
@@ -104,8 +105,9 @@ bool Executor::Visit(JoinRequest *joinRequest) const
 
 bool Executor::Visit(KickRequest *kickRequest) const
 {
+    const std::string &channelName = kickRequest->GetChannelName();
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(kickRequest->GetChannelName());
+    Channel *channel = channelRepository->FindByName(channelName);
 
     Client *client = kickRequest->GetClient();
     std::string responseMessage;
@@ -115,7 +117,7 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        responseMessage = BuildKickoutMsg(client, kickRequest->GetChannelName(), *iter, kickRequest->GetMessage());
+        responseMessage = buildKickoutMsg(client, channelName, *iter, kickRequest->GetMessage());
 
         channel->BroadcastMessage(responseMessage);
         channel->RemoveClient(*iter);
@@ -154,21 +156,20 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
     if (client->HasRegistered())
     {
-        std::stringstream responseMessage;
-        responseMessage << client->GetClientInfo() << "NICK :" << nickRequest->GetNickName();
+        std::string nickChangedMessage = buildNickChangedMsg(client, nickRequest->GetNickName());
 
         Channel *channel = client->GetChannel();
         if (channel)
-            channel->BroadcastMessage(responseMessage.str());
+            channel->BroadcastMessage(nickChangedMessage);
         else
-            client->addResponseToBuf(responseMessage.str());
+            client->addResponseToBuf(nickChangedMessage);
 
         LOG_TRACE("NickRequest Executing - Registered User Changed NickName");
     }
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
-        client->addResponseToBuf(BuildWelcomeMsg(client));
+        client->addResponseToBuf(buildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("NickRequest Executing - SetRegistered");
@@ -181,23 +182,17 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
 bool Executor::Visit(PartRequest *partRequest) const
 {
-    Client *client = partRequest->GetClient();
-
+    const std::string &channelName = partRequest->GetChannelName();
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(partRequest->GetChannelName());
+    Channel *channel = channelRepository->FindByName(channelName);
 
-    std::stringstream responseMessage;
-    responseMessage << client->GetClientInfo() << " PART " << partRequest->GetChannelName();
+    Client *client = partRequest->GetClient();
+    std::string partMessage = buildPartMsg(client, channelName, partRequest->GetReason());
 
-    if (!partRequest->GetReason().empty())
-        responseMessage << " :" << partRequest->GetReason();
-
-    channel->BroadcastMessage(responseMessage.str());
-
-    // Operator 이면 지워주는 것은 내부에서 알아서 해줌
+    channel->BroadcastMessage(partMessage);
     channel->RemoveClient(client->GetNickName());
-    // TODO Shared Ptr 이면 delete?
     client->SetChannel(NULL);
+    // TODO Shared Ptr 이면 delete?
 
     // TODO channel에 사용자가 다 나가면 repository에서 비워주고 channel delete
 
@@ -219,14 +214,9 @@ bool Executor::Visit(PassRequest *passRequest) const
 
 bool Executor::Visit(PingRequest *pingRequest) const
 {
-    EnvManager *envManager = EnvManager::GetInstance();
-    std::string serverName = envManager->GetServerName();
+    std::string pongMessage = buildPongMsg(pingRequest->GetToken());
 
-    std::stringstream responseMessage;
-    responseMessage << ":" << serverName << " PONG " << serverName << " :" << pingRequest->GetToken();
-
-    Client *client = pingRequest->GetClient();
-    client->addResponseToBuf(responseMessage.str());
+    pingRequest->GetClient()->addResponseToBuf(pongMessage);
 
     LOG_TRACE("PingRequest Executed");
 
@@ -239,24 +229,24 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
     Client *client = privmsgRequest->GetClient();
-    std::stringstream responseMessage;
+    std::string privateMessage;
 
     std::vector<std::string> targets = privmsgRequest->GetTargets();
     std::vector<std::string>::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        responseMessage << client->GetClientInfo() << " PRIVMSG " << *iter << privmsgRequest->GetMessage();
+        privateMessage = buildPrivateMsg(client, *iter, privmsgRequest->GetMessage());
 
         if (iter->front() == '#')
         {
             Channel *targetChannel = channelRepository->FindByName(*iter);
-            targetChannel->BroadcastMessage(responseMessage.str());
+            targetChannel->BroadcastMessage(privateMessage);
         }
         else
         {
             Client *targetClient = clientRepository->FindByNickName(*iter);
-            targetClient->addResponseToBuf(responseMessage.str());
+            targetClient->addResponseToBuf(privateMessage);
         }
     }
 
@@ -269,39 +259,22 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 {
     Client *client = quitRequest->GetClient();
 
-    std::stringstream responseMessage;
+    std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
 
-    // TODO hostname 수정
-    responseMessage << "ERROR :Closing link: (" << client->GetUserName() << "@" << client->GetHostName() << ")";
-
-    if (quitRequest->GetReason().empty())
-        responseMessage << " [Client exited]";
-    else
-        responseMessage << " [Quit: " << quitRequest->GetReason() << "]";
-
-    client->addResponseToBuf(responseMessage.str());
+    client->addResponseToBuf(closingLinkMessage);
 
     Channel *channel = client->GetChannel();
-
     if (channel)
     {
-        std::stringstream responseMessage;
+        std::string quitMessage = buildQuitMsg(client, quitRequest->GetReason());
 
-        responseMessage << client->GetClientInfo() << " QUIT :";
-
-        if (quitRequest->GetReason().empty())
-            responseMessage << "Client exited";
-        else
-            responseMessage << "Quit : " << quitRequest->GetReason();
-
-        channel->BroadcastMessage(responseMessage.str());
+        channel->BroadcastMessage(quitMessage);
         channel->RemoveClient(client->GetNickName());
 
         LOG_TRACE("QuitRequest Executing - BroadcastMessage");
     }
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
     // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
@@ -316,18 +289,13 @@ bool Executor::Visit(TopicRequest *topicRequest) const
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     Channel *channel = channelRepository->FindByName(topicRequest->GetChannelName());
 
-    std::string newTopic = topicRequest->GetTopic();
+    std::string topic = topicRequest->GetTopic();
+    channel->SetTopic(topic);
 
-    if (newTopic == channel->GetTopic())
-        return true;
+    std::string topicChangedMessage =
+        buildTopicChangedMsg(topicRequest->GetClient(), topicRequest->GetChannelName(), topic);
 
-    channel->SetTopic(newTopic);
-
-    std::stringstream topicChangedMsg;
-    topicChangedMsg << topicRequest->GetClient()->GetClientInfo() << "TOPIC " << topicRequest->GetChannelName() << " :"
-                    << newTopic;
-
-    channel->BroadcastMessage(topicChangedMsg.str());
+    channel->BroadcastMessage(topicChangedMessage);
 
     LOG_TRACE("TopicRequest Executed");
 
@@ -346,7 +314,7 @@ bool Executor::Visit(UserRequest *userRequest) const
 
     if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
-        client->addResponseToBuf(BuildWelcomeMsg(client));
+        client->addResponseToBuf(buildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("UserRequest Executing - SetRegistered");
@@ -357,7 +325,17 @@ bool Executor::Visit(UserRequest *userRequest) const
     return true;
 }
 
-std::string Executor::BuildWelcomeMsg(Client *client)
+std::string Executor::buildNickChangedMsg(Client *client, const std::string &nickName)
+{
+    std::stringstream nickChangedMessage;
+
+    nickChangedMessage << ":" << client->GetClientInfo() << " NICK "
+                       << ":" << nickName;
+
+    return nickChangedMessage.str();
+}
+
+std::string Executor::buildWelcomeMsg(Client *client)
 {
     EnvManager *envManager = EnvManager::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -395,7 +373,7 @@ std::string Executor::BuildWelcomeMsg(Client *client)
     return welcomeMessage.str();
 }
 
-std::string Executor::BuildReplyInvitingMsg(const std::string &nickName, const std::string &targetNickName,
+std::string Executor::buildReplyInvitingMsg(const std::string &nickName, const std::string &targetNickName,
                                             const std::string &channelName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
@@ -407,7 +385,7 @@ std::string Executor::BuildReplyInvitingMsg(const std::string &nickName, const s
     return replyMessage.str();
 }
 
-std::string Executor::BuildInvitedIntoChannelMsg(const std::string &nickName, const std::string &targetNickName,
+std::string Executor::buildInvitedIntoChannelMsg(const std::string &nickName, const std::string &targetNickName,
                                                  const std::string &channelName)
 {
     EnvManager *envManager = EnvManager::GetInstance();
@@ -419,7 +397,7 @@ std::string Executor::BuildInvitedIntoChannelMsg(const std::string &nickName, co
     return replyMessage.str();
 }
 
-std::string Executor::BuildInvitationMsg(Client *client, const std::string &targetNickName,
+std::string Executor::buildInvitationMsg(Client *client, const std::string &targetNickName,
                                          const std::string &channelName)
 {
     std::stringstream invitationMessage;
@@ -428,11 +406,75 @@ std::string Executor::BuildInvitationMsg(Client *client, const std::string &targ
     return invitationMessage.str();
 }
 
-std::string Executor::BuildKickoutMsg(Client *client, const std::string &channelName, const std::string &targetNickName,
+std::string Executor::buildKickoutMsg(Client *client, const std::string &channelName, const std::string &targetNickName,
                                       const std::string &message)
 {
     std::stringstream kickoutMessage;
     kickoutMessage << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " :" << message;
 
     return kickoutMessage.str();
+}
+
+std::string Executor::buildTopicChangedMsg(Client *client, const std::string &channelName, const std::string &topic)
+{
+    std::stringstream topicChangedMessage;
+    topicChangedMessage << ":" << client->GetClientInfo() << " TOPIC " << channelName << " :" << topic;
+
+    return topicChangedMessage.str();
+}
+
+std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason)
+{
+    std::stringstream closingLinkMessage;
+    closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
+
+    if (reason.empty())
+        closingLinkMessage << "[Client exited]";
+    else
+        closingLinkMessage << "[Quit: " << reason << "]";
+
+    return closingLinkMessage.str();
+}
+
+std::string Executor::buildQuitMsg(Client *client, const std::string &reason)
+{
+    std::stringstream quitMessage;
+    quitMessage << ":" << client->GetClientInfo() << " Quit :";
+
+    if (reason.empty())
+        quitMessage << "Client exited";
+    else
+        quitMessage << "Quit: " << reason;
+
+    return quitMessage.str();
+}
+
+std::string Executor::buildPrivateMsg(Client *client, const std::string &target, const std::string &message)
+{
+    std::stringstream privateMessage;
+    privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " :" << message;
+
+    return privateMessage.str();
+}
+
+std::string Executor::buildPongMsg(const std::string &token)
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    const std::string &serverName = envManager->GetServerName();
+
+    std::stringstream pongMessage;
+    pongMessage << ":" << serverName << " PONG " << serverName << " :" << token;
+
+    return pongMessage.str();
+}
+
+std::string Executor::buildPartMsg(Client *client, const std::string &channelName, const std::string &reason)
+{
+    std::stringstream partMessage;
+    partMessage << ":" << client->GetClientInfo() << " PART " << channelName;
+
+    if (!reason.empty())
+        partMessage << ":" << reason;
+
+    return partMessage.str();
 }
