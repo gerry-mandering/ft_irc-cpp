@@ -197,31 +197,31 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
     std::string command;
-    std::string receivers, message, headOfLast, junk;
-    std::vector<std::string> receiverList;
+    std::string targets, message, headOfLast, junk;
+    std::vector<std::string> targetList;
     const size_t numSpace = 2;
     size_t preLastTokenLen;
 
-    if (!(ss >> command >> receivers))
+    if (!(ss >> command >> targets))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     LOG_TRACE(__func__ << " command: " << command);
-    LOG_TRACE(__func__ << " receivers: " << receivers);
+    LOG_TRACE(__func__ << " targets: " << targets);
 
     // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
     // TODO: 토큰에 :같은 특수문자가 있더라도 아무 상관없다. 어차피 검색해도 못찾을테니
     // ,가 연속으로 나오면 에러, / , 뒤에 아무것도 없으면 에러
-    commaToknizer(receivers, receiverList);
-    LOG_TRACE(__func__ << " receiverList size: " << receiverList.size());
-    LOG_TRACE(receiverList);
+    commaToknizer(targets, targetList);
+    LOG_TRACE(__func__ << " targetList size: " << targetList.size());
+    LOG_TRACE(targetList);
     if (!(ss >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
-    preLastTokenLen = command.size() + receivers.size() + numSpace;
+    preLastTokenLen = command.size() + targets.size() + numSpace;
     message = tcpStreams.substr(tcpStreams.find(headOfLast, preLastTokenLen));
     removeTrailingCRLF(message);
     LOG_TRACE(__func__ << " message: " << message);
-    return (new PrivmsgRequest(socket, receiverList, message));
+    return (new PrivmsgRequest(socket, targetList, message));
 }
 
 Request *parseKick(const std::string &tcpStreams, handle_t socket)
