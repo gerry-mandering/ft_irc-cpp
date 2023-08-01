@@ -173,75 +173,107 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
     return (new PartRequest(socket, channel, message));
 }
 
+static void commaToknizer(const std::string &targets, std::vector<std::string> &targetList)
+{
+    std::string token, lastToken;
+    size_t start = 0;
+    size_t end;
+
+    end = targets.find(',');
+    while (end != std::string::npos)
+    {
+        token = targets.substr(start, end - start);
+        if (!token.empty())
+            targetList.push_back(token);
+        start = end + 1;
+        end = targets.find(',', start);
+    }
+    lastToken = targets.substr(start);
+    if (!lastToken.empty())
+        targetList.push_back(lastToken);
+}
+
 Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
     std::string command;
-    std::string receivers, message, token, lastToken, headOfLast, junk;
-    std::vector<std::string> receiverList;
-    size_t start = 0;
-    size_t end;
+    std::string targets, message, headOfLast, junk;
+    std::vector<std::string> targetList;
+    const size_t numSpace = 2;
+    size_t preLastTokenLen;
 
-    if (!(ss >> command >> receivers))
+    if (!(ss >> command >> targets))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     LOG_TRACE(__func__ << " command: " << command);
-    LOG_TRACE(__func__ << " receivers: " << receivers);
-    end = receivers.find(',');
+    LOG_TRACE(__func__ << " targets: " << targets);
 
     // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
     // TODO: 토큰에 :같은 특수문자가 있더라도 아무 상관없다. 어차피 검색해도 못찾을테니
     // ,가 연속으로 나오면 에러, / , 뒤에 아무것도 없으면 에러
-    while (end != std::string::npos)
-    {
-        // [start, end) substr 생성
-        token = receivers.substr(start, end - start);
-        // receivers = receivers.substr(end + 1);
-        if (!token.empty())
-            receiverList.push_back(token);
-        start = end + 1;
-        end = receivers.find(',', start);
-    }
-    lastToken = receivers.substr(start);
-    if (!lastToken.empty())
-        receiverList.push_back(lastToken);
-    LOG_TRACE(__func__ << " receiverList size: " << receiverList.size());
-    LOG_TRACE(receiverList);
+    commaToknizer(targets, targetList);
+    LOG_TRACE(__func__ << " targetList size: " << targetList.size());
+    LOG_TRACE(targetList);
     if (!(ss >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
-    message = tcpStreams.substr(tcpStreams.find(headOfLast, command.size() + receivers.size() + 2));
+    preLastTokenLen = command.size() + targets.size() + numSpace;
+    message = tcpStreams.substr(tcpStreams.find(headOfLast, preLastTokenLen));
     removeTrailingCRLF(message);
     LOG_TRACE(__func__ << " message: " << message);
-    return (new PrivmsgRequest(socket, receiverList, message));
-}
-
-Request *parseInvite(const std::string &tcpStreams, handle_t socket)
-{
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
+    return (new PrivmsgRequest(socket, targetList, message));
 }
 
 Request *parseKick(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
+    std::stringstream ss(tcpStreams);
+    std::string command, channel, targets, headOfLast, message, junk;
+    std::vector<std::string> targetList;
+    const size_t numSpace = 2;
+    size_t preLastTokenLen;
+
+    if (!(ss >> command >> channel >> targets))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    LOG_TRACE(__func__ << " command: " << command);
+    LOG_TRACE(__func__ << " channel: " << channel);
+    commaToknizer(targets, targetList);
+    LOG_TRACE(__func__ << " targetList size: " << targetList.size());
+    LOG_TRACE(targetList);
+    if (!(ss >> headOfLast))
+        return (new KickRequest(socket, channel, targetList, ""));
+    if (headOfLast.front() != ':')
+        throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
+    preLastTokenLen = command.size() + channel.size() + targets.size() + numSpace;
+    message = tcpStreams.substr(tcpStreams.find(headOfLast, preLastTokenLen));
+    removeTrailingCRLF(message);
+    LOG_TRACE(__func__ << " message: " << message);
+    return (new KickRequest(socket, channel, targetList, message));
+}
+
+Request *parseInvite(const std::string &tcpStreams, handle_t socket)
+{
+    std::stringstream ss(tcpStreams);
+    std::string command, nickname, channel, junk;
+
+    if (!(ss >> command >> nickname >> channel))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (ss >> junk)
+        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    return (new InviteRequest(socket, nickname, channel));
 }
 
 Request *parsePing(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
-}
+    std::stringstream ss(tcpStreams);
+    std::string command, servername, junk;
 
-Request *parsePong(const std::string &tcpStreams, handle_t socket)
-{
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
+    if (!(ss >> command >> servername))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (hasMetaChar(servername))
+        throw InvalidFormat(socket, MSG_INVALID_SERVERNAME + command, INVALID_MSG);
+    if (ss >> junk)
+        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    return (new PingRequest(socket, servername));
 }
 
 } // namespace Parser

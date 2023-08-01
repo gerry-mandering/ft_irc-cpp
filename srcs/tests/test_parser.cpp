@@ -150,6 +150,34 @@ static void test_privmsg()
     test_parseGeneral("PRIVMSG ,,,,,#acdc,,,,bdfs,,,#c,dffsjd,,, :b,c");
 }
 
+static void test_kick()
+{
+    // 기본 테스트
+    test_parseGeneral("KICK");
+    test_parseGeneral("KICK user :b");
+    test_parseGeneral("KICK #a :b");
+    test_parseGeneral("KICK #a dah  :hihi");
+    test_parseGeneral("KICK #a dah  hihi");
+}
+
+static void test_invite()
+{
+    // 기본 테스트
+    test_parseGeneral("INVITE");
+    test_parseGeneral("INVITE user :b");
+    test_parseGeneral("INVITE #a :b");
+    test_parseGeneral("INVITE #a dah  :hihi");
+    test_parseGeneral("INVITE #a dah  hihi");
+}
+
+static void test_ping()
+{
+    test_parseGeneral("PING");
+    test_parseGeneral("PING hihi");
+    test_parseGeneral("PING hihi pong");
+    test_parseGeneral("PING :hihi");
+}
+
 int main(void)
 {
     Request *request;
@@ -160,6 +188,9 @@ int main(void)
     // test_sstream();
     // test_part();
     // test_quit();
-    test_privmsg();
+    // test_privmsg();
+    // test_kick();
+    test_invite();
+    test_ping();
     return (0);
 }
