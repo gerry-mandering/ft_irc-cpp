@@ -85,7 +85,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         else
             errorMessage = buildNotRegisteredMsg("INVITE");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("InviteRequest Invalid - NotRegistered");
 
@@ -101,7 +101,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         std::string errorMessage;
         errorMessage = buildNoSuchChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("InviteRequest Invalid - NoSuchChannel");
 
@@ -117,7 +117,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         std::string errorMessage;
         errorMessage = buildNoSuchNickMsg(nickName, inviteRequest->GetNickName());
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("InviteRequest Invalid - NoSuchNick");
 
@@ -130,7 +130,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         std::string errorMessage;
         errorMessage = buildNotOnChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("InviteRequest Invalid - NotOnChannel");
 
@@ -143,7 +143,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         std::string errorMessage;
         errorMessage = buildUserOnChannelMsg(nickName, inviteRequest->GetNickName(), inviteRequest->GetChannelName());
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("InviteRequest Invalid - UserOnChannel");
 
@@ -156,7 +156,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
         std::string errorMessage;
         errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("InviteRequest Invalid - NotChannelOperator");
 
@@ -186,7 +186,7 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         else
             errorMessage = buildNotRegisteredMsg("JOIN");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_DEBUG("JoinRequest Invalid - NotRegistered");
 
@@ -228,7 +228,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
         else
             errorMessage = buildNotRegisteredMsg("KICK");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("KickRequest Invalid - NotRegistered");
 
@@ -245,7 +245,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
 
         errorMessage = buildNoSuchChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("KickRequest Invalid - NoSuchChannel");
 
@@ -268,7 +268,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
             std::string errorMessage;
             errorMessage = buildNoSuchNickMsg(nickName, *iter);
 
-            client->addResponseToBuf(errorMessage);
+            client->AddResponseToBuf(errorMessage);
 
             LOG_TRACE("KickRequest Invalid - NoSuchNick");
 
@@ -281,7 +281,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
             std::string errorMessage;
             errorMessage = buildNotOnChannelMsg(nickName, channelName);
 
-            client->addResponseToBuf(errorMessage);
+            client->AddResponseToBuf(errorMessage);
 
             LOG_TRACE("KickRequest Invalid - NotOnChannel");
 
@@ -294,7 +294,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
             std::string errorMessage;
             errorMessage = buildUserNotInChannelMsg(nickName, *iter, channelName);
 
-            client->addResponseToBuf(errorMessage);
+            client->AddResponseToBuf(errorMessage);
 
             LOG_TRACE("KickRequest Invalid - UserNotOnChannel");
 
@@ -307,7 +307,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
             std::string errorMessage;
             errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
 
-            client->addResponseToBuf(errorMessage);
+            client->AddResponseToBuf(errorMessage);
 
             LOG_TRACE("KickRequest Invalid - NotChannelOperator");
 
@@ -346,7 +346,7 @@ bool Validator::Visit(ModeRequest *modeRequest) const
         else
             errorMessage = buildNotRegisteredMsg("MODE");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("ModeRequest Invalid - NotRegistered");
 
@@ -384,7 +384,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
         else
             errorMessage = buildNickNameInUseMsg(nickRequest->GetNickName());
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("NickRequest Invalid - NickNameIsUse");
 
@@ -397,7 +397,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
         std::string errorMessage;
         errorMessage = buildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("NickRequest Invalid - AccessDenied");
 
@@ -425,7 +425,7 @@ bool Validator::Visit(PartRequest *partRequest) const
         else
             errorMessage = buildNotRegisteredMsg("PART");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PartRequest Invalid - NotRegistered");
 
@@ -441,7 +441,7 @@ bool Validator::Visit(PartRequest *partRequest) const
         std::string errorMessage;
         errorMessage = buildNoSuchChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PartRequest Invalid - NoSuchChannel");
 
@@ -454,7 +454,7 @@ bool Validator::Visit(PartRequest *partRequest) const
         std::string errorMessage;
         errorMessage = buildNotOnChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PartRequest Invalid - NotOnChannel");
 
@@ -481,7 +481,7 @@ bool Validator::Visit(PassRequest *passRequest) const
         else
             errorMessage = buildAlreadyRegisteredMsg();
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PassRequest Invalid - AlreadyRegistered");
 
@@ -500,7 +500,7 @@ bool Validator::Visit(PassRequest *passRequest) const
         else
             errorMessage = buildAccessDeniedMsg(); // TODO 사용자 hostname 은 가져와서 넣기
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PassRequest Invalid - AccessDenied");
 
@@ -526,7 +526,7 @@ bool Validator::Visit(PingRequest *pingRequest) const
         else
             errorMessage = buildNotRegisteredMsg("PING");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PingRequest Invalid - NotRegistered");
 
@@ -553,7 +553,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
         else
             errorMessage = buildNotRegisteredMsg("PRIVMSG");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("PrivmsgRequest Invalid - NotRegistered");
 
@@ -579,7 +579,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
                 std::string errorMessage;
                 errorMessage = buildNoSuchChannelMsg(nickName, *iter);
 
-                client->addResponseToBuf(errorMessage);
+                client->AddResponseToBuf(errorMessage);
 
                 LOG_TRACE("PrivmsgRequest Invalid - NoSuchChannel");
             }
@@ -589,7 +589,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
                 std::string errorMessage;
                 errorMessage = buildCannotSendToChannelMsg(nickName, *iter);
 
-                client->addResponseToBuf(errorMessage);
+                client->AddResponseToBuf(errorMessage);
 
                 LOG_TRACE("PrivmsgRequest Invalid - CannotSendToChannel");
             }
@@ -608,7 +608,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
                 std::string errorMessage;
                 errorMessage = buildNoSuchNickMsg(nickName, *iter);
 
-                client->addResponseToBuf(errorMessage);
+                client->AddResponseToBuf(errorMessage);
 
                 LOG_TRACE("PrivmsgRequest Invalid - NoSuchNick");
             }
@@ -656,7 +656,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
         else
             errorMessage = buildNotRegisteredMsg("TOPIC");
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("TopicRequest Invalid - NotRegistered");
 
@@ -672,7 +672,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
         std::string errorMessage;
         errorMessage = buildNoSuchChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("TopicRequest Invalid - NoSuchChannel");
 
@@ -685,7 +685,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
         std::string errorMessage;
         errorMessage = buildNotOnChannelMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("TopicRequest Invalid - NotOnChannel");
 
@@ -698,7 +698,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
         std::string errorMessage;
         errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("TopicRequest Invalid - NotChannelOperator");
 
@@ -729,7 +729,7 @@ bool Validator::Visit(UserRequest *userRequest) const
         else
             errorMessage = buildAlreadyRegisteredMsg();
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("UserRequest Invalid - AlreadyRegistered");
 
@@ -743,7 +743,7 @@ bool Validator::Visit(UserRequest *userRequest) const
         // TODO hostname Ip로 알아오기
         errorMessage = buildAccessDeniedMsg(userRequest->GetUserName(), userRequest->GetHostName());
 
-        client->addResponseToBuf(errorMessage);
+        client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("UserRequest Invalid - AccessDenied");
 

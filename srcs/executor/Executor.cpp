@@ -21,7 +21,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
 
     // RPL_INVITING 메세지 요청자에게 보내기
     std::string replyInvitingMessage = buildReplyInvitingMsg(nickName, targetNickName, channelName);
-    client->addResponseToBuf(replyInvitingMessage);
+    client->AddResponseToBuf(replyInvitingMessage);
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     Channel *channel = channelRepository->FindByName(channelName);
@@ -34,7 +34,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
 
     // 초대를 받은 사람에게 초대장 메세지 보내기
     std::string invitationMessage = buildInvitationMsg(client, targetNickName, channelName);
-    targetClient->addResponseToBuf(invitationMessage);
+    targetClient->AddResponseToBuf(invitationMessage);
 
     channel->AddToInvitedClient(targetClient);
 
@@ -162,14 +162,14 @@ bool Executor::Visit(NickRequest *nickRequest) const
         if (channel)
             channel->BroadcastMessage(nickChangedMessage);
         else
-            client->addResponseToBuf(nickChangedMessage);
+            client->AddResponseToBuf(nickChangedMessage);
 
         LOG_TRACE("NickRequest Executing - Registered User Changed NickName");
     }
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
-        client->addResponseToBuf(buildWelcomeMsg(client));
+        client->AddResponseToBuf(buildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("NickRequest Executing - SetRegistered");
@@ -216,7 +216,7 @@ bool Executor::Visit(PingRequest *pingRequest) const
 {
     std::string pongMessage = buildPongMsg(pingRequest->GetToken());
 
-    pingRequest->GetClient()->addResponseToBuf(pongMessage);
+    pingRequest->GetClient()->AddResponseToBuf(pongMessage);
 
     LOG_TRACE("PingRequest Executed");
 
@@ -246,7 +246,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         else
         {
             Client *targetClient = clientRepository->FindByNickName(*iter);
-            targetClient->addResponseToBuf(privateMessage);
+            targetClient->AddResponseToBuf(privateMessage);
         }
     }
 
@@ -261,7 +261,7 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 
     std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
 
-    client->addResponseToBuf(closingLinkMessage);
+    client->AddResponseToBuf(closingLinkMessage);
 
     Channel *channel = client->GetChannel();
     if (channel)
@@ -314,7 +314,7 @@ bool Executor::Visit(UserRequest *userRequest) const
 
     if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
-        client->addResponseToBuf(buildWelcomeMsg(client));
+        client->AddResponseToBuf(buildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("UserRequest Executing - SetRegistered");

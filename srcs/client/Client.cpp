@@ -10,7 +10,7 @@ Client::Client(handle_t socket)
     LOG_TRACE("Client constructor called | " << *this);
 }
 
-void Client::addResponseToBuf(const std::string &response)
+void Client::AddResponseToBuf(const std::string &response)
 {
     EventHandler *handler = g_reactor().getHandler(mSocket);
 

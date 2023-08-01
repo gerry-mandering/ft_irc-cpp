@@ -43,7 +43,7 @@ class Client
     bool HasEnteredNickName() const;
     bool HasEnteredUserInfo() const;
 
-    void addResponseToBuf(const std::string &response);
+    void AddResponseToBuf(const std::string &response);
 
     friend std::ostream &operator<<(std::ostream &os, const Client &client);
 
