@@ -6,12 +6,17 @@ Channel::Channel(const std::string &name)
     LOG_TRACE("Channel constructor called | " << *this);
 }
 
-size_t Channel::GetClientCount() const
+void Channel::SetClientLimit(int limit)
+{
+    mClientLimit = limit;
+}
+
+int Channel::GetClientCount() const
 {
     return mClients.size();
 }
 
-size_t Channel::GetClientLimit() const
+int Channel::GetClientLimit() const
 {
     return mClientLimit;
 }
@@ -23,7 +28,7 @@ void Channel::BroadcastMessage(const std::string &message)
 
     while (iter != mClients.end())
     {
-        (*iter)->addResponseToBuf(message);
+        (*iter)->AddResponseToBuf(message);
         iter++;
     }
 }
@@ -35,7 +40,7 @@ void Channel::BroadcastMessageExcludingRequestor(const std::string &message, con
     while (iter != mClients.end())
     {
         if ((*iter)->GetNickName() != requestorNickName)
-            (*iter)->addResponseToBuf(message);
+            (*iter)->AddResponseToBuf(message);
         iter++;
     }
 }
@@ -156,14 +161,19 @@ void Channel::RemoveFromInvitedClient(const std::string &nickName)
     }
 }
 
+void Channel::SetTopic(const std::string &topic)
+{
+    mTopic = topic;
+}
+
 const std::string &Channel::GetTopic() const
 {
     return mTopic;
 }
 
-void Channel::SetTopic(const std::string &topic)
+void Channel::SetKey(const std::string &key)
 {
-    mTopic = topic;
+    mKey = key;
 }
 
 const std::string &Channel::GetKey() const

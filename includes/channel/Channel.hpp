@@ -13,8 +13,11 @@ class Channel
   public:
     Channel(const std::string &name);
 
-    size_t GetClientCount() const;
-    size_t GetClientLimit() const;
+    void SetClientLimit(int limit);
+    int GetClientCount() const;
+    int GetClientLimit() const;
+
+    void SetKey(const std::string &key);
     const std::string &GetKey() const;
 
     void BroadcastMessage(const std::string &message);
@@ -33,8 +36,8 @@ class Channel
     void RemoveFromInvitedClient(const std::string &nickName);
     bool CheckClientIsInvited(const std::string &nickName);
 
-    const std::string &GetTopic() const;
     void SetTopic(const std::string &topic);
+    const std::string &GetTopic() const;
 
     bool IsInviteOnlyMode() const;
     bool IsProtectedTopicMode() const;
@@ -67,7 +70,7 @@ class Channel
     std::vector<Client *> mInvitedClients;
     std::string mTopic;
     std::string mKey;
-    size_t mClientLimit;
+    int mClientLimit;
 
     int mModeFlags;
 };

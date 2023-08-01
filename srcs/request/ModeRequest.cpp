@@ -1,9 +1,8 @@
 #include "ModeRequest.hpp"
 
-ModeRequest::ModeRequest(handle_t socket, const std::string &channelName, const std::string &plusMinus,
+ModeRequest::ModeRequest(handle_t socket, const std::string &channelName, const std::string &sign,
                          const std::string &modeChar, const std::string &modeArgument)
-    : Request(socket), mChannelName(channelName), mPlusMinus(plusMinus), mModeChar(modeChar),
-      mModeArgument(modeArgument)
+    : Request(socket), mChannelName(channelName), mSign(sign), mModeChar(modeChar), mModeArgument(modeArgument)
 {
     LOG_TRACE("ModeRequest constructor called | " << *this);
 }
@@ -18,9 +17,9 @@ void ModeRequest::SetChannelName(const std::string &channelName)
     mChannelName = channelName;
 }
 
-void ModeRequest::SetPlusMinus(const std::string &plusMinus)
+void ModeRequest::SetSign(const std::string &sign)
 {
-    mPlusMinus = plusMinus;
+    mSign = sign;
 }
 
 void ModeRequest::SetModeChar(const std::string &modeChar)
@@ -38,9 +37,9 @@ const std::string &ModeRequest::GetChannelName() const
     return mChannelName;
 }
 
-const std::string &ModeRequest::GetPlusMinus() const
+const std::string &ModeRequest::GetSign() const
 {
-    return mPlusMinus;
+    return mSign;
 }
 
 const std::string &ModeRequest::GetModeChar() const
@@ -55,7 +54,7 @@ const std::string &ModeRequest::GetModeArgument() const
 
 std::ostream &operator<<(std::ostream &os, const ModeRequest &modeRequest)
 {
-    os << "ModeRequest = { ChannelName: " << modeRequest.mChannelName << ", PlusMinus: " << modeRequest.mPlusMinus
+    os << "ModeRequest = { ChannelName: " << modeRequest.mChannelName << ", PlusMinus: " << modeRequest.mSign
        << ", ModeChar: " << modeRequest.mModeArgument << " }";
 
     return os;
