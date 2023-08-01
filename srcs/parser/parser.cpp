@@ -224,14 +224,33 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     return (new PrivmsgRequest(socket, receiverList, message));
 }
 
-Request *parseInvite(const std::string &tcpStreams, handle_t socket)
+Request *parseKick(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    return (0);
+    std::stringstream ss(tcpStreams);
+    std::string command, channel, targets, headOfLast, message, junk;
+    std::vector<std::string> targetList;
+    const size_t numSpace = 2;
+    size_t preLastTokenLen;
+
+    if (!(ss >> command >> channel >> targets))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    LOG_TRACE(__func__ << " command: " << command);
+    LOG_TRACE(__func__ << " channel: " << channel);
+    commaToknizer(targets, targetList);
+    LOG_TRACE(__func__ << " targetList size: " << targetList.size());
+    LOG_TRACE(targetList);
+    if (!(ss >> headOfLast))
+        return (new KickRequest(socket, channel, targetList, ""));
+    if (headOfLast.front() != ':')
+        throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
+    preLastTokenLen = command.size() + channel.size() + targets.size() + numSpace;
+    message = tcpStreams.substr(tcpStreams.find(headOfLast, preLastTokenLen));
+    removeTrailingCRLF(message);
+    LOG_TRACE(__func__ << " message: " << message);
+    return (new KickRequest(socket, channel, targetList, message));
 }
 
-Request *parseKick(const std::string &tcpStreams, handle_t socket)
+Request *parseInvite(const std::string &tcpStreams, handle_t socket)
 {
     (void)tcpStreams;
     (void)socket;
