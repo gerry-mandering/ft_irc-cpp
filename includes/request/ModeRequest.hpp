@@ -6,18 +6,18 @@ class ModeRequest : public Request
 {
 
   public:
-    ModeRequest(handle_t socket, const std::string &channelName, const std::string &plusMinus,
-                const std::string &modeChar, const std::string &modeArgument);
+    ModeRequest(handle_t socket, const std::string &channelName, const std::string &sign, const std::string &modeChar,
+                const std::string &modeArgument);
 
     bool Accept(visitor_pattern::Visitor *visitor);
 
     void SetChannelName(const std::string &channelName);
-    void SetPlusMinus(const std::string &plusMinus);
+    void SetSign(const std::string &sign);
     void SetModeChar(const std::string &modeChar);
     void SetModeArgument(const std::string &modeArgument);
 
     const std::string &GetChannelName() const;
-    const std::string &GetPlusMinus() const;
+    const std::string &GetSign() const;
     const std::string &GetModeChar() const;
     const std::string &GetModeArgument() const;
 
@@ -25,7 +25,7 @@ class ModeRequest : public Request
 
   private:
     std::string mChannelName;
-    std::string mPlusMinus;
+    std::string mSign;
     std::string mModeChar;
     std::string mModeArgument;
 };
