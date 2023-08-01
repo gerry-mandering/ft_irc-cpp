@@ -854,7 +854,7 @@ bool Validator::Visit(UserRequest *userRequest) const
     return true;
 }
 
-std::string Validator::buildAlreadyRegisteredMsg(const std::string &nickName)
+std::string Validator::buildAlreadyRegisteredMsg(const std::string &nickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
     std::stringstream errorMessage;
@@ -866,7 +866,7 @@ std::string Validator::buildAlreadyRegisteredMsg(const std::string &nickName)
 
 // TODO 원래는 GetHostName()이 아니라 아이피 주소로 출력됨 방법 찾기
 // TODO AccessDenied 는 연결을 끊어야 함!!!!!
-std::string Validator::buildAccessDeniedMsg(const std::string &userName, const std::string &hostName)
+std::string Validator::buildAccessDeniedMsg(const std::string &userName, const std::string &hostName) const
 {
     std::stringstream errorMessage;
     errorMessage << "Error :Closing link: (" << userName << "@" << hostName << ") [Access denied by configuration]";
@@ -874,7 +874,7 @@ std::string Validator::buildAccessDeniedMsg(const std::string &userName, const s
     return errorMessage.str();
 }
 
-std::string Validator::buildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName)
+std::string Validator::buildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -885,7 +885,7 @@ std::string Validator::buildNickNameInUseMsg(const std::string &newNickName, con
     return errorMessage.str();
 }
 
-std::string Validator::buildNotRegisteredMsg(const std::string &commandType, const std::string &nickName)
+std::string Validator::buildNotRegisteredMsg(const std::string &commandType, const std::string &nickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -896,7 +896,7 @@ std::string Validator::buildNotRegisteredMsg(const std::string &commandType, con
     return errorMessage.str();
 }
 
-std::string Validator::buildNoSuchChannelMsg(const std::string &nickName, const std::string &channelName)
+std::string Validator::buildNoSuchChannelMsg(const std::string &nickName, const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -907,7 +907,7 @@ std::string Validator::buildNoSuchChannelMsg(const std::string &nickName, const 
     return errorMessage.str();
 }
 
-std::string Validator::buildNoSuchNickMsg(const std::string &nickName, const std::string &targetNickName)
+std::string Validator::buildNoSuchNickMsg(const std::string &nickName, const std::string &targetNickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -918,7 +918,7 @@ std::string Validator::buildNoSuchNickMsg(const std::string &nickName, const std
     return errorMessage.str();
 }
 
-std::string Validator::buildNotOnChannelMsg(const std::string &nickName, const std::string &channelName)
+std::string Validator::buildNotOnChannelMsg(const std::string &nickName, const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -930,7 +930,7 @@ std::string Validator::buildNotOnChannelMsg(const std::string &nickName, const s
 }
 
 std::string Validator::buildUserOnChannelMsg(const std::string &nickName, const std::string &targetNickName,
-                                             const std::string &channelName)
+                                             const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -942,7 +942,7 @@ std::string Validator::buildUserOnChannelMsg(const std::string &nickName, const 
 }
 
 std::string Validator::buildUserNotInChannelMsg(const std::string &nickName, const std::string &targetNickName,
-                                                const std::string &channelName)
+                                                const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -953,7 +953,7 @@ std::string Validator::buildUserNotInChannelMsg(const std::string &nickName, con
     return errorMessage.str();
 }
 
-std::string Validator::buildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName)
+std::string Validator::buildNotChannelOperatorMsg(const std::string &nickName, const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -964,7 +964,7 @@ std::string Validator::buildNotChannelOperatorMsg(const std::string &nickName, c
     return errorMessage.str();
 }
 
-std::string Validator::buildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName)
+std::string Validator::buildCannotSendToChannelMsg(const std::string &nickName, const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -975,7 +975,7 @@ std::string Validator::buildCannotSendToChannelMsg(const std::string &nickName, 
     return errorMessage.str();
 }
 
-std::string Validator::buildKeySetMsg(const std::string &nickName, const std::string &channelName)
+std::string Validator::buildKeySetMsg(const std::string &nickName, const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 

@@ -368,7 +368,7 @@ bool Executor::Visit(UserRequest *userRequest) const
     return true;
 }
 
-std::string Executor::buildNickChangedMsg(Client *client, const std::string &nickName)
+std::string Executor::buildNickChangedMsg(Client *client, const std::string &nickName) const
 {
     std::stringstream nickChangedMessage;
 
@@ -378,7 +378,7 @@ std::string Executor::buildNickChangedMsg(Client *client, const std::string &nic
     return nickChangedMessage.str();
 }
 
-std::string Executor::buildWelcomeMsg(Client *client)
+std::string Executor::buildWelcomeMsg(Client *client) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -417,7 +417,7 @@ std::string Executor::buildWelcomeMsg(Client *client)
 }
 
 std::string Executor::buildReplyInvitingMsg(const std::string &nickName, const std::string &targetNickName,
-                                            const std::string &channelName)
+                                            const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -429,7 +429,7 @@ std::string Executor::buildReplyInvitingMsg(const std::string &nickName, const s
 }
 
 std::string Executor::buildInvitedIntoChannelMsg(const std::string &nickName, const std::string &targetNickName,
-                                                 const std::string &channelName)
+                                                 const std::string &channelName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
@@ -441,7 +441,7 @@ std::string Executor::buildInvitedIntoChannelMsg(const std::string &nickName, co
 }
 
 std::string Executor::buildInvitationMsg(Client *client, const std::string &targetNickName,
-                                         const std::string &channelName)
+                                         const std::string &channelName) const
 {
     std::stringstream invitationMessage;
     invitationMessage << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
@@ -450,7 +450,7 @@ std::string Executor::buildInvitationMsg(Client *client, const std::string &targ
 }
 
 std::string Executor::buildKickoutMsg(Client *client, const std::string &channelName, const std::string &targetNickName,
-                                      const std::string &message)
+                                      const std::string &message) const
 {
     std::stringstream kickoutMessage;
     kickoutMessage << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " :" << message;
@@ -458,7 +458,8 @@ std::string Executor::buildKickoutMsg(Client *client, const std::string &channel
     return kickoutMessage.str();
 }
 
-std::string Executor::buildTopicChangedMsg(Client *client, const std::string &channelName, const std::string &topic)
+std::string Executor::buildTopicChangedMsg(Client *client, const std::string &channelName,
+                                           const std::string &topic) const
 {
     std::stringstream topicChangedMessage;
     topicChangedMessage << ":" << client->GetClientInfo() << " TOPIC " << channelName << " :" << topic;
@@ -466,7 +467,7 @@ std::string Executor::buildTopicChangedMsg(Client *client, const std::string &ch
     return topicChangedMessage.str();
 }
 
-std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason)
+std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
 {
     std::stringstream closingLinkMessage;
     closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
@@ -479,7 +480,7 @@ std::string Executor::buildClosingLinkMsg(Client *client, const std::string &rea
     return closingLinkMessage.str();
 }
 
-std::string Executor::buildQuitMsg(Client *client, const std::string &reason)
+std::string Executor::buildQuitMsg(Client *client, const std::string &reason) const
 {
     std::stringstream quitMessage;
     quitMessage << ":" << client->GetClientInfo() << " Quit :";
@@ -492,7 +493,7 @@ std::string Executor::buildQuitMsg(Client *client, const std::string &reason)
     return quitMessage.str();
 }
 
-std::string Executor::buildPrivateMsg(Client *client, const std::string &target, const std::string &message)
+std::string Executor::buildPrivateMsg(Client *client, const std::string &target, const std::string &message) const
 {
     std::stringstream privateMessage;
     privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " :" << message;
@@ -500,7 +501,7 @@ std::string Executor::buildPrivateMsg(Client *client, const std::string &target,
     return privateMessage.str();
 }
 
-std::string Executor::buildPongMsg(const std::string &token)
+std::string Executor::buildPongMsg(const std::string &token) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
     const std::string &serverName = envManager->GetServerName();
@@ -511,7 +512,7 @@ std::string Executor::buildPongMsg(const std::string &token)
     return pongMessage.str();
 }
 
-std::string Executor::buildPartMsg(Client *client, const std::string &channelName, const std::string &reason)
+std::string Executor::buildPartMsg(Client *client, const std::string &channelName, const std::string &reason) const
 {
     std::stringstream partMessage;
     partMessage << ":" << client->GetClientInfo() << " PART " << channelName;
@@ -523,7 +524,7 @@ std::string Executor::buildPartMsg(Client *client, const std::string &channelNam
 }
 
 std::string Executor::buildModeChangedMsg(Client *client, const std::string &channelName, const std::string &sign,
-                                          const std::string &modeChar, const std::string &modeArgument)
+                                          const std::string &modeChar, const std::string &modeArgument) const
 {
     std::stringstream modeChangedMsg;
     modeChangedMsg << ":" << client->GetClientInfo() << " MODE " << channelName;
