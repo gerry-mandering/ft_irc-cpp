@@ -3,9 +3,6 @@
 #include <exception>
 #include <string>
 
-namespace Wrapper
-{
-
 class SyscallException : public ::std::exception
 {
   private:
@@ -16,4 +13,3 @@ class SyscallException : public ::std::exception
     virtual const char *what() const throw();
     virtual ~SyscallException() throw() {} // Add this line
 };
-} // namespace Wrapper
