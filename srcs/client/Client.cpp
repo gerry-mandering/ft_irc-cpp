@@ -4,8 +4,8 @@
 const std::string Client::CRLF = "\r\n";
 
 Client::Client(handle_t socket)
-    : mSocket(socket), mChannel(NULL), mNickName(std::string()), mUserName(std::string()), mHostName(std::string()),
-      mServerName(std::string()), mRealName(std::string()), mRegistrationFlags(0)
+    : mSocket(socket), mChannel(NULL), mbOperatorFlag(false), mNickName(std::string()), mUserName(std::string()),
+      mHostName(std::string()), mServerName(std::string()), mRealName(std::string()), mRegistrationFlags(0)
 {
     LOG_TRACE("Client constructor called | " << *this);
 }
@@ -39,6 +39,21 @@ void Client::SetChannel(Channel *channel)
 Channel *Client::GetChannel() const
 {
     return mChannel;
+}
+
+void Client::SetOperatorFlag()
+{
+    mbOperatorFlag = true;
+}
+
+void Client::RemoveOperatorFlag()
+{
+    mbOperatorFlag = false;
+}
+
+bool Client::GetOperatorFlag() const
+{
+    return mbOperatorFlag;
 }
 
 void Client::SetNickName(const std::string &nickName)

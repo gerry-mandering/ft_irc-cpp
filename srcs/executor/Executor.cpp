@@ -57,14 +57,29 @@ bool Executor::Visit(JoinRequest *joinRequest) const
     if (!channel)
     {
         LOG_TRACE("First Join: create new channel");
+
         channel = channelRepo->CreateChannel(joinRequest->getChannelName());
+
         LOG_TRACE("call SetClient, SetOperator");
+
         channel->SetClient(client);
         channel->SetOperator(client);
+        client->SetOperatorFlag();
+
+        std::string responseMessage = buildJoinMsg(client, channel);
+        client->AddResponseToBuf(responseMessage);
+
         return true;
     }
+
     LOG_TRACE("Join already existing channel");
+
     channel->SetClient(client);
+    client->RemoveOperatorFlag();
+
+    std::string responseMessage = buildJoinMsg(client, channel);
+    client->AddResponseToBuf(responseMessage);
+
     return true;
 
     // 레거시.. 지울게요
@@ -147,9 +162,15 @@ bool Executor::Visit(ModeRequest *modeRequest) const
         Client *targetClient = clientRepository->FindByNickName(modeArgument);
 
         if (sign == "+")
+        {
             channel->SetOperator(targetClient);
+            targetClient->SetOperatorFlag();
+        }
         else
+        {
             channel->RemoveOperator(targetClient->GetNickName());
+            targetClient->RemoveOperatorFlag();
+        }
     }
     else if (modeChar == "l")
     {
@@ -525,7 +546,7 @@ std::string Executor::buildPartMsg(Client *client, const std::string &channelNam
     partMessage << ":" << client->GetClientInfo() << " PART " << channelName;
 
     if (!reason.empty())
-        partMessage << ":" << reason;
+        partMessage << " " << reason;
 
     return partMessage.str();
 }
@@ -533,13 +554,44 @@ std::string Executor::buildPartMsg(Client *client, const std::string &channelNam
 std::string Executor::buildModeChangedMsg(Client *client, const std::string &channelName, const std::string &sign,
                                           const std::string &modeChar, const std::string &modeArgument) const
 {
-    std::stringstream modeChangedMsg;
-    modeChangedMsg << ":" << client->GetClientInfo() << " MODE " << channelName;
+    std::stringstream modeChangedMessage;
+    modeChangedMessage << ":" << client->GetClientInfo() << " MODE " << channelName;
 
     if (modeArgument.empty())
-        modeChangedMsg << " :" << sign << modeChar;
+        modeChangedMessage << " :" << sign << modeChar;
     else
-        modeChangedMsg << " " << sign << modeChar << " :" << modeArgument;
+        modeChangedMessage << " " << sign << modeChar << " :" << modeArgument;
 
-    return modeChangedMsg.str();
+    return modeChangedMessage.str();
+}
+
+std::string Executor::buildJoinMsg(Client *client, Channel *channel) const
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+    const std::string &channelName = channel->GetName();
+    const std::string &serverName = envManager->GetServerName();
+    const std::string &nickName = client->GetNickName();
+
+    std::stringstream joinMessage;
+    joinMessage << ":" << client->GetClientInfo() << " JOIN " << channelName << "\r\n";
+    joinMessage << ":" << serverName << " 353 " << nickName << " = " << channelName << " :";
+
+    std::vector<Client *> clients = channel->GetClients();
+    std::vector<Client *>::iterator iter;
+
+    for (iter = clients.begin(); iter != clients.end(); iter++)
+    {
+        if ((*iter)->GetOperatorFlag())
+            joinMessage << "@" << (*iter)->GetNickName();
+        else
+            joinMessage << (*iter)->GetNickName();
+
+        if (iter != (clients.end() - 1))
+            joinMessage << " ";
+    }
+
+    joinMessage << "\r\n";
+    joinMessage << ":" << serverName << " 366 " << nickName << " " << channelName << " :End of /Names list.";
+
+    return joinMessage.str();
 }

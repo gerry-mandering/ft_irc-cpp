@@ -21,6 +21,10 @@ class Client
     void SetChannel(Channel *channel);
     Channel *GetChannel() const;
 
+    void SetOperatorFlag();
+    void RemoveOperatorFlag();
+    bool GetOperatorFlag() const;
+
     void SetNickName(const std::string &nickName);
     void SetUserName(const std::string &userName);
     void SetHostName(const std::string &hostName);
@@ -58,6 +62,7 @@ class Client
     handle_t mSocket;
 
     Channel *mChannel;
+    bool mbOperatorFlag;
 
     std::string mNickName;
     std::string mUserName;
