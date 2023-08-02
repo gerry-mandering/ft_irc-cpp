@@ -21,15 +21,22 @@ typedef enum eInvaldFormat
     INVALID_NICKNAME,
     INVALID_USER,
     INVALID_HOSTNAME,
+    INVALID_SERVERNAME,
     INVALID_CHANNEL,
     INVALID_TOPIC,
     INVALID_KEY,
     INVALID_MSG,
+    INVALID_MODE_OPTION,
+    INVALID_MODE_ARGUMENT,
+    // INVALID_MODE_LIMIT,
+    // INVALID_MODE_USER
 } eInvaldFormat;
 
 #define MSG_INVALID_CMD "Invalid command"
 #define MSG_NOT_ENOUGH_PARAMS "Not enough parameters"
 #define MSG_TOO_MANY_PARAMS "Too many parameters"
+#define MSG_INVALID_MSG "Invalid message"
+#define MSG_MODE_EXCEPTION "Exception case: it won't be handled"
 
 #define MSG_INVALID_PASSWORD "Invalid naming password"
 #define MSG_INVALID_NICKNAME "Invalid naming nickname"
@@ -38,16 +45,22 @@ typedef enum eInvaldFormat
 #define MSG_INVALID_CHANNEL "Invalid naming channel"
 #define MSG_INVALID_TOPIC "Invalid naming topic"
 #define MSG_INVALID_KEY "Invalid naming key"
-#define MSG_INVALID_MSG "Invalid message"
 #define MSG_INVALID_SERVERNAME "Invalid naming servername"
+#define MSG_INVALID_MODE_OPTION "Invalid mode option"
+#define MSG_INVALID_MODE_ARGUMENT "Invalid mode argument"
+// #define MSG_INVALID_MODE_LIMIT "Invalid mode argument"
+// #define MSG_INVALID_MODE_USER "Invalid mode user"
 
-std::string eTypeToString(eInvaldFormat code);
-std::string invalidFormatMsg(eInvaldFormat type, const std::string &msg);
+std::string eTypeToString(Parser::eInvaldFormat code);
+std::string invalidFormatMsg(Parser::eInvaldFormat type, const std::string &msg);
 void removeTrailingCRLF(std::string &str);
-void removeTrailingCR(std::string &str);
-bool isLastToken(const std::string &token);
 bool isalnum(const std::string &str);
 bool hasMetaChar(const std::string &str);
+void commaToknizer(const std::string &targets, std::vector<std::string> &targetList);
+bool invalidSign(const std::string &sign);
+bool invalidModeType(const std::string &modeType);
+bool notNeedOptionalToken(const std::string &sign, const std::string &modeType);
+bool modeExceptionCase(const std::string &nickname, const std::string &modeToken);
 
 Request *parseRequest(const std::string &tcpStream, handle_t socket);
 Request *parsePass(const std::string &tcpStream, handle_t socket);

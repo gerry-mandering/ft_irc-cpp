@@ -49,4 +49,12 @@ void InvalidFormat::handleError() const throw()
     std::cerr << what() << std::endl;
     return;
 }
+
+modeException::modeException(handle_t socket, const std::string &msg) throw() : ParseException(socket, msg) {}
+
+void modeException::handleError() const throw()
+{
+    std::cerr << what() << std::endl;
+    return;
+}
 } // namespace Parser

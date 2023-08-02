@@ -1,3 +1,4 @@
+#include "parser.h"
 #include "LoggingHandler.hpp"
 #include "ParseException.hpp"
 #include "debug.h"
@@ -29,7 +30,7 @@ Request *parseRequest(const std::string &tcpStreams, handle_t socket)
     std::string command;
 
     ss >> command;
-    LOG_TRACE("command: " << command);
+    LOG_TRACE(__func__ << " command: " << command);
     it = parsers.find(command);
     if (it != parsers.end())
         return (it->second)(tcpStreams, socket);
@@ -122,23 +123,31 @@ Request *parseTopic(const std::string &tcpStreams, handle_t socket)
 
 Request *parseMode(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    // std::stringstream ss(tcpStreams);
-    // std::string command;
-    // std::string channel;
-    // std::string mode;
+    std::stringstream ss(tcpStreams);
+    std::string command, channel, modeToken, sign, modeType, optionalToken, junk;
 
-    // if (!(ss >> command >> channel >> mode))
-    // {
-    //     // throw not enough prams;
-    // }
-    // if (!isLastToken(mode))
-    // {
-    //     // throw MSG_TOO_MANY_PARAMS + command;
-    // }
-    // return (new ModeRequest(socket, channel, mode));
-    return (0);
+    if (!(ss >> command >> channel >> modeToken))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (modeExceptionCase(channel, modeToken))
+        throw modeException(socket, MSG_MODE_EXCEPTION + command);
+    sign = modeToken.front();
+    modeType = modeToken.substr(1);
+    if (invalidSign(sign) || invalidModeType(modeType))
+        throw InvalidFormat(socket, MSG_INVALID_MODE_OPTION + command, INVALID_MODE_OPTION);
+    LOG_TRACE(__func__ << " sign: " << sign << " modeType: " << modeType);
+    ss >> optionalToken;
+    if (notNeedOptionalToken(sign, modeType))
+    {
+        if (!optionalToken.empty())
+            throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+        return (new ModeRequest(socket, channel, sign, modeType, ""));
+    }
+    LOG_TRACE(__func__ << " optionalToken: " << optionalToken)
+    if (hasMetaChar(optionalToken))
+        throw InvalidFormat(socket, MSG_INVALID_MODE_ARGUMENT + command, INVALID_MODE_ARGUMENT);
+    if (ss >> junk)
+        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    return (new ModeRequest(socket, channel, sign, modeType, optionalToken));
 }
 
 Request *parseJoin(const std::string &tcpStreams, handle_t socket)
@@ -178,26 +187,6 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
     LOG_TRACE(__func__ << " channel: " << channel);
     LOG_TRACE(__func__ << " message: " << message);
     return (new PartRequest(socket, channel, message));
-}
-
-static void commaToknizer(const std::string &targets, std::vector<std::string> &targetList)
-{
-    std::string token, lastToken;
-    size_t start = 0;
-    size_t end;
-
-    end = targets.find(',');
-    while (end != std::string::npos)
-    {
-        token = targets.substr(start, end - start);
-        if (!token.empty())
-            targetList.push_back(token);
-        start = end + 1;
-        end = targets.find(',', start);
-    }
-    lastToken = targets.substr(start);
-    if (!lastToken.empty())
-        targetList.push_back(lastToken);
 }
 
 Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
@@ -277,7 +266,7 @@ Request *parsePing(const std::string &tcpStreams, handle_t socket)
     if (!(ss >> command >> servername))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (hasMetaChar(servername))
-        throw InvalidFormat(socket, MSG_INVALID_SERVERNAME + command, INVALID_MSG);
+        throw InvalidFormat(socket, MSG_INVALID_SERVERNAME + command, INVALID_SERVERNAME);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
     return (new PingRequest(socket, servername));
