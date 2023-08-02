@@ -73,6 +73,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
 {
     Client *client = inviteRequest->GetClient();
     const std::string &nickName = client->GetNickName();
+    const std::string &targetNickName = inviteRequest->GetNickName();
     const std::string &channelName = inviteRequest->GetChannelName();
 
     // Registered 하지 않은 경우
@@ -103,13 +104,13 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    Client *targetClient = clientRepository->FindByNickName(nickName);
+    Client *targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 해당 닉네임을 가진 유저가 없는 경우
     if (!targetClient)
     {
         std::string errorMessage;
-        errorMessage = buildNoSuchNickMsg(nickName, inviteRequest->GetNickName());
+        errorMessage = buildNoSuchNickMsg(nickName, targetNickName);
 
         client->AddResponseToBuf(errorMessage);
 
@@ -132,10 +133,10 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     // 이미 초대한 유저가 채널에 존재하는 경우
-    if (channel->CheckClientIsExist(inviteRequest->GetNickName()))
+    if (channel->CheckClientIsExist(targetNickName))
     {
         std::string errorMessage;
-        errorMessage = buildUserOnChannelMsg(nickName, inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+        errorMessage = buildUserOnChannelMsg(nickName, targetNickName, channelName);
 
         client->AddResponseToBuf(errorMessage);
 
@@ -145,7 +146,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     // 채널 operator가 아닌 경우
-    if (channel->CheckClientIsOperator(nickName))
+    if (!channel->CheckClientIsOperator(nickName))
     {
         std::string errorMessage;
         errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
@@ -284,7 +285,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
         }
 
         // 채널 operator가 아닌 경우
-        if (channel->CheckClientIsOperator(nickName))
+        if (!channel->CheckClientIsOperator(nickName))
         {
             std::string errorMessage;
             errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
