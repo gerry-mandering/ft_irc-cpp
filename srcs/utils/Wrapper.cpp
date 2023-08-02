@@ -4,9 +4,9 @@
 
 namespace Wrapper
 {
-inline ::std::string strerror(int errnum)
+inline std::string strerror(int errnum)
 {
-    return ::std::string(::std::strerror(errnum));
+    return std::string(std::strerror(errnum));
 }
 
 int kqueue(void)

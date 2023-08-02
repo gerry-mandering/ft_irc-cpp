@@ -50,4 +50,11 @@ class InvalidFormat : public ParseException
     virtual void handleError() const throw();
 };
 
+class modeException : public ParseException
+{
+  public:
+    modeException(handle_t socket, const std::string &msg) throw();
+    virtual void handleError() const throw();
+};
+
 } // namespace Parser

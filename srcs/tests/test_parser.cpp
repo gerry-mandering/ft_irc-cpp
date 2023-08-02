@@ -178,6 +178,19 @@ static void test_ping()
     test_parseGeneral("PING :hihi");
 }
 
+static void test_mode()
+{
+    // test_parseGeneral("MODE min +i");
+    // test_parseGeneral("MODE min +o");
+    // test_parseGeneral("MODE #ch +i");
+    // test_parseGeneral("MODE #ch +i h");
+    // test_parseGeneral("MODE #ch +t");
+    // test_parseGeneral("MODE #ch +t h");
+    // test_parseGeneral("MODE #ch -l h");
+    // test_parseGeneral("MODE #ch -l");
+    // test_parseGeneral("MODE ch -l");
+}
+
 static void test_topic()
 {
     test_parseGeneral("TOPIC");
@@ -202,6 +215,6 @@ int main(void)
     // test_kick();
     // test_invite();
     // test_ping();
-    test_topic();
+    test_mode();
     return (0);
 }
