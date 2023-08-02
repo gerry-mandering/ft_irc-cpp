@@ -373,9 +373,10 @@ bool Validator::Visit(NickRequest *nickRequest) const
 {
     Client *client = nickRequest->GetClient();
     const std::string &nickName = client->GetNickName();
+    const std::string &newNickName = nickRequest->GetNickName();
 
     // 자신의 닉네임과 동일한 경우 동작 X
-    if (nickName == nickRequest->GetNickName())
+    if (nickName == newNickName)
     {
         LOG_TRACE("NickRequest Invalid - SameAsSelf");
 
@@ -385,9 +386,9 @@ bool Validator::Visit(NickRequest *nickRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
     // 이미 해당 닉네임을 사용하는 클라이언트가 존재하는 경우
-    if (clientRepository->FindByNickName(nickName))
+    if (clientRepository->FindByNickName(newNickName))
     {
-        std::string errorMessage = buildNickNameInUseMsg(nickRequest->GetNickName(), nickName);
+        std::string errorMessage = buildNickNameInUseMsg(nickName, newNickName);
         client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("NickRequest Invalid - NickNameIsUse");
@@ -736,13 +737,13 @@ std::string Validator::buildAccessDeniedMsg(const std::string &userName, const s
     return errorMessage.str();
 }
 
-std::string Validator::buildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName) const
+std::string Validator::buildNickNameInUseMsg(const std::string &nickName, const std::string &newNickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
     std::stringstream errorMessage;
-    errorMessage << ":" << envManager->GetServerName() << " 433 " << (clientNickName.empty() ? "*" : clientNickName)
-                 << " " << newNickName << " :Nickname is already in use.";
+    errorMessage << ":" << envManager->GetServerName() << " 433 " << (nickName.empty() ? "*" : nickName) << " "
+                 << newNickName << " :Nickname is already in use.";
 
     return errorMessage.str();
 }
