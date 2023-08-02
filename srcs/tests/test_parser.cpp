@@ -178,6 +178,16 @@ static void test_ping()
     test_parseGeneral("PING :hihi");
 }
 
+static void test_topic()
+{
+    test_parseGeneral("TOPIC");
+    test_parseGeneral("TOPIC #ch hi");
+    test_parseGeneral("TOPIC #ch :hi");
+    test_parseGeneral("TOPIC #ch :hia no no ");
+    test_parseGeneral("TOPIC #ch :hia no no #");
+    test_parseGeneral("TOPIC :ch :cha no no :");
+}
+
 int main(void)
 {
     Request *request;
@@ -190,7 +200,8 @@ int main(void)
     // test_quit();
     // test_privmsg();
     // test_kick();
-    test_invite();
-    test_ping();
+    // test_invite();
+    // test_ping();
+    test_topic();
     return (0);
 }
