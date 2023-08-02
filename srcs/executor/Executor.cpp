@@ -450,7 +450,7 @@ std::string Executor::buildInvitationMsg(Client *client, const std::string &targ
                                          const std::string &channelName) const
 {
     std::stringstream invitationMessage;
-    invitationMessage << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
+    invitationMessage << ":" << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
 
     return invitationMessage.str();
 }
@@ -459,7 +459,8 @@ std::string Executor::buildKickoutMsg(Client *client, const std::string &channel
                                       const std::string &message) const
 {
     std::stringstream kickoutMessage;
-    kickoutMessage << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " :" << message;
+    kickoutMessage << ":" << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " "
+                   << message;
 
     return kickoutMessage.str();
 }
