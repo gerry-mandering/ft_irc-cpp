@@ -30,12 +30,12 @@ int StreamHandler::handleRead(void)
     LOG_TRACE("nread: " << nread);
     if (nread < 0)
     {
-        LOG_DEBUG("StreamHandler read failed: " << strerror(errno));
+        LOG_DEBUG("StreamHandler read failed: " << std::strerror(errno));
         return (OK);
     }
     if (nread == 0)
     {
-        LOG_DEBUG("StreamHandler read eof: " << strerror(errno));
+        LOG_DEBUG("StreamHandler read eof: " << std::strerror(errno));
         // TODO: disconnect(구현 자유롭게 하면 될듯 되도록 disconnect 하도록)
         return (OK);
     }
@@ -72,39 +72,12 @@ int StreamHandler::handleRead(void)
 
 int StreamHandler::handleWrite(void)
 {
-    // 레거시 추후 삭제 예정
-    // Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle);
-    // std::string responseStr;
-    // ssize_t nwrite;
-
-    // if (!client)
-    // {
-    //     LOG_ERROR("StreamHandler write event but no client found" << strerror(errno));
-    //     exit(EXIT_FAILURE);
-    // }
-    // // 일단 한번에 다 더해서 처리, irssi 내부구현 따라 될수도 안될수도
-    // while (client->HasResponse())
-    //     responseStr += client->ExtractResponse();
-    // nwrite = write(m_handle, responseStr.c_str(), responseStr.size());
-    // if (nwrite < 0)
-    // {
-    //     LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
-    //     return (OK);
-    // }
-    // if (nwrite < responseStr.size())
-    // {
-    //     LOG_ERROR("Partial write, NOT IMPLEMENTED YET");
-    //     exit(EXIT_FAILURE);
-    // }
-    // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
-
     Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle);
     ssize_t nwrite;
 
-    // TODO: 일단 한번에 버퍼에 있는 내용 다 클라이언트에 보내봄. 아마 에러 없을 것임
     if (!client)
     {
-        LOG_ERROR("StreamHandler write event but no client found" << strerror(errno));
+        LOG_ERROR("StreamHandler write event but no client found" << std::strerror(errno));
         exit(EXIT_FAILURE);
     }
     if (m_writeBuf.empty())
@@ -115,13 +88,12 @@ int StreamHandler::handleWrite(void)
     nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
     if (nwrite < 0)
     {
-        // TODO: strerror cstring 사용
-        LOG_DEBUG("StreamHandler write failed write again or disconnect: " << strerror(errno));
+        LOG_WARN("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
         return (OK);
     }
     if (nwrite < m_writeBuf.size())
     {
-        LOG_ERROR("Partial write");
+        LOG_INFO("Partial write");
         m_writeBuf = m_writeBuf.substr(nwrite);
         return (OK);
     }
@@ -131,14 +103,8 @@ int StreamHandler::handleWrite(void)
         m_writeBuf.clear();
         return (g_reactor().unregisterEvent(this, WRITE_EVENT));
     }
-    LOG_ERROR("StreamHandler write: should not reach here " << strerror(errno));
+    LOG_ERROR("StreamHandler write: should not reach here " << std::strerror(errno));
     return (OK);
-
-    // 기존 에코서버 로직
-    // if (write(m_handle, m_readBuf.c_str(), m_readBuf.size()) < 0)
-    //     LOG_DEBUG("StreamHandler write failed: " << strerror(errno));
-    // m_readBuf.clear();
-    // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
 }
 
 int StreamHandler::handleError(void)
