@@ -88,6 +88,16 @@ bool isalnum(const std::string &str)
     return true;
 }
 
+bool isdigit(const std::string &str)
+{
+    for (size_t i = 0; i < str.length(); i++)
+    {
+        if (!std::isdigit(str[i]))
+            return false;
+    }
+    return true;
+}
+
 bool hasMetaChar(const std::string &str)
 {
     if (str.find('#') != std::string::npos || str.find(':') != std::string::npos || str.find(',') != std::string::npos)
@@ -127,12 +137,21 @@ bool invalidModeType(const std::string &modeType)
 
 bool notNeedOptionalToken(const std::string &sign, const std::string &modeType)
 {
-    return (modeType == "i" || modeType == "t" || (sign == "-" && modeType == "l"));
+    return (modeType == "i" || modeType == "t" || (sign == "-" && (modeType == "l" || modeType == "k")));
 }
 
 bool modeExceptionCase(const std::string &nickname, const std::string &modeToken)
 {
     return (nickname.front() != '#' && modeToken == "+i");
+}
+
+bool invalidOptionalToken(const std::string &modeType, const std::string &optionalToken)
+{
+    if (modeType == "k")
+        return (optionalToken.length() > MAX_KEY_LEN || !isalnum(optionalToken));
+    else if (modeType == "l")
+        return (!isdigit(optionalToken));
+    return false;
 }
 
 } // namespace Parser

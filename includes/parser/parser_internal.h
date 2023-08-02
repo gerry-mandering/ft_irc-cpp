@@ -15,6 +15,16 @@ namespace Parser
 typedef int handle_t;
 typedef Request *(*parser_t)(const std::string &tcpStream, handle_t socket);
 
+enum
+{
+    MAX_NICKNAME_LEN = 9,
+    MAX_USERNAME_LEN = 9,
+    MAX_HOSTNAME_LEN = 63,
+    MAX_TOPIC_LEN = 50,
+    MAX_CHANNEL_LEN = 200,
+    MAX_KEY_LEN = 15,
+};
+
 typedef enum eInvaldFormat
 {
     INVALID_PASSWORD,
@@ -61,6 +71,7 @@ bool invalidSign(const std::string &sign);
 bool invalidModeType(const std::string &modeType);
 bool notNeedOptionalToken(const std::string &sign, const std::string &modeType);
 bool modeExceptionCase(const std::string &nickname, const std::string &modeToken);
+bool invalidOptionalToken(const std::string &modeType, const std::string &optionalToken);
 
 Request *parseRequest(const std::string &tcpStream, handle_t socket);
 Request *parsePass(const std::string &tcpStream, handle_t socket);

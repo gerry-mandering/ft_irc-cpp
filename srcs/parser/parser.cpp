@@ -7,16 +7,6 @@
 namespace Parser
 {
 
-enum
-{
-    MAX_NICKNAME_LEN = 9,
-    MAX_USERNAME_LEN = 9,
-    MAX_HOSTNAME_LEN = 63,
-    MAX_TOPIC_LEN = 50,
-    MAX_CHANNEL_LEN = 200,
-    // TODO: mode 명령어에서 키 설정할 때 키 길이 반드시 설정
-    MAX_KEY_LEN = 15,
-};
 
 extern std::map<std::string, parser_t> parsers;
 
@@ -142,8 +132,10 @@ Request *parseMode(const std::string &tcpStreams, handle_t socket)
             throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
         return (new ModeRequest(socket, channel, sign, modeType, ""));
     }
+    if (optionalToken.empty())
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     LOG_TRACE(__func__ << " optionalToken: " << optionalToken)
-    if (hasMetaChar(optionalToken))
+    if (invalidOptionalToken(modeType, optionalToken))
         throw InvalidFormat(socket, MSG_INVALID_MODE_ARGUMENT + command, INVALID_MODE_ARGUMENT);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);

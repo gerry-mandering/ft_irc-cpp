@@ -46,7 +46,7 @@ int main(void)
     // test1("a");
     // test1("");
     // //
-    // test1("a b c d e");
+    test1("a b c d e");
     // test1("a b	c		d e ");
     test_junk("  ");
     test_junk(" a  ");

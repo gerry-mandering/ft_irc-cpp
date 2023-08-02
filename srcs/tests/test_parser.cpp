@@ -56,8 +56,7 @@ static void test_parseGeneral(const string &str, int cnt_reset = 0)
         cnt = 1;
         return;
     }
-    cout << "test " << cnt++ << ": " << str + "\r\n"
-         << "\n";
+    cout << "\n\n----test " << cnt++ << ": " << str << "------\n";
     try
     {
         request = parseRequest(str + "\r\n", 0);
@@ -180,15 +179,43 @@ static void test_ping()
 
 static void test_mode()
 {
+    // exception case
     // test_parseGeneral("MODE min +i");
     // test_parseGeneral("MODE min +o");
+
+    // i, t 테스트
     // test_parseGeneral("MODE #ch +i");
     // test_parseGeneral("MODE #ch +i h");
     // test_parseGeneral("MODE #ch +t");
     // test_parseGeneral("MODE #ch +t h");
+
+    // l 테스트
     // test_parseGeneral("MODE #ch -l h");
     // test_parseGeneral("MODE #ch -l");
     // test_parseGeneral("MODE ch -l");
+    // test_parseGeneral("MODE #ch +l");
+    // test_parseGeneral("MODE #ch +l 12abc");
+    // test_parseGeneral("MODE #ch +l 1251");
+
+    // k옵션
+    // test_parseGeneral("MODE #ch +k 1234");
+    // test_parseGeneral("MODE #ch +k");
+    // test_parseGeneral("MODE #ch -k");
+    // test_parseGeneral("MODE #ch -k 1344");
+
+    // o 옵션
+    // test_parseGeneral("MODE #ch +o nouser");
+    // test_parseGeneral("MODE #ch +o nouser hi");
+    // test_parseGeneral("MODE #ch +o");
+    // test_parseGeneral("MODE #ch -o");
+    // test_parseGeneral("MODE #ch -o user");
+
+    // 예외 테스트
+    test_parseGeneral("MODE #ch +j");
+    test_parseGeneral("MODE #ch +ikl hi");
+    test_parseGeneral("MODE #ch +i +j");
+    test_parseGeneral("MODE #ch +o +j");
+    test_parseGeneral("MODE #ch -l hi");
 }
 
 static void test_topic()
