@@ -115,23 +115,31 @@ Request *parseTopic(const std::string &tcpStreams, handle_t socket)
 
 Request *parseMode(const std::string &tcpStreams, handle_t socket)
 {
-    (void)tcpStreams;
-    (void)socket;
-    // std::stringstream ss(tcpStreams);
-    // std::string command;
-    // std::string channel;
-    // std::string mode;
+    std::stringstream ss(tcpStreams);
+    std::string command, channel, modeToken, sign, modeType, optionalToken, junk;
 
-    // if (!(ss >> command >> channel >> mode))
-    // {
-    //     // throw not enough prams;
-    // }
-    // if (!isLastToken(mode))
-    // {
-    //     // throw MSG_TOO_MANY_PARAMS + command;
-    // }
-    // return (new ModeRequest(socket, channel, mode));
-    return (0);
+    if (!(ss >> command >> channel >> modeToken))
+        throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
+    if (modeExceptionCase(channel, modeToken))
+        throw modeException(socket, MSG_MODE_EXCEPTION + command);
+    sign = modeToken.front();
+    modeType = modeToken.substr(1);
+    if (invalidSign(sign) || invalidModeType(modeType))
+        throw InvalidFormat(socket, MSG_INVALID_MODE_OPTION + command, INVALID_MODE_OPTION);
+    LOG_TRACE(__func__ << " sign: " << sign << " modeType: " << modeType);
+    ss >> optionalToken;
+    if (notNeedOptionalToken(sign, modeType))
+    {
+        if (!optionalToken.empty())
+            throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+        return (new ModeRequest(socket, channel, sign, modeType, ""));
+    }
+    LOG_TRACE(__func__ << " optionalToken: " << optionalToken)
+    if (hasMetaChar(optionalToken))
+        throw InvalidFormat(socket, MSG_INVALID_MODE_ARGUMENT + command, INVALID_MODE_ARGUMENT);
+    if (ss >> junk)
+        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    return (new ModeRequest(socket, channel, sign, modeType, optionalToken));
 }
 
 Request *parseJoin(const std::string &tcpStreams, handle_t socket)

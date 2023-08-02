@@ -93,4 +93,24 @@ bool hasMetaChar(const std::string &str)
         return true;
     return false;
 }
+bool invalidSign(const std::string &sign)
+{
+    return (sign != "+" && sign != "-");
+}
+
+bool invalidModeType(const std::string &modeType)
+{
+    return (modeType != "i" && modeType != "t" && modeType != "k" && modeType != "l" && modeType != "o");
+}
+
+bool notNeedOptionalToken(const std::string &sign, const std::string &modeType)
+{
+    return (modeType == "i" || modeType == "t" || (sign == "-" && modeType == "l"));
+}
+
+bool modeExceptionCase(const std::string &nickname, const std::string &modeToken)
+{
+    return (nickname.front() != '#' && modeToken == "+i");
+}
+
 } // namespace Parser
