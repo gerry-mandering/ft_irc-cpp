@@ -286,12 +286,16 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         if (iter->front() == '#')
         {
             Channel *targetChannel = channelRepository->FindByName(*iter);
-            targetChannel->BroadcastMessage(privateMessage);
+            targetChannel->BroadcastMessageExcludingRequestor(privateMessage, client->GetNickName());
+
+            LOG_TRACE("PrivmsgRequest Executing - BroadcastMessage");
         }
         else
         {
             Client *targetClient = clientRepository->FindByNickName(*iter);
             targetClient->AddResponseToBuf(privateMessage);
+
+            LOG_TRACE("PrivmsgRequest Executing - DirectMessage");
         }
     }
 
@@ -498,7 +502,7 @@ std::string Executor::buildQuitMsg(Client *client, const std::string &reason) co
 std::string Executor::buildPrivateMsg(Client *client, const std::string &target, const std::string &message) const
 {
     std::stringstream privateMessage;
-    privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " :" << message;
+    privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " " << message;
 
     return privateMessage.str();
 }
