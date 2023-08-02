@@ -151,23 +151,25 @@ bool Executor::Visit(ModeRequest *modeRequest) const
         else
             channel->RemoveOperator(targetClient->GetNickName());
     }
+    else if (modeChar == "l")
+    {
+        channel->SetClientLimit(atoi(modeArgument.c_str()));
+
+        if (!channel->IsClientLimitMode())
+            channel->ToggleClientLimitMode();
+    }
     else if (modeChar == "i")
     {
         channel->ToggleInviteOnlyMode();
-    }
-    else if (modeChar == "t")
-    {
-        channel->ToggleProtectedTopicMode();
     }
     else if (modeChar == "k")
     {
         channel->SetKey(modeArgument);
         channel->ToggleKeyMode();
     }
-    else if (modeChar == "l")
+    else if (modeChar == "t")
     {
-        channel->SetClientLimit(atoi(modeArgument.c_str()));
-        channel->ToggleClientLimitMode();
+        channel->ToggleProtectedTopicMode();
     }
 
     responseMessage = buildModeChangedMsg(client, channelName, sign, modeChar, modeArgument);

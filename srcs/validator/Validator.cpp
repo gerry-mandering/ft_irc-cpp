@@ -356,59 +356,16 @@ bool Validator::Visit(ModeRequest *modeRequest) const
         return false;
     }
 
-    bool validatedFlag;
-
     if (modeChar == "o")
-        validatedFlag = validateOperUserMode(modeRequest);
+        return validateOperUserMode(client, channel, modeRequest);
     else if (modeChar == "l")
-        validatedFlag = validateClientLimitMode(modeRequest);
+        return validateClientLimitMode(channel, modeRequest);
     else if (modeChar == "i")
-        validatedFlag = validateInviteOnlyMode(modeRequest);
+        return validateInviteOnlyMode(channel, modeRequest);
     else if (modeChar == "k")
-        validatedFlag = validateKeyMode(modeRequest);
-    else if (modeChar == "t")
-        validatedFlag = validateProtectedChannelMode(modeRequest);
-
-    if (modeChar == "o")
-    {
-    }
-
-    if (sign == "+")
-    {
-        if (((modeChar == "i") && channel->IsInviteOnlyMode()) ||
-            ((modeChar == "t") && channel->IsProtectedTopicMode()) || ((modeChar == "k") && channel->IsKeyMode()) ||
-            ((modeChar == "l") && (atoi(modeArgument.c_str()) == channel->GetClientLimit())))
-        {
-            LOG_TRACE("ModeRequest Invalid - NoAction");
-
-            return false;
-        }
-    }
+        return validateKeyMode(client, channel, modeRequest);
     else
-    {
-        if (((modeChar == "i") && !channel->IsInviteOnlyMode()) ||
-            ((modeChar == "t") && !channel->IsProtectedTopicMode()) || ((modeChar == "k") && !channel->IsKeyMode()) ||
-            ((modeChar == "l") && !channel->IsClientLimitMode()))
-        {
-            LOG_TRACE("ModeRequest Invalid - NoAction");
-
-            return false;
-        }
-
-        if ((modeChar == "k") && (modeArgument != channel->GetKey()))
-        {
-            std::string errorMessage = buildKeySetMsg(nickName, channelName);
-            client->AddResponseToBuf(errorMessage);
-
-            LOG_TRACE("ModeRequest Invalid - KeySet");
-
-            return false;
-        }
-    }
-
-    LOG_TRACE("ModeRequest Validated");
-
-    return true;
+        return validateProtectedTopicMode(channel, modeRequest);
 }
 
 // NICK Command 경우의 수 검증 완료
@@ -891,20 +848,19 @@ std::string Validator::buildKeySetMsg(const std::string &nickName, const std::st
     return errorMessage.str();
 }
 
-bool Validator::validateOperUserMode(ModeRequest *modeRequest) const
+bool Validator::validateOperUserMode(Client *client, Channel *channel, ModeRequest *modeRequest) const
 {
-    Client *client = modeRequest->GetClient();
-
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = modeRequest->GetChannelName();
-    const std::string &modeArgument = modeRequest->GetModeArgument();
+    const std::string &targetNickName = modeRequest->GetModeArgument();
+
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    Client *targetClient = clientRepository->FindByNickName(modeArgument);
+    Client *targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 채널 operator 권한을 부여할 클라이언트가 존재하지 않는 경우
     if (!targetClient)
     {
-        std::string errorMessage = buildNoSuchNickMsg(nickName, modeArgument);
+        std::string errorMessage = buildNoSuchNickMsg(nickName, targetNickName);
         client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("ModeRequest Invalid - NoSuchNick");
@@ -913,9 +869,9 @@ bool Validator::validateOperUserMode(ModeRequest *modeRequest) const
     }
 
     // 채널 operator 권한을 부여할 클라이언트가 채널에 없는 경우
-    if (!channel->CheckClientIsExist(modeArgument))
+    if (!channel->CheckClientIsExist(targetNickName))
     {
-        std::string errorMessage = buildUserNotInChannelMsg(nickName, modeArgument, channelName);
+        std::string errorMessage = buildUserNotInChannelMsg(nickName, targetNickName, channelName);
         client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("ModeRequest Invalid - UserNotInChannel");
@@ -923,8 +879,10 @@ bool Validator::validateOperUserMode(ModeRequest *modeRequest) const
         return false;
     }
 
+    const std::string &sign = modeRequest->GetSign();
+    bool targetIsOperator = channel->CheckClientIsOperator(targetNickName);
+
     // sign + 일때 이미 대상 클라이언트가 채널 operator 이거나, sign - 일때 대상이 operator가 아닌 경우
-    bool targetIsOperator = channel->CheckClientIsOperator(modeArgument);
     if ((targetIsOperator && (sign == "+")) || (!targetIsOperator && (sign == "-")))
     {
         LOG_TRACE("ModeRequest Invalid - NoAction");
@@ -932,25 +890,99 @@ bool Validator::validateOperUserMode(ModeRequest *modeRequest) const
         return false;
     }
 
-    return false;
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
 
-bool Validator::validateClientLimitMode(ModeRequest *modeRequest) const
+bool Validator::validateClientLimitMode(Channel *channel, ModeRequest *modeRequest) const
 {
-    return false;
+    const std::string &sign = modeRequest->GetSign();
+
+    if (sign == "+" && channel->IsClientLimitMode())
+    {
+        const std::string &limitString = modeRequest->GetModeArgument();
+        int clientLimit = atoi(limitString.c_str());
+
+        if (clientLimit == channel->GetClientLimit())
+        {
+            LOG_TRACE("ModeRequest Invalid - NoAction");
+
+            return false;
+        }
+    }
+
+    if (sign == "-" && !channel->IsClientLimitMode())
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
 
-bool Validator::validateInviteOnlyMode(ModeRequest *modeRequest) const
+bool Validator::validateInviteOnlyMode(Channel *channel, ModeRequest *modeRequest) const
 {
-    return false;
+    const std::string &sign = modeRequest->GetSign();
+
+    if ((sign == "+" && channel->IsInviteOnlyMode()) && (sign == "-" && !channel->IsInviteOnlyMode()))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
 
-bool Validator::validateKeyMode(ModeRequest *modeRequest) const
+bool Validator::validateKeyMode(Client *client, Channel *channel, ModeRequest *modeRequest) const
 {
-    return false;
+    const std::string &sign = modeRequest->GetSign();
+
+    if ((sign == "+" && channel->IsKeyMode()) && (sign == "-" && !channel->IsKeyMode()))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    if (sign == "-" && channel->IsKeyMode())
+    {
+        const std::string &keyValue = modeRequest->GetModeArgument();
+
+        if (keyValue != channel->GetKey())
+        {
+            std::string errorMessage = buildKeySetMsg(client->GetNickName(), modeRequest->GetChannelName());
+            client->AddResponseToBuf(errorMessage);
+
+            LOG_TRACE("ModeRequest Invalid - KeySet");
+
+            return false;
+        }
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
 
-bool Validator::validateProtectedChannelMode(ModeRequest *modeRequest) const
+bool Validator::validateProtectedTopicMode(Channel *channel, ModeRequest *modeRequest) const
 {
-    return false;
+    const std::string &sign = modeRequest->GetSign();
+
+    if ((sign == "+" && channel->IsProtectedTopicMode()) && (sign == "-" && !channel->IsProtectedTopicMode()))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
