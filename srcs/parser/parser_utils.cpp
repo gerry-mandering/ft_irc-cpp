@@ -19,6 +19,7 @@ void initParsers(void)
         parsers[commands[i].first] = commands[i].second;
 }
 
+// TODO: case문 type 추가
 std::string eTypeToString(eInvaldFormat type)
 {
     switch (type)
@@ -93,6 +94,27 @@ bool hasMetaChar(const std::string &str)
         return true;
     return false;
 }
+
+void commaToknizer(const std::string &targets, std::vector<std::string> &targetList)
+{
+    std::string token, lastToken;
+    size_t start = 0;
+    size_t end;
+
+    end = targets.find(',');
+    while (end != std::string::npos)
+    {
+        token = targets.substr(start, end - start);
+        if (!token.empty())
+            targetList.push_back(token);
+        start = end + 1;
+        end = targets.find(',', start);
+    }
+    lastToken = targets.substr(start);
+    if (!lastToken.empty())
+        targetList.push_back(lastToken);
+}
+
 bool invalidSign(const std::string &sign)
 {
     return (sign != "+" && sign != "-");
