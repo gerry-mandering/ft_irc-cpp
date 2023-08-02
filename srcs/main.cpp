@@ -69,7 +69,15 @@ int main(int argc, char **argv)
         std::cerr << e.what() << "\n";
         return (EXIT_FAILURE);
     }
-    while (true)
-        g_reactor().handleEvents();
+    try
+    {
+        while (true)
+            g_reactor().handleEvents();
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << "\n";
+        return (EXIT_FAILURE);
+    }
     return (0);
 }

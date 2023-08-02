@@ -1,5 +1,6 @@
 #include "KqueueDemultiplexer.hpp"
 #include "LoggingHandler.hpp"
+#include "SyscallException.hpp"
 #include "def.h"
 #include "wrapper.h"
 #include <iostream>
@@ -77,12 +78,11 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
 
 int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers)
 {
-    // TODO: kevent 반환값 예외처리
     int numEvents = kevent(m_kq, &m_changeList[0], m_changePos, &m_kEventList[0], m_kEventList.size(), NULL);
     m_changePos = 0;
-    LOG_TRACE("\nnumEvents: " << numEvents);
-    assert(numEvents != -1);
-    // TODO: EV_EOF 플래그 검사(예외처리)
+    LOG_TRACE("\n>====== numEvents: " << numEvents << " ======<\n");
+    if (numEvents < 0)
+        throw SyscallException("kevent systemcall failed " + Wrapper::strerror(errno));
     for (int i = 0; i < numEvents; ++i)
     {
         struct kevent &event = m_kEventList[i];
@@ -92,6 +92,7 @@ int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers
         // 클라이언트 프로세스가 종료되면 해당 플래그로 온다
         if (event.flags & EV_EOF)
         {
+            // TODO: EV_EOF 플래그 검사(예외처리), disconnect 여기에서 호출
             LOG_TRACE("EOF event");
             close(event.ident);
             continue;

@@ -16,7 +16,7 @@ int kqueue(void)
     if (fd < 0)
     {
         LOG_ERROR("kqueue systemcall failed " << strerror(errno));
-        throw SyscallException("kqueue systemcall failed" + strerror(errno));
+        throw SyscallException("kqueue systemcall failed " + strerror(errno));
     }
     return fd;
 }
