@@ -6,6 +6,16 @@ Channel::Channel(const std::string &name)
     LOG_TRACE("Channel constructor called | " << *this);
 }
 
+const std::string &Channel::GetName() const
+{
+    return mName;
+}
+
+std::vector<Client *> Channel::GetClients()
+{
+    return mClients;
+}
+
 void Channel::SetClientLimit(int limit)
 {
     mClientLimit = limit;
