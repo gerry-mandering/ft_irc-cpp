@@ -1,4 +1,5 @@
 #include "ParseException.hpp"
+#include "Client.hpp"
 #include "parser_internal.h"
 #include <iostream>
 
@@ -16,9 +17,20 @@ ParseException::~ParseException() throw() {}
 
 InvalidCommand::InvalidCommand(handle_t socket, const std::string &msg) throw() : ParseException(socket, msg) {}
 
+// irc.local 421 dah HI :Unknown command
 void InvalidCommand::handleError() const throw()
 {
-    std::cerr << what() << std::endl;
+    Client *client = ClientRepository::GetInstance()->FindBySocket(m_socket);
+
+    if (!client)
+    {
+        LOG_INFO(__func__ << " Client not found");
+        return;
+    }
+    std::string nickname = "dah";
+    std::string response = "421 " + std::string(" ") + nickname + " :this is my msg\r\n";
+    LOG_TRACE(__func__ << " build Error response " << response);
+    client->AddResponseToBuf(response);
     return;
 }
 

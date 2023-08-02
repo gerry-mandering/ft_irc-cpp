@@ -1,6 +1,7 @@
 #include "StreamHandler.hpp"
 #include "ClientRepository.hpp"
 #include "LoggingHandler.hpp"
+#include "ParseException.hpp"
 #include "def.h"
 #include <cstring>
 #include <iostream>
@@ -53,10 +54,11 @@ int StreamHandler::handleRead(void)
             request = Parser::parseRequest(requestStr, m_handle);
             LOG_DEBUG("Parsing success");
         }
-        catch (std::exception &e)
+        catch (const Parser::ParseException &e)
         {
             // TODO: 에러 핸들러 호출로 처리
             LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
+            // e.handleError();
             continue;
         }
 

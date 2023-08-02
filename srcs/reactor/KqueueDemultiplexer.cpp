@@ -99,12 +99,12 @@ int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers
         }
         if (event.filter == EVFILT_READ)
         {
-            LOG_TRACE("read event");
+            LOG_TRACE(__func__ << " read event");
             handler->handleRead();
         }
         if (event.filter == EVFILT_WRITE)
         {
-            LOG_TRACE("write event");
+            LOG_TRACE(__func__ << " write event");
             handler->handleWrite();
         }
         LOG_TRACE("event loop");

@@ -720,6 +720,8 @@ bool Validator::Visit(UserRequest *userRequest) const
     return true;
 }
 
+// TODO: dahkang 빌드 메시지 다른 곳으로 빼면 어떨까요
+
 std::string Validator::buildAlreadyRegisteredMsg(const std::string &nickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
