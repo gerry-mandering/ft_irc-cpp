@@ -39,6 +39,7 @@ typedef enum eInvaldFormat
 #define MSG_INVALID_TOPIC "Invalid naming topic"
 #define MSG_INVALID_KEY "Invalid naming key"
 #define MSG_INVALID_MSG "Invalid message"
+#define MSG_INVALID_SERVERNAME "Invalid naming servername"
 
 std::string eTypeToString(eInvaldFormat code);
 std::string invalidFormatMsg(eInvaldFormat type, const std::string &msg);
@@ -61,6 +62,5 @@ Request *parseInvite(const std::string &tcpStream, handle_t socket);
 Request *parseKick(const std::string &tcpStream, handle_t socket);
 Request *parsePrivmsg(const std::string &tcpStream, handle_t socket);
 Request *parsePing(const std::string &tcpStream, handle_t socket);
-Request *parsePong(const std::string &tcpStream, handle_t socket);
 
 } // namespace Parser
