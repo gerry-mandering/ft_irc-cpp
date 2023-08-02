@@ -823,7 +823,7 @@ std::string Validator::buildNotChannelOperatorMsg(const std::string &nickName, c
 
     std::stringstream errorMessage;
     errorMessage << ":" << envManager->GetServerName() << " 482 " << nickName << " " << channelName
-                 << " :You You must be a channel operator";
+                 << " :You must be a channel operator";
 
     return errorMessage.str();
 }
