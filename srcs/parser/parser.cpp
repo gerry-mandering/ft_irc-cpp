@@ -258,7 +258,7 @@ Request *parsePing(const std::string &tcpStreams, handle_t socket)
     if (!(ss >> command >> servername))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (hasMetaChar(servername))
-        throw InvalidFormat(socket, MSG_INVALID_SERVERNAME + command, INVALID_MSG);
+        throw InvalidFormat(socket, MSG_INVALID_SERVERNAME + command, INVALID_SERVERNAME);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
     return (new PingRequest(socket, servername));
