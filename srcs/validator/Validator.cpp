@@ -677,7 +677,11 @@ bool Validator::Visit(TopicRequest *topicRequest) const
 
     // 채널의 Topic과 변경을 요청한 Topic이 동일한 경우
     if (topicRequest->GetTopic() == channel->GetTopic())
+    {
+        LOG_TRACE("TopicRequest Invalid - NoAction");
+
         return false;
+    }
 
     LOG_TRACE("TopicRequest Validated");
 
