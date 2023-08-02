@@ -151,23 +151,25 @@ bool Executor::Visit(ModeRequest *modeRequest) const
         else
             channel->RemoveOperator(targetClient->GetNickName());
     }
+    else if (modeChar == "l")
+    {
+        channel->SetClientLimit(atoi(modeArgument.c_str()));
+
+        if (!channel->IsClientLimitMode())
+            channel->ToggleClientLimitMode();
+    }
     else if (modeChar == "i")
     {
         channel->ToggleInviteOnlyMode();
-    }
-    else if (modeChar == "t")
-    {
-        channel->ToggleProtectedTopicMode();
     }
     else if (modeChar == "k")
     {
         channel->SetKey(modeArgument);
         channel->ToggleKeyMode();
     }
-    else if (modeChar == "l")
+    else if (modeChar == "t")
     {
-        channel->SetClientLimit(atoi(modeArgument.c_str()));
-        channel->ToggleClientLimitMode();
+        channel->ToggleProtectedTopicMode();
     }
 
     responseMessage = buildModeChangedMsg(client, channelName, sign, modeChar, modeArgument);
@@ -284,12 +286,16 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         if (iter->front() == '#')
         {
             Channel *targetChannel = channelRepository->FindByName(*iter);
-            targetChannel->BroadcastMessage(privateMessage);
+            targetChannel->BroadcastMessageExcludingRequestor(privateMessage, client->GetNickName());
+
+            LOG_TRACE("PrivmsgRequest Executing - BroadcastMessage");
         }
         else
         {
             Client *targetClient = clientRepository->FindByNickName(*iter);
             targetClient->AddResponseToBuf(privateMessage);
+
+            LOG_TRACE("PrivmsgRequest Executing - DirectMessage");
         }
     }
 
@@ -444,7 +450,7 @@ std::string Executor::buildInvitationMsg(Client *client, const std::string &targ
                                          const std::string &channelName) const
 {
     std::stringstream invitationMessage;
-    invitationMessage << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
+    invitationMessage << ":" << client->GetClientInfo() << " INVITE " << targetNickName << " :" << channelName;
 
     return invitationMessage.str();
 }
@@ -453,7 +459,8 @@ std::string Executor::buildKickoutMsg(Client *client, const std::string &channel
                                       const std::string &message) const
 {
     std::stringstream kickoutMessage;
-    kickoutMessage << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " :" << message;
+    kickoutMessage << ":" << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " "
+                   << message;
 
     return kickoutMessage.str();
 }
@@ -496,7 +503,7 @@ std::string Executor::buildQuitMsg(Client *client, const std::string &reason) co
 std::string Executor::buildPrivateMsg(Client *client, const std::string &target, const std::string &message) const
 {
     std::stringstream privateMessage;
-    privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " :" << message;
+    privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " " << message;
 
     return privateMessage.str();
 }

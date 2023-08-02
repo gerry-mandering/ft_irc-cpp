@@ -48,7 +48,6 @@ void ClientRepository::RemoveClientFromNickNameMap(const std::string &nickName)
 
 Client *ClientRepository::FindBySocket(handle_t socket)
 {
-
     if (mSocketToClients.find(socket) != mSocketToClients.end())
     {
         LOG_TRACE("ClientRepository FindBySocket() - Found");

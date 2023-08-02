@@ -73,6 +73,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
 {
     Client *client = inviteRequest->GetClient();
     const std::string &nickName = client->GetNickName();
+    const std::string &targetNickName = inviteRequest->GetNickName();
     const std::string &channelName = inviteRequest->GetChannelName();
 
     // Registered 하지 않은 경우
@@ -103,13 +104,13 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    Client *targetClient = clientRepository->FindByNickName(nickName);
+    Client *targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 해당 닉네임을 가진 유저가 없는 경우
     if (!targetClient)
     {
         std::string errorMessage;
-        errorMessage = buildNoSuchNickMsg(nickName, inviteRequest->GetNickName());
+        errorMessage = buildNoSuchNickMsg(nickName, targetNickName);
 
         client->AddResponseToBuf(errorMessage);
 
@@ -132,10 +133,10 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     // 이미 초대한 유저가 채널에 존재하는 경우
-    if (channel->CheckClientIsExist(inviteRequest->GetNickName()))
+    if (channel->CheckClientIsExist(targetNickName))
     {
         std::string errorMessage;
-        errorMessage = buildUserOnChannelMsg(nickName, inviteRequest->GetNickName(), inviteRequest->GetChannelName());
+        errorMessage = buildUserOnChannelMsg(nickName, targetNickName, channelName);
 
         client->AddResponseToBuf(errorMessage);
 
@@ -145,7 +146,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     // 채널 operator가 아닌 경우
-    if (channel->CheckClientIsOperator(nickName))
+    if (!channel->CheckClientIsOperator(nickName))
     {
         std::string errorMessage;
         errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
@@ -284,7 +285,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
         }
 
         // 채널 operator가 아닌 경우
-        if (channel->CheckClientIsOperator(nickName))
+        if (!channel->CheckClientIsOperator(nickName))
         {
             std::string errorMessage;
             errorMessage = buildNotChannelOperatorMsg(nickName, channelName);
@@ -318,9 +319,7 @@ bool Validator::Visit(ModeRequest *modeRequest) const
     Client *client = modeRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = modeRequest->GetChannelName();
-    const std::string &sign = modeRequest->GetSign();
     const std::string &modeChar = modeRequest->GetModeChar();
-    const std::string &modeArgument = modeRequest->GetModeArgument();
 
     // Registered 하지 않은 경우
     if (!client->HasRegistered())
@@ -359,78 +358,15 @@ bool Validator::Visit(ModeRequest *modeRequest) const
     }
 
     if (modeChar == "o")
-    {
-        ClientRepository *clientRepository = ClientRepository::GetInstance();
-        Client *targetClient = clientRepository->FindByNickName(modeArgument);
-
-        // 채널 operator 권한을 부여할 클라이언트가 존재하지 않는 경우
-        if (!targetClient)
-        {
-            std::string errorMessage = buildNoSuchNickMsg(nickName, modeArgument);
-            client->AddResponseToBuf(errorMessage);
-
-            LOG_TRACE("ModeRequest Invalid - NoSuchNick");
-
-            return false;
-        }
-
-        // 채널 operator 권한을 부여할 클라이언트가 채널에 없는 경우
-        if (!channel->CheckClientIsExist(modeArgument))
-        {
-            std::string errorMessage = buildUserNotInChannelMsg(nickName, modeArgument, channelName);
-            client->AddResponseToBuf(errorMessage);
-
-            LOG_TRACE("ModeRequest Invalid - UserNotInChannel");
-
-            return false;
-        }
-
-        // sign + 일때 이미 대상 클라이언트가 채널 operator 이거나, sign - 일때 대상이 operator가 아닌 경우
-        bool targetIsOperator = channel->CheckClientIsOperator(modeArgument);
-        if ((targetIsOperator && (sign == "+")) || (!targetIsOperator && (sign == "-")))
-        {
-            LOG_TRACE("ModeRequest Invalid - NoAction");
-
-            return false;
-        }
-    }
-
-    if (sign == "+")
-    {
-        if (((modeChar == "i") && channel->IsInviteOnlyMode()) ||
-            ((modeChar == "t") && channel->IsProtectedTopicMode()) || ((modeChar == "k") && channel->IsKeyMode()) ||
-            ((modeChar == "l") && (atoi(modeArgument.c_str()) == channel->GetClientLimit())))
-        {
-            LOG_TRACE("ModeRequest Invalid - NoAction");
-
-            return false;
-        }
-    }
+        return validateOperUserMode(client, channel, modeRequest);
+    else if (modeChar == "l")
+        return validateClientLimitMode(channel, modeRequest);
+    else if (modeChar == "i")
+        return validateInviteOnlyMode(channel, modeRequest);
+    else if (modeChar == "k")
+        return validateKeyMode(client, channel, modeRequest);
     else
-    {
-        if (((modeChar == "i") && !channel->IsInviteOnlyMode()) ||
-            ((modeChar == "t") && !channel->IsProtectedTopicMode()) || ((modeChar == "k") && !channel->IsKeyMode()) ||
-            ((modeChar == "l") && !channel->IsClientLimitMode()))
-        {
-            LOG_TRACE("ModeRequest Invalid - NoAction");
-
-            return false;
-        }
-
-        if ((modeChar == "k") && (modeArgument != channel->GetKey()))
-        {
-            std::string errorMessage = buildKeySetMsg(nickName, channelName);
-            client->AddResponseToBuf(errorMessage);
-
-            LOG_TRACE("ModeRequest Invalid - KeySet");
-
-            return false;
-        }
-    }
-
-    LOG_TRACE("ModeRequest Validated");
-
-    return true;
+        return validateProtectedTopicMode(channel, modeRequest);
 }
 
 // NICK Command 경우의 수 검증 완료
@@ -438,9 +374,10 @@ bool Validator::Visit(NickRequest *nickRequest) const
 {
     Client *client = nickRequest->GetClient();
     const std::string &nickName = client->GetNickName();
+    const std::string &newNickName = nickRequest->GetNickName();
 
     // 자신의 닉네임과 동일한 경우 동작 X
-    if (nickName == nickRequest->GetNickName())
+    if (nickName == newNickName)
     {
         LOG_TRACE("NickRequest Invalid - SameAsSelf");
 
@@ -450,9 +387,9 @@ bool Validator::Visit(NickRequest *nickRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
     // 이미 해당 닉네임을 사용하는 클라이언트가 존재하는 경우
-    if (clientRepository->FindByNickName(nickName))
+    if (clientRepository->FindByNickName(newNickName))
     {
-        std::string errorMessage = buildNickNameInUseMsg(nickRequest->GetNickName(), nickName);
+        std::string errorMessage = buildNickNameInUseMsg(nickName, newNickName);
         client->AddResponseToBuf(errorMessage);
 
         LOG_TRACE("NickRequest Invalid - NickNameIsUse");
@@ -801,13 +738,13 @@ std::string Validator::buildAccessDeniedMsg(const std::string &userName, const s
     return errorMessage.str();
 }
 
-std::string Validator::buildNickNameInUseMsg(const std::string &newNickName, const std::string &clientNickName) const
+std::string Validator::buildNickNameInUseMsg(const std::string &nickName, const std::string &newNickName) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
 
     std::stringstream errorMessage;
-    errorMessage << ":" << envManager->GetServerName() << " 433 " << (clientNickName.empty() ? "*" : clientNickName)
-                 << " " << newNickName << " :Nickname is already in use.";
+    errorMessage << ":" << envManager->GetServerName() << " 433 " << (nickName.empty() ? "*" : nickName) << " "
+                 << newNickName << " :Nickname is already in use.";
 
     return errorMessage.str();
 }
@@ -886,7 +823,7 @@ std::string Validator::buildNotChannelOperatorMsg(const std::string &nickName, c
 
     std::stringstream errorMessage;
     errorMessage << ":" << envManager->GetServerName() << " 482 " << nickName << " " << channelName
-                 << " :You You must be a channel operator";
+                 << " :You must be a channel operator";
 
     return errorMessage.str();
 }
@@ -911,4 +848,143 @@ std::string Validator::buildKeySetMsg(const std::string &nickName, const std::st
                  << " :Channel key already set";
 
     return errorMessage.str();
+}
+
+bool Validator::validateOperUserMode(Client *client, Channel *channel, ModeRequest *modeRequest) const
+{
+    const std::string &nickName = client->GetNickName();
+    const std::string &channelName = modeRequest->GetChannelName();
+    const std::string &targetNickName = modeRequest->GetModeArgument();
+
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
+    Client *targetClient = clientRepository->FindByNickName(targetNickName);
+
+    // 채널 operator 권한을 부여할 클라이언트가 존재하지 않는 경우
+    if (!targetClient)
+    {
+        std::string errorMessage = buildNoSuchNickMsg(nickName, targetNickName);
+        client->AddResponseToBuf(errorMessage);
+
+        LOG_TRACE("ModeRequest Invalid - NoSuchNick");
+
+        return false;
+    }
+
+    // 채널 operator 권한을 부여할 클라이언트가 채널에 없는 경우
+    if (!channel->CheckClientIsExist(targetNickName))
+    {
+        std::string errorMessage = buildUserNotInChannelMsg(nickName, targetNickName, channelName);
+        client->AddResponseToBuf(errorMessage);
+
+        LOG_TRACE("ModeRequest Invalid - UserNotInChannel");
+
+        return false;
+    }
+
+    const std::string &sign = modeRequest->GetSign();
+    bool targetIsOperator = channel->CheckClientIsOperator(targetNickName);
+
+    // sign + 일때 이미 대상 클라이언트가 채널 operator 이거나, sign - 일때 대상이 operator가 아닌 경우
+    if ((targetIsOperator && (sign == "+")) || (!targetIsOperator && (sign == "-")))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
+}
+
+bool Validator::validateClientLimitMode(Channel *channel, ModeRequest *modeRequest) const
+{
+    const std::string &sign = modeRequest->GetSign();
+
+    if (sign == "+" && channel->IsClientLimitMode())
+    {
+        const std::string &limitString = modeRequest->GetModeArgument();
+        int clientLimit = atoi(limitString.c_str());
+
+        if (clientLimit == channel->GetClientLimit())
+        {
+            LOG_TRACE("ModeRequest Invalid - NoAction");
+
+            return false;
+        }
+    }
+
+    if (sign == "-" && !channel->IsClientLimitMode())
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
+}
+
+bool Validator::validateInviteOnlyMode(Channel *channel, ModeRequest *modeRequest) const
+{
+    const std::string &sign = modeRequest->GetSign();
+
+    if ((sign == "+" && channel->IsInviteOnlyMode()) && (sign == "-" && !channel->IsInviteOnlyMode()))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
+}
+
+bool Validator::validateKeyMode(Client *client, Channel *channel, ModeRequest *modeRequest) const
+{
+    const std::string &sign = modeRequest->GetSign();
+
+    if ((sign == "+" && channel->IsKeyMode()) && (sign == "-" && !channel->IsKeyMode()))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    if (sign == "-" && channel->IsKeyMode())
+    {
+        const std::string &keyValue = modeRequest->GetModeArgument();
+
+        if (keyValue != channel->GetKey())
+        {
+            std::string errorMessage = buildKeySetMsg(client->GetNickName(), modeRequest->GetChannelName());
+            client->AddResponseToBuf(errorMessage);
+
+            LOG_TRACE("ModeRequest Invalid - KeySet");
+
+            return false;
+        }
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
+}
+
+bool Validator::validateProtectedTopicMode(Channel *channel, ModeRequest *modeRequest) const
+{
+    const std::string &sign = modeRequest->GetSign();
+
+    if ((sign == "+" && channel->IsProtectedTopicMode()) && (sign == "-" && !channel->IsProtectedTopicMode()))
+    {
+        LOG_TRACE("ModeRequest Invalid - NoAction");
+
+        return false;
+    }
+
+    LOG_TRACE("ModeRequest Validated");
+
+    return true;
 }
