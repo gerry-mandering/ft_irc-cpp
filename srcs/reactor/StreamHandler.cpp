@@ -59,11 +59,7 @@ int StreamHandler::handleRead(void)
             LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
             continue;
         }
-        // TODO: registerEvent(handler, WRITE_EVENT)는 다른 곳에서 필요할 때 등록 (response 큐에 집어넣고 호출하면 될듯)
-        // handler는 reactor가 싱글톤이니 map에서 fd로 찾으면 됨
-        //    return (g_reactor().registerEvent(this, WRITE_EVENT));
 
-        //     TODO: 민석님이 작성하실 부분
         Validator *validator = Validator::GetInstance();
         if (request->Accept(validator))
         {
@@ -71,23 +67,7 @@ int StreamHandler::handleRead(void)
             request->Accept(executor);
         }
     }
-
-    // Log_TRACE("socket fd: " << m_handle << " is closed\n");
-    //    return (g_reactor().registerEvent(this, WRITE_EVENT));
-
-    // std::cerr << "before validating\n";
-    // Validator *validator = Validator::GetInstance();
-    // if (request->Accept(validator))
-    // {
-    //     std::cerr << "after validating\n";
-    //     Executor *executor = Executor::GetInstance();
-    //     request->Accept(executor);
-    // }
-    // std::cerr << "after execution\n";
-
-    // Log_TRACE("socket fd: " << m_handle << " is closed\n");
-    // return true;
-    return (0);
+    return (OK);
 }
 
 int StreamHandler::handleWrite(void)
