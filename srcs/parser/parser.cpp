@@ -102,14 +102,21 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
 Request *parseTopic(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
-    std::string command, channel, topic, junk;
+    std::string command, channel, headOfLast, topic;
+    const size_t numSpace = 1;
+    size_t preLastTokenLen;
 
-    if (!(ss >> command >> channel >> topic))
+    if (!(ss >> command >> channel >> headOfLast))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-    if (topic.length() > MAX_TOPIC_LEN || !isalnum(topic))
+    LOG_TRACE(__func__ << " command: " << command);
+    LOG_TRACE(__func__ << " channel: " << channel);
+    if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_TOPIC + command, INVALID_TOPIC);
-    if (ss >> junk)
-        throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
+    preLastTokenLen = command.size() + channel.size() + numSpace;
+    topic = tcpStreams.substr(tcpStreams.find(headOfLast, preLastTokenLen));
+    LOG_TRACE(__func__ << " topic: " << topic);
+    if (topic.length() > MAX_TOPIC_LEN || hasMetaChar(topic.substr(1)))
+        throw InvalidFormat(socket, MSG_INVALID_TOPIC + command, INVALID_TOPIC);
     return (new TopicRequest(socket, channel, topic));
 }
 
