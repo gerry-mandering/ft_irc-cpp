@@ -8,6 +8,20 @@
 
 #define PORT_LEN 5
 #define PASSWORD_LEN 15
+#define MAX_PORT 65535
+#define MIN_PORT 1024
+
+static int stringToint(const std::string &str)
+{
+    int ret = 0;
+
+    for (size_t i = 0; i < str.length(); i++)
+    {
+        ret *= 10;
+        ret += str[i] - '0';
+    }
+    return (ret);
+}
 
 static bool invalid_input(const std::string &port, const std::string &password)
 {
@@ -18,6 +32,8 @@ static bool invalid_input(const std::string &port, const std::string &password)
         if (!std::isdigit(port[i]))
             return (true);
     }
+    if (stringToint(port) > MAX_PORT || stringToint(port) < MIN_PORT)
+        return (true);
     for (size_t i = 0; i < password.length(); i++)
     {
         if (!std::isalnum(password[i]))
@@ -29,13 +45,8 @@ static bool invalid_input(const std::string &port, const std::string &password)
 // TODO: 로깅 핸들러 추가 처리
 static void init_server(const std::string &portStr, const std::string &password)
 {
-    int portInt = 0;
+    int portInt = stringToint(portStr);
 
-    for (size_t i = 0; i < portStr.length(); i++)
-    {
-        portInt *= 10;
-        portInt += portStr[i] - '0';
-    }
     Parser::initParsers();
     EnvManager::GetInstance()->SetPortNumber(portStr);
     EnvManager::GetInstance()->SetConnectionPassword(password);
@@ -56,7 +67,7 @@ int main(int argc, char **argv)
     if (invalid_input(argv[1], argv[2]))
     {
         std::cerr << "Input is invalid\n"
-                  << "port should be integer and password should be alphanumeric\n";
+                  << "Port should be integer inside a range and password should be alphanumeric\n";
         return (EXIT_FAILURE);
     }
     try
