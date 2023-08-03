@@ -19,7 +19,6 @@ void initParsers(void)
         parsers[commands[i].first] = commands[i].second;
 }
 
-// TODO: case문 type 추가
 std::string eTypeToString(eInvaldFormat type)
 {
     switch (type)
@@ -40,6 +39,10 @@ std::string eTypeToString(eInvaldFormat type)
             return MSG_INVALID_KEY;
         case INVALID_MSG:
             return MSG_INVALID_MSG;
+        case INVALID_MODE_OPTION:
+            return MSG_INVALID_MODE_OPTION;
+        case INVALID_MODE_ARGUMENT:
+            return MSG_INVALID_MODE_ARGUMENT;
         default:
             return "Unknown error";
     }

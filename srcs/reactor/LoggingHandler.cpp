@@ -29,7 +29,6 @@ int LoggingHandler::handleWrite(void)
     // nwrite = write(m_handle, m_writeBuf.c_str(), len);
     // if (nwrite < 0)
     // {
-    //     // TODO: 추후 삭제
     //     perror("standard_output write failed");
     //     exit(EXIT_FAILURE);
     // }

@@ -152,9 +152,6 @@ Request *parseJoin(const std::string &tcpStreams, handle_t socket)
         throw InvalidFormat(socket, MSG_INVALID_CHANNEL + command, INVALID_CHANNEL);
     if (!(ss >> key))
         return (new JoinRequest(socket, channel, ""));
-    // TODO: 입력 KEY에 이상한 문자가 있더라도 일단 validator에 보내는게 타당할듯
-    // if (hasMetaChar(key))
-    //     throw InvalidFormat(socket, MSG_INVALID_KEY + command, INVALID_KEY);
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
     return (new JoinRequest(socket, channel, key));
@@ -194,9 +191,6 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     LOG_TRACE(__func__ << " command: " << command);
     LOG_TRACE(__func__ << " targets: " << targets);
 
-    // TODO: "a,b,c," / "a, b,," / "a, b, c, ," / ",, ,"
-    // TODO: 토큰에 :같은 특수문자가 있더라도 아무 상관없다. 어차피 검색해도 못찾을테니
-    // ,가 연속으로 나오면 에러, / , 뒤에 아무것도 없으면 에러
     commaToknizer(targets, targetList);
     LOG_TRACE(__func__ << " targetList size: " << targetList.size());
     LOG_TRACE(targetList);

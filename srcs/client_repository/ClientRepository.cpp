@@ -52,7 +52,6 @@ Client *ClientRepository::FindBySocket(handle_t socket)
         return mSocketToClients[socket];
     }
 
-    // TODO shared_ptr로 수정하기
     LOG_TRACE("ClientRepository FindBySocket() - NotFound");
 
     return NULL;

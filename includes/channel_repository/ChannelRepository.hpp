@@ -17,6 +17,5 @@ class ChannelRepository : public TSingleton< ChannelRepository >
     int GetNumberOfChannels() const;
 
   private:
-    // TODO shared_ptr
     std::map< std::string, Channel * > mChannels;
 };

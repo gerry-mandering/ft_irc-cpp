@@ -42,7 +42,6 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
     return true;
 }
 
-// TODO InvitedClients vector에 있으면 제거
 bool Executor::Visit(JoinRequest *joinRequest) const
 {
     ChannelRepository *channelRepo = ChannelRepository::GetInstance();
