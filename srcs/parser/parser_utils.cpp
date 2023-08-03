@@ -137,7 +137,7 @@ bool invalidModeType(const std::string &modeType)
 
 bool notNeedOptionalToken(const std::string &sign, const std::string &modeType)
 {
-    return (modeType == "i" || modeType == "t" || (sign == "-" && (modeType == "l" || modeType == "k")));
+    return (modeType == "i" || modeType == "t" || (sign == "-" && modeType == "l"));
 }
 
 bool modeExceptionCase(const std::string &nickname, const std::string &modeToken)
