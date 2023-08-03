@@ -81,7 +81,7 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
     m_changePos = 0;
     LOG_TRACE("\n>====== numEvents: " << numEvents << " ======<\n");
     if (numEvents < 0)
-        throw SyscallException("kevent systemcall failed " + std::string(strerror(errno)));
+        return (numEvents);
     for (int i = 0; i < numEvents; ++i)
     {
         struct kevent &event = m_kEventList[i];

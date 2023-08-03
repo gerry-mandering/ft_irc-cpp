@@ -69,16 +69,14 @@ int main(int argc, char **argv)
         std::cerr << e.what() << "\n";
         return (EXIT_FAILURE);
     }
-    try
+    Reactor *reactor = Reactor::GetInstance();
+    while (true)
     {
-        Reactor *reactor = Reactor::GetInstance();
-        while (true)
-            reactor->handleEvents();
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << "\n";
-        return (EXIT_FAILURE);
+        if (reactor->handleEvents() < 0)
+        {
+            std::cerr << "Reactor kevent failed\n";
+            return (EXIT_FAILURE);
+        }
     }
     return (0);
 }

@@ -37,7 +37,12 @@ int AcceptHandler::handleRead(void)
     socklen_t addrSize = sizeof(addr);
     int newHandle;
 
-    newHandle = Wrapper::accept(m_handle, (struct sockaddr *)&addr, &addrSize);
+    newHandle = accept(m_handle, (struct sockaddr *)&addr, &addrSize);
+    if (newHandle < 0)
+    {
+        LOG_WARN(__func__ << " accept failed");
+        return (ERROR_GENERIC);
+    }
     LOG_TRACE("new connection: " << newHandle);
     fcntl(newHandle, F_SETFL, O_NONBLOCK);
     return (Reactor::GetInstance()->registerHandler(new StreamHandler(newHandle), READ_EVENT));
@@ -45,10 +50,10 @@ int AcceptHandler::handleRead(void)
 
 int AcceptHandler::handleWrite(void)
 {
-    return 0;
+    return CODE_OK;
 }
 
 int AcceptHandler::handleError(void)
 {
-    return 0;
+    return CODE_OK;
 }
