@@ -936,7 +936,7 @@ bool Validator::validateInviteOnlyMode(Channel *channel, ModeRequest *modeReques
 {
     const std::string &sign = modeRequest->GetSign();
 
-    if ((sign == "+" && channel->IsInviteOnlyMode()) && (sign == "-" && !channel->IsInviteOnlyMode()))
+    if ((sign == "+" && channel->IsInviteOnlyMode()) || (sign == "-" && !channel->IsInviteOnlyMode()))
     {
         LOG_TRACE("ModeRequest Invalid - NoAction");
 
@@ -952,7 +952,7 @@ bool Validator::validateKeyMode(Client *client, Channel *channel, ModeRequest *m
 {
     const std::string &sign = modeRequest->GetSign();
 
-    if ((sign == "+" && channel->IsKeyMode()) && (sign == "-" && !channel->IsKeyMode()))
+    if ((sign == "+" && channel->IsKeyMode()) || (sign == "-" && !channel->IsKeyMode()))
     {
         LOG_TRACE("ModeRequest Invalid - NoAction");
 
@@ -983,7 +983,7 @@ bool Validator::validateProtectedTopicMode(Channel *channel, ModeRequest *modeRe
 {
     const std::string &sign = modeRequest->GetSign();
 
-    if ((sign == "+" && channel->IsProtectedTopicMode()) && (sign == "-" && !channel->IsProtectedTopicMode()))
+    if ((sign == "+" && channel->IsProtectedTopicMode()) || (sign == "-" && !channel->IsProtectedTopicMode()))
     {
         LOG_TRACE("ModeRequest Invalid - NoAction");
 
