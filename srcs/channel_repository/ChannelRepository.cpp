@@ -2,13 +2,13 @@
 
 Channel *ChannelRepository::CreateChannel(const std::string &name)
 {
-    Channel *channel = new Channel(name);
+    SharedPtr< Channel > channel(new Channel(name));
 
     mChannels[name] = channel;
 
     LOG_TRACE("ChannelRepository CreateChannel()");
 
-    return channel;
+    return channel.GetPtr();
 }
 
 Channel *ChannelRepository::FindByName(const std::string &name)
@@ -16,7 +16,8 @@ Channel *ChannelRepository::FindByName(const std::string &name)
     if (mChannels.find(name) != mChannels.end())
     {
         LOG_TRACE("ChannelRepository FindByName() - Found");
-        return mChannels[name];
+
+        return mChannels[name].GetPtr();
     }
 
     LOG_TRACE("ChannelRepository FindByName() - NotFound");

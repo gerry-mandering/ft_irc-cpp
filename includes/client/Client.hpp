@@ -2,6 +2,7 @@
 
 #include "EventHandler.hpp"
 #include "LoggingHandler.hpp"
+#include "SharedPtr.hpp"
 #include <bitset>
 #include <iostream>
 #include <queue>
@@ -14,6 +15,7 @@ class Client
 
   public:
     Client(handle_t socket);
+    ~Client();
 
     std::string GetClientInfo() const;
     handle_t GetSocket() const;
@@ -57,7 +59,7 @@ class Client
 
     handle_t mSocket;
 
-    Channel *mChannel;
+    SharedPtr< Channel > mChannel;
 
     std::string mNickName;
     std::string mUserName;

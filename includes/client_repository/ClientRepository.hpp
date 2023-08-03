@@ -3,6 +3,7 @@
 #include "Client.hpp"
 #include "EventHandler.hpp"
 #include "LoggingHandler.hpp"
+#include "SharedPtr.hpp"
 #include "SingletonTemplate.hpp"
 #include <map>
 
@@ -25,6 +26,6 @@ class ClientRepository : public TSingleton< ClientRepository >
     int GetNumberOfClients() const;
 
   private:
-    std::map< handle_t, Client * > mSocketToClients;
-    std::map< std::string, Client * > mNickNameToClients;
+    std::map< handle_t, SharedPtr< Client > > mSocketToClients;
+    std::map< std::string, SharedPtr< Client > > mNickNameToClients;
 };

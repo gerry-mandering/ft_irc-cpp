@@ -1,16 +1,19 @@
 #pragma once
 
-#include "Client.hpp"
+#include "SharedPtr.hpp"
 #include <algorithm>
 #include <bitset>
 #include <iostream>
 #include <vector>
+
+class Client;
 
 class Channel
 {
 
   public:
     Channel(const std::string &name);
+    ~Channel();
 
     const std::string &GetName() const;
     std::string GetClientsList();
@@ -62,10 +65,10 @@ class Channel
 
     std::string mName;
 
-    std::vector< Client * > mClients;
-    std::vector< Client * > mOperators;
+    std::vector< SharedPtr< Client > > mClients;
+    std::vector< SharedPtr< Client > > mOperators;
 
-    std::vector< Client * > mInvitedClients;
+    std::vector< SharedPtr< Client > > mInvitedClients;
     std::string mTopic;
     std::string mKey;
     int mClientLimit;

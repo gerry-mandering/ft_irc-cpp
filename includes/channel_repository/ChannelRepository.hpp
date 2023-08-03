@@ -2,6 +2,7 @@
 
 #include "Channel.hpp"
 #include "LoggingHandler.hpp"
+#include "SharedPtr.hpp"
 #include "SingletonTemplate.hpp"
 #include <iostream>
 #include <map>
@@ -18,5 +19,5 @@ class ChannelRepository : public TSingleton< ChannelRepository >
 
   private:
     // TODO shared_ptr
-    std::map< std::string, Channel * > mChannels;
+    std::map< std::string, SharedPtr< Channel > > mChannels;
 };

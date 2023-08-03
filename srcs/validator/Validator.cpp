@@ -177,7 +177,6 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
 // TODO: InviteOnlyMode 추가에 따른 테스트 진행
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
-
     ChannelRepository *channelRepo = ChannelRepository::GetInstance();
     Channel *channel;
     Client *client = joinRequest->GetClient();

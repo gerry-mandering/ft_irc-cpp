@@ -1,10 +1,13 @@
 #include "Channel.hpp"
+#include "Client.hpp"
 
 Channel::Channel(const std::string &name)
     : mName(name), mTopic(std::string()), mKey(std::string()), mClientLimit(0), mModeFlags(EMPTY_FLAGS)
 {
     LOG_TRACE("Channel constructor called | " << *this);
 }
+
+Channel::~Channel() {}
 
 const std::string &Channel::GetName() const
 {
@@ -15,7 +18,7 @@ std::string Channel::GetClientsList()
 {
     std::string clientsList;
 
-    std::vector< Client * >::iterator iter;
+    std::vector< SharedPtr< Client > >::iterator iter;
     for (iter = mClients.begin(); iter != mClients.end(); iter++)
     {
         clientsList += (*iter)->GetNickName();
@@ -44,7 +47,7 @@ int Channel::GetClientLimit() const
 
 void Channel::BroadcastMessage(const std::string &message)
 {
-    std::vector< Client * >::iterator iter = mClients.begin();
+    std::vector< SharedPtr< Client > >::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
     {
@@ -55,7 +58,7 @@ void Channel::BroadcastMessage(const std::string &message)
 
 void Channel::BroadcastMessageExcludingRequestor(const std::string &message, const std::string &requestorNickName)
 {
-    std::vector< Client * >::iterator iter = mClients.begin();
+    std::vector< SharedPtr< Client > >::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
     {
@@ -67,7 +70,7 @@ void Channel::BroadcastMessageExcludingRequestor(const std::string &message, con
 
 bool Channel::CheckClientIsExist(const std::string &nickName)
 {
-    std::vector< Client * >::iterator iter = mClients.begin();
+    std::vector< SharedPtr< Client > >::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
     {
@@ -82,7 +85,7 @@ bool Channel::CheckClientIsExist(const std::string &nickName)
 
 bool Channel::CheckClientIsOperator(const std::string &nickName)
 {
-    std::vector< Client * >::iterator iter = mOperators.begin();
+    std::vector< SharedPtr< Client > >::iterator iter = mOperators.begin();
 
     while (iter != mOperators.end())
     {
@@ -97,7 +100,7 @@ bool Channel::CheckClientIsOperator(const std::string &nickName)
 
 void Channel::SetClient(Client *newClient)
 {
-    mClients.push_back(newClient);
+    mClients.push_back(SharedPtr< Client >(newClient));
 }
 
 void Channel::RemoveClient(const std::string &nickName)
@@ -105,7 +108,7 @@ void Channel::RemoveClient(const std::string &nickName)
     if (CheckClientIsOperator(nickName))
         RemoveOperator(nickName);
 
-    std::vector< Client * >::iterator iter;
+    std::vector< SharedPtr< Client > >::iterator iter;
 
     iter = mClients.begin();
     while (iter != mClients.end())
@@ -122,12 +125,12 @@ void Channel::RemoveClient(const std::string &nickName)
 
 void Channel::SetOperator(Client *newOperator)
 {
-    mOperators.push_back(newOperator);
+    mOperators.push_back(SharedPtr< Client >(newOperator));
 }
 
 void Channel::RemoveOperator(const std::string &nickName)
 {
-    std::vector< Client * >::iterator iter;
+    std::vector< SharedPtr< Client > >::iterator iter;
 
     iter = mOperators.begin();
     while (iter != mOperators.end())
@@ -144,7 +147,7 @@ void Channel::RemoveOperator(const std::string &nickName)
 
 bool Channel::CheckClientIsInvited(const std::string &nickName)
 {
-    std::vector< Client * >::iterator iter;
+    std::vector< SharedPtr< Client > >::iterator iter;
 
     iter = mInvitedClients.begin();
     while (iter != mInvitedClients.end())
@@ -160,12 +163,12 @@ bool Channel::CheckClientIsInvited(const std::string &nickName)
 
 void Channel::AddToInvitedClient(Client *invitedClient)
 {
-    mInvitedClients.push_back(invitedClient);
+    mInvitedClients.push_back(SharedPtr< Client >(invitedClient));
 }
 
 void Channel::RemoveFromInvitedClient(const std::string &nickName)
 {
-    std::vector< Client * >::iterator iter;
+    std::vector< SharedPtr< Client > >::iterator iter;
 
     iter = mInvitedClients.begin();
     while (iter != mInvitedClients.end())

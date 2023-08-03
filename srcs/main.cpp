@@ -45,6 +45,12 @@ static void init_server(const std::string &portStr, const std::string &password)
     g_reactor().registerHandler(acceptHandler, READ_EVENT);
 }
 
+// TODO
+// static void CheckLeaks()
+//{
+//     system("leaks ircserver");
+// }
+
 int main(int argc, char **argv)
 {
     // TODO: singleton atexit 처리 고민할것
@@ -79,5 +85,9 @@ int main(int argc, char **argv)
         std::cerr << e.what() << "\n";
         return (EXIT_FAILURE);
     }
+
+    // TODO
+    //    std::atexit(CheckLeaks);
+
     return (0);
 }
