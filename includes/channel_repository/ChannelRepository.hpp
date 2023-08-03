@@ -6,7 +6,7 @@
 #include <iostream>
 #include <map>
 
-class ChannelRepository : public TSingleton<ChannelRepository>
+class ChannelRepository : public TSingleton< ChannelRepository >
 {
 
   public:
@@ -18,5 +18,5 @@ class ChannelRepository : public TSingleton<ChannelRepository>
 
   private:
     // TODO shared_ptr
-    std::map<std::string, Channel *> mChannels;
+    std::map< std::string, Channel * > mChannels;
 };

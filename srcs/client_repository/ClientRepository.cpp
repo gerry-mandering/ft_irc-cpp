@@ -1,7 +1,5 @@
 #include "ClientRepository.hpp"
 
-// TODO: dahkang Register NickName 함수가 필요할듯?, NickToClient map 에 등록하는 함수가 없음
-
 ClientRepository::ClientRepository() {}
 
 ClientRepository::~ClientRepository() {}
@@ -26,10 +24,10 @@ void ClientRepository::AddClientToNickNameMap(Client *client)
 
 void ClientRepository::RemoveClient(handle_t socket, const std::string &nickName)
 {
-    std::map<handle_t, Client *>::iterator socketIter = mSocketToClients.find(socket);
+    std::map< handle_t, Client * >::iterator socketIter = mSocketToClients.find(socket);
     mSocketToClients.erase(socketIter);
 
-    std::map<std::string, Client *>::iterator nickNameIter = mNickNameToClients.find(nickName);
+    std::map< std::string, Client * >::iterator nickNameIter = mNickNameToClients.find(nickName);
 
     if (nickNameIter != mNickNameToClients.end())
         mNickNameToClients.erase(nickNameIter);
@@ -39,7 +37,7 @@ void ClientRepository::RemoveClient(handle_t socket, const std::string &nickName
 
 void ClientRepository::RemoveClientFromNickNameMap(const std::string &nickName)
 {
-    std::map<std::string, Client *>::iterator iter = mNickNameToClients.find(nickName);
+    std::map< std::string, Client * >::iterator iter = mNickNameToClients.find(nickName);
 
     mNickNameToClients.erase(iter);
 

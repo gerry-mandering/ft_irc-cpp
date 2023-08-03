@@ -249,9 +249,9 @@ bool Validator::Visit(KickRequest *kickRequest) const
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
-    std::vector<std::string> validatedTargets;
-    std::vector<std::string> targets = kickRequest->GetTargets();
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string > validatedTargets;
+    std::vector< std::string > targets = kickRequest->GetTargets();
+    std::vector< std::string >::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
@@ -551,9 +551,9 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
-    std::vector<std::string> validatedTargets;
-    std::vector<std::string> &targets = privmsgRequest->GetTargets();
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string > validatedTargets;
+    std::vector< std::string > &targets = privmsgRequest->GetTargets();
+    std::vector< std::string >::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
@@ -731,8 +731,6 @@ bool Validator::Visit(UserRequest *userRequest) const
 
     return true;
 }
-
-// TODO: dahkang 빌드 메시지 다른 곳으로 빼면 어떨까요
 
 std::string Validator::buildAlreadyRegisteredMsg(const std::string &nickName) const
 {

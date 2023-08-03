@@ -45,7 +45,7 @@ class Client
 
     void AddResponseToBuf(const std::string &response);
 
-    friend std::ostream &operator<<(std::ostream &os, const Client &client);
+    friend std::stringstream &operator<<(std::stringstream &ss, const Client &client);
 
   private:
     static const int REGISTERED_FLAG = 1 << 0;

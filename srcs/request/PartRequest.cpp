@@ -31,9 +31,9 @@ const std::string &PartRequest::GetReason() const
     return mReason;
 }
 
-std::ostream &operator<<(std::ostream &os, const PartRequest &partRequest)
+std::stringstream &operator<<(std::stringstream &ss, const PartRequest &partRequest)
 {
-    os << "PartRequest = { ChannelName: " << partRequest.mChannelName << ", Reason: " << partRequest.mReason << " }";
+    ss << "PartRequest = { ChannelName: " << partRequest.mChannelName << ", Reason: " << partRequest.mReason << " }";
 
-    return os;
+    return ss;
 }

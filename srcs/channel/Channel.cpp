@@ -15,7 +15,7 @@ std::string Channel::GetClientsList()
 {
     std::string clientsList;
 
-    std::vector<Client *>::iterator iter;
+    std::vector< Client * >::iterator iter;
     for (iter = mClients.begin(); iter != mClients.end(); iter++)
     {
         clientsList += (*iter)->GetNickName();
@@ -42,10 +42,9 @@ int Channel::GetClientLimit() const
     return mClientLimit;
 }
 
-// TODO: dahkang 현재 mClients 벡터만 순회중
 void Channel::BroadcastMessage(const std::string &message)
 {
-    std::vector<Client *>::iterator iter = mClients.begin();
+    std::vector< Client * >::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
     {
@@ -56,7 +55,7 @@ void Channel::BroadcastMessage(const std::string &message)
 
 void Channel::BroadcastMessageExcludingRequestor(const std::string &message, const std::string &requestorNickName)
 {
-    std::vector<Client *>::iterator iter = mClients.begin();
+    std::vector< Client * >::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
     {
@@ -66,10 +65,9 @@ void Channel::BroadcastMessageExcludingRequestor(const std::string &message, con
     }
 }
 
-// TODO: dahkang mOpeartor 벡터는 순회하지 않고 있음.
 bool Channel::CheckClientIsExist(const std::string &nickName)
 {
-    std::vector<Client *>::iterator iter = mClients.begin();
+    std::vector< Client * >::iterator iter = mClients.begin();
 
     while (iter != mClients.end())
     {
@@ -84,7 +82,7 @@ bool Channel::CheckClientIsExist(const std::string &nickName)
 
 bool Channel::CheckClientIsOperator(const std::string &nickName)
 {
-    std::vector<Client *>::iterator iter = mOperators.begin();
+    std::vector< Client * >::iterator iter = mOperators.begin();
 
     while (iter != mOperators.end())
     {
@@ -107,7 +105,7 @@ void Channel::RemoveClient(const std::string &nickName)
     if (CheckClientIsOperator(nickName))
         RemoveOperator(nickName);
 
-    std::vector<Client *>::iterator iter;
+    std::vector< Client * >::iterator iter;
 
     iter = mClients.begin();
     while (iter != mClients.end())
@@ -129,7 +127,7 @@ void Channel::SetOperator(Client *newOperator)
 
 void Channel::RemoveOperator(const std::string &nickName)
 {
-    std::vector<Client *>::iterator iter;
+    std::vector< Client * >::iterator iter;
 
     iter = mOperators.begin();
     while (iter != mOperators.end())
@@ -146,7 +144,7 @@ void Channel::RemoveOperator(const std::string &nickName)
 
 bool Channel::CheckClientIsInvited(const std::string &nickName)
 {
-    std::vector<Client *>::iterator iter;
+    std::vector< Client * >::iterator iter;
 
     iter = mInvitedClients.begin();
     while (iter != mInvitedClients.end())
@@ -167,7 +165,7 @@ void Channel::AddToInvitedClient(Client *invitedClient)
 
 void Channel::RemoveFromInvitedClient(const std::string &nickName)
 {
-    std::vector<Client *>::iterator iter;
+    std::vector< Client * >::iterator iter;
 
     iter = mInvitedClients.begin();
     while (iter != mInvitedClients.end())
@@ -222,7 +220,6 @@ bool Channel::IsClientLimitMode() const
     return (mModeFlags & CLIENT_LIMIT_FLAG) != 0;
 }
 
-// TODO: dahkang ^= 로 키면 다른 플래그가 꺼질 수 있음. |= 로 수정해야할듯.
 void Channel::ToggleInviteOnlyMode()
 {
     mModeFlags ^= INVITE_ONLY_FLAG;
@@ -243,11 +240,11 @@ void Channel::ToggleClientLimitMode()
     mModeFlags ^= CLIENT_LIMIT_FLAG;
 }
 
-std::ostream &operator<<(std::ostream &os, const Channel &channel)
+std::stringstream &operator<<(std::stringstream &ss, const Channel &channel)
 {
-    os << "Channel = { Name: " << channel.mName << ", Clients.size: " << channel.mClients.size()
+    ss << "Channel = { Name: " << channel.mName << ", Clients.size: " << channel.mClients.size()
        << ", Operators.size: " << channel.mOperators.size() << ", Topic: " << channel.mTopic
        << ", ModeFlags: " << channel.mModeFlags << " }";
 
-    return os;
+    return ss;
 }

@@ -13,7 +13,7 @@ int main()
 {
     atexit(testLeaks);
     // ptr1 pointing to an integer.
-    ft::shared_ptr<int> ptr1(new int(151));
+    ft::shared_ptr< int > ptr1(new int(151));
     std::cout << "--- Shared pointers ptr1 ---\n";
     *ptr1 = 100;
     std::cout << " ptr1's value now: " << *ptr1 << std::endl;
@@ -25,7 +25,7 @@ int main()
         // which ptr1 is pointing to
         // Shared pointer reference counter
         // should have increased now to 2.
-        ft::shared_ptr<int> ptr2 = ptr1;
+        ft::shared_ptr< int > ptr2 = ptr1;
         std::cout << "--- Shared pointers ptr1, ptr2 ---\n";
         LOG_TRACE(ptr1);
         LOG_TRACE(ptr2);
@@ -34,7 +34,7 @@ int main()
             // which ptr1 and ptr2 are pointing to.
             // Shared pointer reference counter
             // should have increased now to 3.
-            ft::shared_ptr<int> ptr3(ptr2);
+            ft::shared_ptr< int > ptr3(ptr2);
             std::cout << "--- Shared pointers ptr1, ptr2, ptr3 "
                          "---\n";
             LOG_TRACE(ptr1);

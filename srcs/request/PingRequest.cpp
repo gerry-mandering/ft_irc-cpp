@@ -20,9 +20,9 @@ const std::string &PingRequest::GetToken() const
     return mToken;
 }
 
-std::ostream &operator<<(std::ostream &os, const PingRequest &pingRequest)
+std::stringstream &operator<<(std::stringstream &ss, const PingRequest &pingRequest)
 {
-    os << "PingRequest = { Token: " << pingRequest.mToken << " }";
+    ss << "PingRequest = { Token: " << pingRequest.mToken << " }";
 
-    return os;
+    return ss;
 }

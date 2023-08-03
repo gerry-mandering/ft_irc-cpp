@@ -31,9 +31,9 @@ const std::string &JoinRequest::getKey() const
     return mKey;
 }
 
-std::ostream &operator<<(std::ostream &os, const JoinRequest &joinRequest)
+std::stringstream &operator<<(std::stringstream &ss, const JoinRequest &joinRequest)
 {
-    os << "JoinRequest = { ChannelName: " << joinRequest.mChannelName << ", Key: " << joinRequest.mKey << " }";
+    ss << "JoinRequest = { ChannelName: " << joinRequest.mChannelName << ", Key: " << joinRequest.mKey << " }";
 
-    return os;
+    return ss;
 }

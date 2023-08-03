@@ -52,10 +52,10 @@ const std::string &ModeRequest::GetModeArgument() const
     return mModeArgument;
 }
 
-std::ostream &operator<<(std::ostream &os, const ModeRequest &modeRequest)
+std::stringstream &operator<<(std::stringstream &ss, const ModeRequest &modeRequest)
 {
-    os << "ModeRequest = { ChannelName: " << modeRequest.mChannelName << ", PlusMinus: " << modeRequest.mSign
+    ss << "ModeRequest = { ChannelName: " << modeRequest.mChannelName << ", PlusMinus: " << modeRequest.mSign
        << ", ModeChar: " << modeRequest.mModeArgument << " }";
 
-    return os;
+    return ss;
 }

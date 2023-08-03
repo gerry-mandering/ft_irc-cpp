@@ -16,7 +16,7 @@ class PartRequest : public Request
     const std::string &GetChannelName() const;
     const std::string &GetReason() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const PartRequest &partRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const PartRequest &partRequest);
 
   private:
     std::string mChannelName;

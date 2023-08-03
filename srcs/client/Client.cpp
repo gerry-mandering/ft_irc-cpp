@@ -131,12 +131,12 @@ bool Client::HasEnteredUserInfo() const
     return (mRegistrationFlags & USER_INFO_ENTERED_FLAG) != 0;
 }
 
-std::ostream &operator<<(std::ostream &os, const Client &client)
+std::stringstream &operator<<(std::stringstream &ss, const Client &client)
 {
-    os << "Client = { Socket: " << client.mSocket << ", Channel: " << client.mChannel
+    ss << "Client = { Socket: " << client.mSocket << ", Channel: " << client.mChannel
        << ", NickName: " << client.mNickName << ", UserName: " << client.mUserName << ", HostName: " << client.mHostName
        << ", ServerName: " << client.mServerName << ", RealName: " << client.mRealName
-       << ", RegistrationFlags: " << std::bitset<4>(client.mRegistrationFlags) << " }";
+       << ", RegistrationFlags: " << std::bitset< 4 >(client.mRegistrationFlags) << " }";
 
-    return os;
+    return ss;
 }
