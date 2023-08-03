@@ -107,7 +107,7 @@ int StreamHandler::handleWrite(void)
     return (CODE_OK);
 }
 
-int StreamHandler::handleError(void)
+int StreamHandler::handleDisconnect(void)
 {
     return (0);
 }

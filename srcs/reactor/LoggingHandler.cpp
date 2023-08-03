@@ -43,7 +43,7 @@ int LoggingHandler::handleWrite(void)
 }
 
 // TODO: 로거 핸들 에러 처리
-int LoggingHandler::handleError(void)
+int LoggingHandler::handleDisconnect(void)
 {
     return 0;
 }

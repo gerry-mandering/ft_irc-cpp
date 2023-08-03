@@ -80,7 +80,7 @@ class LoggingHandler : public EventHandler, public TSingleton< LoggingHandler >
 
     virtual handle_t getHandle(void) const;
     virtual int handleWrite(void);
-    virtual int handleError(void);
+    virtual int handleDisconnect(void);
 
     static std::string buildPrefix(int level);
     static std::string logLevelToString(int level);

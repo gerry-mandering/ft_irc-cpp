@@ -48,12 +48,7 @@ int AcceptHandler::handleRead(void)
     return (Reactor::GetInstance()->registerHandler(new StreamHandler(newHandle), READ_EVENT));
 }
 
-int AcceptHandler::handleWrite(void)
-{
-    return CODE_OK;
-}
-
-int AcceptHandler::handleError(void)
+int AcceptHandler::handleDisconnect(void)
 {
     return CODE_OK;
 }
