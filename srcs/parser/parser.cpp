@@ -7,7 +7,6 @@
 namespace Parser
 {
 
-
 extern std::map<std::string, parser_t> parsers;
 
 // parserRequest는 반드시 \r\n으로 끝나는 문자열을 인자로 받는다.
@@ -24,7 +23,7 @@ Request *parseRequest(const std::string &tcpStreams, handle_t socket)
     it = parsers.find(command);
     if (it != parsers.end())
         return (it->second)(tcpStreams, socket);
-    throw InvalidCommand(socket, MSG_INVALID_CMD);
+    throw InvalidCommand(socket, MSG_INVALID_CMD, command);
 }
 
 Request *parsePass(const std::string &tcpStreams, handle_t socket)

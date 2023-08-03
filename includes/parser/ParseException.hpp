@@ -21,9 +21,13 @@ class ParseException : public std::exception
 
 class InvalidCommand : public ParseException
 {
+  private:
+    std::string m_command;
+
   public:
-    InvalidCommand(handle_t socket, const std::string &msg) throw();
+    InvalidCommand(handle_t socket, const std::string &msg, const std::string &command) throw();
     virtual void handleError() const throw();
+    virtual ~InvalidCommand() throw() {}
 };
 
 class NotEnoughParams : public ParseException
@@ -31,6 +35,7 @@ class NotEnoughParams : public ParseException
   public:
     NotEnoughParams(handle_t socket, const std::string &msg) throw();
     virtual void handleError() const throw();
+    virtual ~NotEnoughParams() throw() {}
 };
 
 class TooManyParams : public ParseException
@@ -38,6 +43,7 @@ class TooManyParams : public ParseException
   public:
     TooManyParams(handle_t socket, const std::string &msg) throw();
     virtual void handleError() const throw();
+    virtual ~TooManyParams() throw() {}
 };
 
 class InvalidFormat : public ParseException
@@ -48,6 +54,7 @@ class InvalidFormat : public ParseException
   public:
     InvalidFormat(handle_t socket, const std::string &msg, eInvaldFormat type) throw();
     virtual void handleError() const throw();
+    virtual ~InvalidFormat() throw() {}
 };
 
 class modeException : public ParseException
@@ -55,6 +62,7 @@ class modeException : public ParseException
   public:
     modeException(handle_t socket, const std::string &msg) throw();
     virtual void handleError() const throw();
+    virtual ~modeException() throw() {}
 };
 
 } // namespace Parser

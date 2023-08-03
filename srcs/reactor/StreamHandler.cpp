@@ -58,7 +58,7 @@ int StreamHandler::handleRead(void)
         {
             // TODO: 에러 핸들러 호출로 처리
             LOG_DEBUG("Failed to parese request: " << requestStr << e.what());
-            // e.handleError();
+            e.handleError();
             continue;
         }
 
