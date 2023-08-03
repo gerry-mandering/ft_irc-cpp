@@ -174,7 +174,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     return true;
 }
 
-// TODO InviteOnlyMode 일때 초대 받은 사람인지 검증하는 로직 추가
+// TODO: InviteOnlyMode 추가에 따른 테스트 진행
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
 
