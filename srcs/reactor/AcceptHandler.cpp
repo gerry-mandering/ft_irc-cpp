@@ -50,5 +50,7 @@ int AcceptHandler::handleRead(void)
 
 int AcceptHandler::handleDisconnect(void)
 {
+    LOG_ERROR(__func__ << " Fatal error: passive socket got error");
+    exit(EXIT_FAILURE);
     return CODE_OK;
 }

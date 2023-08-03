@@ -89,21 +89,21 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
 
         LOG_TRACE("event ident: " << event.ident);
         // 클라이언트 프로세스가 종료되면 해당 플래그로 온다
-        if (event.flags & EV_EOF)
+        if (event.flags & EV_EOF || event.flags & EV_ERROR)
         {
             // TODO: EV_EOF 플래그 검사(예외처리), disconnect 여기에서 호출
-            LOG_TRACE("EOF event");
-            close(event.ident);
+            LOG_TRACE(__func__ << " EOF event");
+            handler->handleDisconnect();
             continue;
         }
         if (event.filter == EVFILT_READ)
         {
-            LOG_TRACE(__func__ << " read event");
+            LOG_TRACE(__func__ << " READ event");
             handler->handleRead();
         }
         if (event.filter == EVFILT_WRITE)
         {
-            LOG_TRACE(__func__ << " write event");
+            LOG_TRACE(__func__ << " WRITE event");
             handler->handleWrite();
         }
         LOG_TRACE("event loop");
