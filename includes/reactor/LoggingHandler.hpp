@@ -68,7 +68,7 @@
         }                                                                                                              \
     } while (0);
 
-class LoggingHandler : public EventHandler, public TSingleton<LoggingHandler>
+class LoggingHandler : public EventHandler, public TSingleton< LoggingHandler >
 {
   private:
     handle_t m_handle;
@@ -88,7 +88,7 @@ class LoggingHandler : public EventHandler, public TSingleton<LoggingHandler>
     const std::string &getWriteBuf(void) const;
 };
 
-template <typename T>
+template < typename T >
 inline LoggingHandler &operator<<(LoggingHandler &logger, T content)
 {
     std::stringstream ss;
@@ -99,11 +99,11 @@ inline LoggingHandler &operator<<(LoggingHandler &logger, T content)
     return (logger);
 }
 
-template <typename T>
-std::string convertVectorToString(const std::vector<T> &vec)
+template < typename T >
+std::string convertVectorToString(const std::vector< T > &vec)
 {
     std::stringstream ss;
-    typename std::vector<T>::const_iterator it = vec.begin();
+    typename std::vector< T >::const_iterator it = vec.begin();
     ss << "[ ";
     for (; it != vec.end(); it++)
     {
@@ -115,8 +115,8 @@ std::string convertVectorToString(const std::vector<T> &vec)
     return ss.str();
 }
 
-template <typename T>
-inline LoggingHandler &operator<<(LoggingHandler &logger, const std::vector<T> &vec)
+template < typename T >
+inline LoggingHandler &operator<<(LoggingHandler &logger, const std::vector< T > &vec)
 {
     logger.addWriteBuf(convertVectorToString(vec));
     return (logger);

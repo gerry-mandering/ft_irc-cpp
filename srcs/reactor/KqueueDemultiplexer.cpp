@@ -47,7 +47,7 @@ int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
         EV_SET(&event, handle, EVFILT_READ, EV_ADD, 0, 0, handler);
     if (type & WRITE_EVENT)
         EV_SET(&event, handle, EVFILT_WRITE, EV_ADD, 0, 0, handler);
-    eEventType newFlag = static_cast<eEventType>(handler->getEventFlag() | type);
+    eEventType newFlag = static_cast< eEventType >(handler->getEventFlag() | type);
     handler->setEventFlag(newFlag);
     LOG_DEBUG("[ " << handler->getHandle() << " ] register " << eventTypeToString(type));
     return (CODE_OK);
@@ -69,13 +69,13 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
         EV_SET(&event, handle, EVFILT_READ, EV_DELETE, 0, 0, 0);
     if (type & WRITE_EVENT)
         EV_SET(&event, handle, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
-    eEventType newFlag = static_cast<eEventType>(handler->getEventFlag() & ~type);
+    eEventType newFlag = static_cast< eEventType >(handler->getEventFlag() & ~type);
     handler->setEventFlag(newFlag);
     LOG_DEBUG("[ " << handler->getHandle() << " ] unregister " << eventTypeToString(type));
     return (CODE_OK);
 }
 
-int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers)
+int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handlers)
 {
     int numEvents = kevent(m_kq, &m_changeList[0], m_changePos, &m_kEventList[0], m_kEventList.size(), NULL);
     m_changePos = 0;
@@ -85,7 +85,7 @@ int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers
     for (int i = 0; i < numEvents; ++i)
     {
         struct kevent &event = m_kEventList[i];
-        EventHandler *handler = reinterpret_cast<EventHandler *>(event.udata);
+        EventHandler *handler = reinterpret_cast< EventHandler * >(event.udata);
 
         LOG_TRACE("event ident: " << event.ident);
         // 클라이언트 프로세스가 종료되면 해당 플래그로 온다

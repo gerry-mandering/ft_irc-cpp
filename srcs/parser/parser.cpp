@@ -7,14 +7,14 @@
 namespace Parser
 {
 
-extern std::map<std::string, parser_t> parsers;
+extern std::map< std::string, parser_t > parsers;
 
 // parserRequest는 반드시 \r\n으로 끝나는 문자열을 인자로 받는다.
 // handleread에서는 \r\n을 만나면 \r\n 앞부분까지를 추출해서 파서에 넘긴다.
 // (단 이 경우 rfc 표준에 따라 512바이트를 초과하지 않도록 쌓아둔다)
 Request *parseRequest(const std::string &tcpStreams, handle_t socket)
 {
-    std::map<std::string, parser_t>::iterator it;
+    std::map< std::string, parser_t >::iterator it;
     std::stringstream ss(tcpStreams);
     std::string command;
 
@@ -185,7 +185,7 @@ Request *parsePrivmsg(const std::string &tcpStreams, handle_t socket)
     std::stringstream ss(tcpStreams);
     std::string command;
     std::string targets, message, headOfLast, junk;
-    std::vector<std::string> targetList;
+    std::vector< std::string > targetList;
     const size_t numSpace = 2;
     size_t preLastTokenLen;
 
@@ -215,7 +215,7 @@ Request *parseKick(const std::string &tcpStreams, handle_t socket)
 {
     std::stringstream ss(tcpStreams);
     std::string command, channel, targets, headOfLast, message, junk;
-    std::vector<std::string> targetList;
+    std::vector< std::string > targetList;
     const size_t numSpace = 2;
     size_t preLastTokenLen;
 

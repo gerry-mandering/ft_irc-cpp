@@ -20,9 +20,9 @@ const std::string &CapRequest::GetSubCommand() const
     return mSubCommand;
 }
 
-std::ostream &operator<<(std::ostream &os, const CapRequest &capRequest)
+std::stringstream &operator<<(std::stringstream &ss, const CapRequest &capRequest)
 {
-    os << "CapRequest = { SubCommand: " << capRequest.mSubCommand << " }";
+    ss << "CapRequest = { SubCommand: " << capRequest.mSubCommand << " }";
 
-    return os;
+    return ss;
 }

@@ -21,17 +21,15 @@ Request *parserPong(const std::string &tcpStream);
 
 typedef Request *(*parser_t)(const std::string &tcpStream);
 
-std::map<std::string, parser_t> parsers;
+std::map< std::string, parser_t > parsers;
 
 void test_initParsers(void)
 {
-    std::pair<std::string, parser_t> commands[] = {
-        make_pair("PASS", parserPass),       make_pair("NICK", parserNick),
-        make_pair("USER", parserUser),       make_pair("QUIT", parserQuit),
-        make_pair("TOPIC", parserTopic),     make_pair("MODE", parserMode),
-        make_pair("JOIN", parserJoin),       make_pair("PART", parserPart),
-        make_pair("INVITE", parserInvite),   make_pair("KICK", parserKick),
-        make_pair("PRIVMSG", parserPrivmsg), make_pair("PING", parserPing),
+    std::pair< std::string, parser_t > commands[] = {
+        make_pair("PASS", parserPass), make_pair("NICK", parserNick),       make_pair("USER", parserUser),
+        make_pair("QUIT", parserQuit), make_pair("TOPIC", parserTopic),     make_pair("MODE", parserMode),
+        make_pair("JOIN", parserJoin), make_pair("PART", parserPart),       make_pair("INVITE", parserInvite),
+        make_pair("KICK", parserKick), make_pair("PRIVMSG", parserPrivmsg), make_pair("PING", parserPing),
         make_pair("PONG", parserPong),
     };
     const int size = sizeof(commands) / sizeof(commands[0]);

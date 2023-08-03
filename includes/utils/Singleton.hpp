@@ -2,7 +2,7 @@
 
 #include "Reactor.hpp"
 
-template <class T>
+template < class T >
 class Singleton
 {
   public:
@@ -14,8 +14,8 @@ class Singleton
     ~Singleton(void) {}
 };
 
-template <class T>
-inline T &Singleton<T>::instance()
+template < class T >
+inline T &Singleton< T >::instance()
 {
     static T instance;
 

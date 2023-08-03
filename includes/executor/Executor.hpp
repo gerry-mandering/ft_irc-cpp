@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <sstream>
 
-class Executor : public TSingleton<Executor>, public visitor_pattern::Visitor
+class Executor : public TSingleton< Executor >, public visitor_pattern::Visitor
 {
 
   public:

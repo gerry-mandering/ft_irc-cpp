@@ -14,7 +14,7 @@ class CapRequest : public Request
 
     const std::string &GetSubCommand() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const CapRequest &capRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const CapRequest &capRequest);
 
   private:
     std::string mSubCommand;

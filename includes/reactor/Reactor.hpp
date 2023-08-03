@@ -16,7 +16,7 @@ class Reactor : public TSingleton<Reactor>
 {
   private:
     Demultiplexer *m_demultiplexer;
-    std::map<handle_t, EventHandler *> m_handlers;
+    std::map< handle_t, EventHandler * > m_handlers;
     int m_numHandlers;
 
   public:

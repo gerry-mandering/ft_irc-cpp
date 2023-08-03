@@ -9,7 +9,6 @@
 class Channel
 {
 
-    // TODO: dahkang 소멸자 정의할것
   public:
     Channel(const std::string &name);
 
@@ -52,7 +51,7 @@ class Channel
     void ToggleKeyMode();
     void ToggleClientLimitMode();
 
-    friend std::ostream &operator<<(std::ostream &os, const Channel &channel);
+    friend std::stringstream &operator<<(std::stringstream &ss, const Channel &channel);
 
   private:
     static const int EMPTY_FLAGS = 0;
@@ -63,14 +62,10 @@ class Channel
 
     std::string mName;
 
-    // TODO: dahkang 현재 mClients와 mOperators 두곳에 오퍼레이터가 중복해서 포함되는 것같은데, 어차피 채널 하나밖에
-    // 접속 못하니 차라리 client에 operator 플래그를 두고 합치는 게 어떨까?
-    // 지금 구현은 operator가 양쪽 벡터 모두에 속해있는 것 같은데 실수할 확률 좀 있어보임
-    std::vector<Client *> mClients;
-    std::vector<Client *> mOperators;
+    std::vector< Client * > mClients;
+    std::vector< Client * > mOperators;
 
-    // 닉네임이 변경되어도 InviteOnly 모드에서 채널 진입이 가능하므로 Client *사용
-    std::vector<Client *> mInvitedClients;
+    std::vector< Client * > mInvitedClients;
     std::string mTopic;
     std::string mKey;
     int mClientLimit;

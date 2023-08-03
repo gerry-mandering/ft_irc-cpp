@@ -9,7 +9,7 @@ using namespace std;
 
 #define RESERT_CNT 1
 
-extern map<string, parser_t> parsers;
+extern map< string, parser_t > parsers;
 
 // Test한 함수: pass, nick, user, quit, topic, join, part, privmsg
 
@@ -23,8 +23,8 @@ static const char *commands[] = {"PASS #a :b\r\n",   "NICK #a :b\r\n", "USER #a 
 static void test_parseRequest(void)
 {
     Request *request;
-    vector<string> commandList;
-    vector<string>::iterator it;
+    vector< string > commandList;
+    vector< string >::iterator it;
     const int size = sizeof(commands) / sizeof(commands[0]);
     int i = 0;
 

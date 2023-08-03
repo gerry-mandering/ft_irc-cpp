@@ -16,7 +16,7 @@ class InviteRequest : public Request
     const std::string &GetNickName() const;
     const std::string &GetChannelName() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const InviteRequest &inviteRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const InviteRequest &inviteRequest);
 
   private:
     std::string mNickName;

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <sstream>
 
-class EnvManager : public TSingleton<EnvManager>
+class EnvManager : public TSingleton< EnvManager >
 {
   public:
     void SetConnectionPassword(const std::string &connectionPassword);

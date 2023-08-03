@@ -31,9 +31,9 @@ const std::string &TopicRequest::GetTopic() const
     return mTopic;
 }
 
-std::ostream &operator<<(std::ostream &os, const TopicRequest &topicRequest)
+std::stringstream &operator<<(std::stringstream &ss, const TopicRequest &topicRequest)
 {
-    os << "TopicRequest = { ChannelName: " << topicRequest.mChannelName << ", Topic: " << topicRequest.mTopic << " }";
+    ss << "TopicRequest = { ChannelName: " << topicRequest.mChannelName << ", Topic: " << topicRequest.mTopic << " }";
 
-    return os;
+    return ss;
 }

@@ -69,50 +69,16 @@ bool Executor::Visit(JoinRequest *joinRequest) const
 
         return true;
     }
-
     LOG_TRACE("Join already existing channel");
-
     channel->SetClient(client);
-
+    if (channel->IsInviteOnlyMode())
+    {
+        LOG_DEBUG("Channel is invite only mode, so client should be removed from invited client list while entering");
+        channel->RemoveFromInvitedClient(client->GetNickName());
+    }
     std::string responseMessage = buildJoinMsg(client, channel);
     client->AddResponseToBuf(responseMessage);
-
     return true;
-
-    // 레거시.. 지울게요
-    // only invite mode일 때
-    // if (channel->IsInviteOnlyMode())
-    // {
-    //     LOG_TRACE("channel is invite only mode");
-    //     return true;
-    // }
-
-    // // key mode일 때
-    // if (channel->IsKeyMode())
-    // {
-    //     LOG_TRACE("channel is key mode");
-    //     if (channel->GetKey() != joinRequest->GetKey())
-    //     {
-    //         LOG_TRACE("key is not matched");
-    //         return true;
-    //     }
-    //     LOG_TRACE("key is matched");
-    //     join_only_if_not_in(client, channel);
-    //     return (true);
-    // }
-
-    // if (channel->IsClientLimitMode() && channel->GetClientLimit() <= channel->GetClientCount())
-    // {
-    //     LOG_TRACE("channel is full");
-    //     return true;
-    // }
-    // // 1. 아무런 모드도 설정되지 않았거나, limit mode이면서 limit에 도달하지 않았을 때
-    // else
-    // {
-    //     LOG_TRACE("client limit mode but not full, try join");
-    //     join_only_if_not_in(client, channel);
-    //     return true;
-    // }
 }
 
 bool Executor::Visit(KickRequest *kickRequest) const
@@ -124,8 +90,8 @@ bool Executor::Visit(KickRequest *kickRequest) const
     Client *client = kickRequest->GetClient();
     std::string responseMessage;
 
-    std::vector<std::string> targets = kickRequest->GetTargets();
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string > targets = kickRequest->GetTargets();
+    std::vector< std::string >::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
@@ -288,8 +254,8 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
     Client *client = privmsgRequest->GetClient();
     std::string privateMessage;
 
-    std::vector<std::string> targets = privmsgRequest->GetTargets();
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string > targets = privmsgRequest->GetTargets();
+    std::vector< std::string >::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {

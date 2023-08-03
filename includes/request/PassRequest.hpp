@@ -14,7 +14,7 @@ class PassRequest : public Request
 
     const std::string &GetPassword() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const PassRequest &passRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const PassRequest &passRequest);
 
   private:
     std::string mPassword;
