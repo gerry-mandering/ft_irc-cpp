@@ -168,7 +168,7 @@ bool Executor::Visit(ModeRequest *modeRequest) const
     {
         channel->SetClientLimit(atoi(modeArgument.c_str()));
 
-        if (!channel->IsClientLimitMode())
+        if (!(sign == "+" && channel->IsClientLimitMode()))
             channel->ToggleClientLimitMode();
     }
     else if (modeChar == "i")
