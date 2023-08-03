@@ -26,12 +26,23 @@ using namespace ft_validator;
 
 namespace ft_validator
 {
+bool inviteModeOK(Channel *channel, const std::string &nickName)
+{
+    if (!channel->IsInviteOnlyMode())
+    {
+        LOG_DEBUG("Joining channel is not in invite only mode");
+        return true;
+    }
+    LOG_DEBUG("Joining channel is in invite only mode");
+    return (channel->CheckClientIsInvited(nickName));
+}
+
 // 로그 찍기 위해 exp 분할
 bool keyModeOK(Channel *channel, const std::string &key)
 {
-    if (!channel->IsKeyMode())
+    if (!channel->IsKeyMode() || channel->IsInviteOnlyMode())
     {
-        LOG_DEBUG("Joining channel is not in key mode");
+        LOG_DEBUG(__func__ << " Joining channel is not in key mode or invite only mode");
         return true;
     }
     LOG_DEBUG("Joining channel is in key mode");
@@ -163,7 +174,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     return true;
 }
 
-// TODO InviteOnlyMode 일때 초대 받은 사람인지 검증하는 로직 추가
+// TODO: InviteOnlyMode 추가에 따른 테스트 진행
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
 
@@ -189,7 +200,8 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         LOG_DEBUG("JoinRequest is valid: Channel name is not exist");
         return true;
     }
-    if (keyModeOK(channel, joinRequest->getKey()) && limitModeOK(channel) && notAlreadyInChan(client, channel))
+    if (inviteModeOK(channel, client->GetNickName()) && keyModeOK(channel, joinRequest->getKey()) &&
+        limitModeOK(channel) && notAlreadyInChan(client, channel))
     {
         LOG_DEBUG("JoinRequest is valid: pass all condition");
         return true;
