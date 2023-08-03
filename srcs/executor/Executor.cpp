@@ -64,7 +64,6 @@ bool Executor::Visit(JoinRequest *joinRequest) const
 
         channel->SetClient(client);
         channel->SetOperator(client);
-        client->SetOperatorFlag();
 
         std::string responseMessage = buildJoinMsg(client, channel);
         client->AddResponseToBuf(responseMessage);
@@ -75,7 +74,6 @@ bool Executor::Visit(JoinRequest *joinRequest) const
     LOG_TRACE("Join already existing channel");
 
     channel->SetClient(client);
-    client->RemoveOperatorFlag();
 
     std::string responseMessage = buildJoinMsg(client, channel);
     client->AddResponseToBuf(responseMessage);
@@ -162,21 +160,15 @@ bool Executor::Visit(ModeRequest *modeRequest) const
         Client *targetClient = clientRepository->FindByNickName(modeArgument);
 
         if (sign == "+")
-        {
             channel->SetOperator(targetClient);
-            targetClient->SetOperatorFlag();
-        }
         else
-        {
             channel->RemoveOperator(targetClient->GetNickName());
-            targetClient->RemoveOperatorFlag();
-        }
     }
     else if (modeChar == "l")
     {
         channel->SetClientLimit(atoi(modeArgument.c_str()));
 
-        if (!channel->IsClientLimitMode())
+        if (!(sign == "+" && channel->IsClientLimitMode()))
             channel->ToggleClientLimitMode();
     }
     else if (modeChar == "i")
@@ -574,23 +566,8 @@ std::string Executor::buildJoinMsg(Client *client, Channel *channel) const
 
     std::stringstream joinMessage;
     joinMessage << ":" << client->GetClientInfo() << " JOIN " << channelName << "\r\n";
-    joinMessage << ":" << serverName << " 353 " << nickName << " = " << channelName << " :";
-
-    std::vector<Client *> clients = channel->GetClients();
-    std::vector<Client *>::iterator iter;
-
-    for (iter = clients.begin(); iter != clients.end(); iter++)
-    {
-        if ((*iter)->GetOperatorFlag())
-            joinMessage << "@" << (*iter)->GetNickName();
-        else
-            joinMessage << (*iter)->GetNickName();
-
-        if (iter != (clients.end() - 1))
-            joinMessage << " ";
-    }
-
-    joinMessage << "\r\n";
+    joinMessage << ":" << serverName << " 353 " << nickName << " = " << channelName << " :" << channel->GetClientsList()
+                << "\r\n";
     joinMessage << ":" << serverName << " 366 " << nickName << " " << channelName << " :End of /Names list.";
 
     return joinMessage.str();
