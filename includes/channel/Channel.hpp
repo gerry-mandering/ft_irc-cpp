@@ -14,7 +14,7 @@ class Channel
     Channel(const std::string &name);
 
     const std::string &GetName() const;
-    std::vector<Client *> GetClients();
+    std::string GetClientsList();
 
     void SetClientLimit(int limit);
     int GetClientCount() const;

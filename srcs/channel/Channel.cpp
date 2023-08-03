@@ -11,9 +11,20 @@ const std::string &Channel::GetName() const
     return mName;
 }
 
-std::vector<Client *> Channel::GetClients()
+std::string Channel::GetClientsList()
 {
-    return mClients;
+    std::string clientsList;
+
+    std::vector<Client *>::iterator iter;
+    for (iter = mClients.begin(); iter != mClients.end(); iter++)
+    {
+        clientsList += (*iter)->GetNickName();
+
+        if (iter != mClients.end() - 1)
+            clientsList += " ";
+    }
+
+    return clientsList;
 }
 
 void Channel::SetClientLimit(int limit)
