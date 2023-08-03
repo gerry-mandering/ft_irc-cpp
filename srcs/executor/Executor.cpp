@@ -1,7 +1,6 @@
 #include "Executor.hpp"
 #include "ChannelRepository.hpp"
 #include "Reactor.hpp"
-#include "def.h"
 
 bool Executor::Visit(CapRequest *capRequest) const
 {

@@ -1,6 +1,5 @@
 #include "LoggingHandler.hpp"
 #include "color.h"
-#include "def.h"
 #include <ctime>
 #include <iomanip>
 #include <sstream>
@@ -12,7 +11,7 @@
 LoggingHandler::LoggingHandler() : EventHandler(OFF_EVENT), m_handle(STDOUT_FILENO)
 {
     // fcntl(m_handle, F_SETFL, O_NONBLOCK);
-    // g_reactor().registerHandler(this, WRITE_EVENT);
+    // Reactor::Getinstance()->registerHandler(this, WRITE_EVENT);
 }
 
 LoggingHandler::~LoggingHandler() {}
@@ -37,7 +36,7 @@ int LoggingHandler::handleWrite(void)
     // if (nwrite == len)
     // {
     //     m_writeBuf.clear();
-    //     // return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+    //     // return (Reactor::Getinstance()->unregisterEvent(this, WRITE_EVENT));
     //     return 0;
     // }
     // m_writeBuf = m_writeBuf.substr(nwrite);

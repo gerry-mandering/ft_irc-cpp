@@ -1,7 +1,6 @@
 #include "KqueueDemultiplexer.hpp"
 #include "LoggingHandler.hpp"
 #include "SyscallException.hpp"
-#include "def.h"
 #include "wrapper.h"
 #include <iostream>
 #include <unistd.h>
@@ -38,7 +37,7 @@ int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
     if (handler->getEventFlag() & type)
     {
         LOG_WARN(__func__ << " [ " << handler->getHandle() << " ] already monitor " << eventTypeToString(type));
-        return (OK);
+        return (CODE_OK);
     }
     if (m_changePos >= m_changeList.size())
         m_changeList.resize(m_changeList.size() * 2);
@@ -51,7 +50,7 @@ int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
     eEventType newFlag = static_cast<eEventType>(handler->getEventFlag() | type);
     handler->setEventFlag(newFlag);
     LOG_DEBUG("[ " << handler->getHandle() << " ] register " << eventTypeToString(type));
-    return (OK);
+    return (CODE_OK);
 }
 
 int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
@@ -60,7 +59,7 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
     if ((handler->getEventFlag() & type) == OFF_EVENT)
     {
         LOG_WARN(__func__ << " [ " << handler->getHandle() << " ] already not monitor " << eventTypeToString(type));
-        return (OK);
+        return (CODE_OK);
     }
     if (m_changePos >= m_changeList.size())
         m_changeList.resize(m_changeList.size() * 2);
@@ -73,7 +72,7 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
     eEventType newFlag = static_cast<eEventType>(handler->getEventFlag() & ~type);
     handler->setEventFlag(newFlag);
     LOG_DEBUG("[ " << handler->getHandle() << " ] unregister " << eventTypeToString(type));
-    return (OK);
+    return (CODE_OK);
 }
 
 int KqueueDemultiplexer::waitEvents(std::map<handle_t, EventHandler *> &handlers)

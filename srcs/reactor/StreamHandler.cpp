@@ -2,7 +2,6 @@
 #include "ClientRepository.hpp"
 #include "LoggingHandler.hpp"
 #include "ParseException.hpp"
-#include "def.h"
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
@@ -32,13 +31,13 @@ int StreamHandler::handleRead(void)
     if (nread < 0)
     {
         LOG_DEBUG("StreamHandler read failed: " << std::strerror(errno));
-        return (OK);
+        return (CODE_OK);
     }
     if (nread == 0)
     {
         LOG_DEBUG("StreamHandler read eof: " << std::strerror(errno));
         // TODO: disconnect(구현 자유롭게 하면 될듯 되도록 disconnect 하도록)
-        return (OK);
+        return (CODE_OK);
     }
     std::string tcpStreams(tmpBuf);
     LOG_TRACE("[ " << m_handle << " ]"
@@ -69,7 +68,7 @@ int StreamHandler::handleRead(void)
             request->Accept(executor);
         }
     }
-    return (OK);
+    return (CODE_OK);
 }
 
 int StreamHandler::handleWrite(void)
@@ -91,22 +90,22 @@ int StreamHandler::handleWrite(void)
     if (nwrite < 0)
     {
         LOG_WARN("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
-        return (OK);
+        return (CODE_OK);
     }
     if (nwrite < m_writeBuf.size())
     {
         LOG_INFO("Partial write");
         m_writeBuf = m_writeBuf.substr(nwrite);
-        return (OK);
+        return (CODE_OK);
     }
     if (nwrite == m_writeBuf.size())
     {
         LOG_DEBUG("StreamHandler write success fully: " << m_writeBuf);
         m_writeBuf.clear();
-        return (g_reactor().unregisterEvent(this, WRITE_EVENT));
+        return (Reactor::GetInstance()->unregisterEvent(this, WRITE_EVENT));
     }
     LOG_ERROR("StreamHandler write: should not reach here " << std::strerror(errno));
-    return (OK);
+    return (CODE_OK);
 }
 
 int StreamHandler::handleError(void)
@@ -136,6 +135,6 @@ bool StreamHandler::hasRequest(std::string &requestStr)
 void StreamHandler::addResponseToBuf(const std::string &responseStr)
 {
     LOG_DEBUG("Add response to handler's wrbuf: " << responseStr);
-    g_reactor().registerEvent(this, WRITE_EVENT);
+    Reactor::GetInstance()->registerEvent(this, WRITE_EVENT);
     m_writeBuf += responseStr;
 }

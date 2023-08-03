@@ -1,5 +1,4 @@
 #include "Client.hpp"
-#include "def.h"
 
 const std::string Client::CRLF = "\r\n";
 
@@ -12,7 +11,7 @@ Client::Client(handle_t socket)
 
 void Client::AddResponseToBuf(const std::string &response)
 {
-    EventHandler *handler = g_reactor().getHandler(mSocket);
+    EventHandler *handler = Reactor::GetInstance()->getHandler(mSocket);
 
     handler->addResponseToBuf(response + CRLF);
 }

@@ -21,7 +21,7 @@
 #endif
 
 // TODO: 로거 리액터에 등록
-// #define REGISTER_EVENT g_reactor().registerEvent(LoggingHandler::GetInstance(), WRITE_EVENT);
+// #define REGISTER_EVENT Reactor::GetInstance()->registerEvent(LoggingHandler::GetInstance(), WRITE_EVENT);
 
 #define LOG_TRACE(log)                                                                                                 \
     do                                                                                                                 \

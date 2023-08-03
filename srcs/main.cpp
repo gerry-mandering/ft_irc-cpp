@@ -2,7 +2,6 @@
 #include "EnvManager.hpp"
 #include "KqueueDemultiplexer.hpp"
 #include "Reactor.hpp"
-#include "def.h"
 #include "parser.h"
 #include <iostream>
 #include <string>
@@ -40,9 +39,10 @@ static void init_server(const std::string &portStr, const std::string &password)
     Parser::initParsers();
     EnvManager::GetInstance()->SetPortNumber(portStr);
     EnvManager::GetInstance()->SetConnectionPassword(password);
-    g_reactor().setDemultiplexer(new KqueueDemultiplexer());
+    Reactor *reactor = Reactor::GetInstance();
+    reactor->setDemultiplexer(new KqueueDemultiplexer());
     AcceptHandler *acceptHandler = new AcceptHandler(portInt, password);
-    g_reactor().registerHandler(acceptHandler, READ_EVENT);
+    reactor->registerHandler(acceptHandler, READ_EVENT);
 }
 
 int main(int argc, char **argv)
@@ -71,8 +71,9 @@ int main(int argc, char **argv)
     }
     try
     {
+        Reactor *reactor = Reactor::GetInstance();
         while (true)
-            g_reactor().handleEvents();
+            reactor->handleEvents();
     }
     catch (const std::exception &e)
     {

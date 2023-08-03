@@ -1,7 +1,6 @@
 #include "AcceptHandler.hpp"
 #include "LoggingHandler.hpp"
 #include "StreamHandler.hpp"
-#include "def.h"
 #include "wrapper.h"
 #include <fcntl.h>
 #include <netdb.h>
@@ -41,7 +40,7 @@ int AcceptHandler::handleRead(void)
     newHandle = Wrapper::accept(m_handle, (struct sockaddr *)&addr, &addrSize);
     LOG_TRACE("new connection: " << newHandle);
     fcntl(newHandle, F_SETFL, O_NONBLOCK);
-    return (g_reactor().registerHandler(new StreamHandler(newHandle), READ_EVENT));
+    return (Reactor::GetInstance()->registerHandler(new StreamHandler(newHandle), READ_EVENT));
 }
 
 int AcceptHandler::handleWrite(void)

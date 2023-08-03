@@ -2,10 +2,17 @@
 
 #include "Demultiplexer.hpp"
 #include "EventHandler.hpp"
-#include "Singleton.hpp"
+#include "SingletonTemplate.hpp"
 #include <map>
 
-class Reactor : public Singleton<Reactor>
+enum
+{
+    CODE_OK = 0,
+    ERROR_GENERIC,
+    ERROR_IO
+};
+
+class Reactor : public TSingleton<Reactor>
 {
   private:
     Demultiplexer *m_demultiplexer;
