@@ -66,7 +66,7 @@ std::string invalidFormatMsg(Parser::eInvaldFormat type, const std::string &msg)
 void removeTrailingCRLF(std::string &str);
 bool isalnum(const std::string &str);
 bool hasMetaChar(const std::string &str);
-void commaToknizer(const std::string &targets, std::vector<std::string> &targetList);
+void commaToknizer(const std::string &targets, std::vector< std::string > &targetList);
 bool invalidSign(const std::string &sign);
 bool invalidModeType(const std::string &modeType);
 bool notNeedOptionalToken(const std::string &sign, const std::string &modeType);

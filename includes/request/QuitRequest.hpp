@@ -14,7 +14,7 @@ class QuitRequest : public Request
 
     const std::string &GetReason() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const QuitRequest &quitRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const QuitRequest &quitRequest);
 
   private:
     std::string mReason;

@@ -14,7 +14,7 @@ class NickRequest : public Request
 
     const std::string &GetNickName() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const NickRequest &nickRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const NickRequest &nickRequest);
 
   private:
     std::string mNickName;

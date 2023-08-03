@@ -5,7 +5,7 @@
 // template 함수는 헤더에 구현을 해두는게 일반적
 namespace ft
 {
-template <typename T>
+template < typename T >
 class shared_ptr
 {
   private:
@@ -49,7 +49,7 @@ class shared_ptr
     T *getPtr() { return ptr; }
     int getCount() { return *count; }
 
-    friend std::stringstream &operator<<(std::stringstream &iss, ft::shared_ptr<T> &sp)
+    friend std::stringstream &operator<<(std::stringstream &iss, ft::shared_ptr< T > &sp)
     {
         iss << "Address pointed : " << sp.getPtr() << "\n"
             << "count: " << *(sp.count) << "\n";

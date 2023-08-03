@@ -6,7 +6,7 @@
 #include "SingletonTemplate.hpp"
 #include <map>
 
-class ClientRepository : public TSingleton<ClientRepository>
+class ClientRepository : public TSingleton< ClientRepository >
 {
 
   public:
@@ -25,6 +25,6 @@ class ClientRepository : public TSingleton<ClientRepository>
     int GetNumberOfClients() const;
 
   private:
-    std::map<handle_t, Client *> mSocketToClients;
-    std::map<std::string, Client *> mNickNameToClients;
+    std::map< handle_t, Client * > mSocketToClients;
+    std::map< std::string, Client * > mNickNameToClients;
 };

@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstdlib>
 
-template <class T>
+template < class T >
 class TSingleton
 {
 
@@ -32,5 +32,5 @@ class TSingleton
     static T *mInstance;
 };
 
-template <class T>
-T *TSingleton<T>::mInstance = NULL;
+template < class T >
+T *TSingleton< T >::mInstance = NULL;

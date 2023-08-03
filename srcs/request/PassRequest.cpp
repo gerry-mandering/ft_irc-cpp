@@ -20,9 +20,9 @@ const std::string &PassRequest::GetPassword() const
     return mPassword;
 }
 
-std::ostream &operator<<(std::ostream &os, const PassRequest &passRequest)
+std::stringstream &operator<<(std::stringstream &ss, const PassRequest &passRequest)
 {
-    os << "PassRequest = { Password: " << passRequest.mPassword << " }";
+    ss << "PassRequest = { Password: " << passRequest.mPassword << " }";
 
-    return os;
+    return ss;
 }

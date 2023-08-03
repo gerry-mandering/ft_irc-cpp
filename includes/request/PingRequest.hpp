@@ -14,7 +14,7 @@ class PingRequest : public Request
 
     const std::string &GetToken() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const PingRequest &pingRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, const PingRequest &pingRequest);
 
   private:
     std::string mToken;

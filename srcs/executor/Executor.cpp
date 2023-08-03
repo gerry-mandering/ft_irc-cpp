@@ -91,8 +91,8 @@ bool Executor::Visit(KickRequest *kickRequest) const
     Client *client = kickRequest->GetClient();
     std::string responseMessage;
 
-    std::vector<std::string> targets = kickRequest->GetTargets();
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string > targets = kickRequest->GetTargets();
+    std::vector< std::string >::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
@@ -255,8 +255,8 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
     Client *client = privmsgRequest->GetClient();
     std::string privateMessage;
 
-    std::vector<std::string> targets = privmsgRequest->GetTargets();
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string > targets = privmsgRequest->GetTargets();
+    std::vector< std::string >::iterator iter;
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {

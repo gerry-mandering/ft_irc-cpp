@@ -1,6 +1,6 @@
 #include "KickRequest.hpp"
 
-KickRequest::KickRequest(handle_t socket, const std::string &channelName, const std::vector<std::string> &nickNames,
+KickRequest::KickRequest(handle_t socket, const std::string &channelName, const std::vector< std::string > &nickNames,
                          const std::string &message)
     : Request(socket), mChannelName(channelName), mTargets(nickNames), mMessage(message)
 {
@@ -32,7 +32,7 @@ const std::string &KickRequest::GetChannelName() const
     return mChannelName;
 }
 
-std::vector<std::string> &KickRequest::GetTargets()
+std::vector< std::string > &KickRequest::GetTargets()
 {
     return mTargets;
 }
@@ -43,15 +43,15 @@ const std::string &KickRequest::GetMessage() const
 }
 
 // TODO const 아니여도 ㄱㅊ?
-std::ostream &operator<<(std::ostream &os, KickRequest &kickRequest)
+std::stringstream &operator<<(std::stringstream &ss, KickRequest &kickRequest)
 {
-    os << "KickRequest = { ChannelName: " << kickRequest.mChannelName << ", NickNames: ";
+    ss << "KickRequest = { ChannelName: " << kickRequest.mChannelName << ", NickNames: ";
 
-    std::vector<std::string>::iterator iter;
+    std::vector< std::string >::iterator iter;
     for (iter = kickRequest.mTargets.begin(); iter != kickRequest.mTargets.end(); iter++)
-        os << *iter << ", ";
+        ss << *iter << ", ";
 
-    os << "Message: " << kickRequest.mMessage << " }";
+    ss << "Message: " << kickRequest.mMessage << " }";
 
-    return os;
+    return ss;
 }

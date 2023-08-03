@@ -52,10 +52,10 @@ const std::string &UserRequest::GetRealName() const
     return mRealName;
 }
 
-std::ostream &operator<<(std::ostream &os, const UserRequest &userRequest)
+std::stringstream &operator<<(std::stringstream &ss, const UserRequest &userRequest)
 {
-    os << "UserRequest = { UserName: " << userRequest.mUserName << ", HostName: " << userRequest.mHostName
+    ss << "UserRequest = { UserName: " << userRequest.mUserName << ", HostName: " << userRequest.mHostName
        << ", ServerName: " << userRequest.mServerName << ", RealName: " << userRequest.mRealName << " }";
 
-    return os;
+    return ss;
 }

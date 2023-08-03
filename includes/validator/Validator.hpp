@@ -20,7 +20,7 @@ bool limitModeOK(Channel *channel);
 bool notAlreadyInChan(Client *client, Channel *channel);
 } // namespace ft_validator
 
-class Validator : public TSingleton<Validator>, public visitor_pattern::Visitor
+class Validator : public TSingleton< Validator >, public visitor_pattern::Visitor
 {
 
   public:

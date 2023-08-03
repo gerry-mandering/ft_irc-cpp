@@ -5,11 +5,11 @@
 #include "Singleton.hpp"
 #include <map>
 
-class Reactor : public Singleton<Reactor>
+class Reactor : public Singleton< Reactor >
 {
   private:
     Demultiplexer *m_demultiplexer;
-    std::map<handle_t, EventHandler *> m_handlers;
+    std::map< handle_t, EventHandler * > m_handlers;
     int m_numHandlers;
 
   public:

@@ -3,11 +3,11 @@
 
 namespace Parser
 {
-std::map<std::string, parser_t> parsers;
+std::map< std::string, parser_t > parsers;
 
 void initParsers(void)
 {
-    std::pair<std::string, parser_t> commands[] = {
+    std::pair< std::string, parser_t > commands[] = {
         make_pair("PASS", parsePass), make_pair("NICK", parseNick),       make_pair("USER", parseUser),
         make_pair("QUIT", parseQuit), make_pair("TOPIC", parseTopic),     make_pair("MODE", parseMode),
         make_pair("JOIN", parseJoin), make_pair("PART", parsePart),       make_pair("INVITE", parseInvite),
@@ -105,7 +105,7 @@ bool hasMetaChar(const std::string &str)
     return false;
 }
 
-void commaToknizer(const std::string &targets, std::vector<std::string> &targetList)
+void commaToknizer(const std::string &targets, std::vector< std::string > &targetList)
 {
     std::string token, lastToken;
     size_t start = 0;

@@ -31,10 +31,10 @@ const std::string &InviteRequest::GetChannelName() const
     return mChannelName;
 }
 
-std::ostream &operator<<(std::ostream &os, const InviteRequest &inviteRequest)
+std::stringstream &operator<<(std::stringstream &ss, const InviteRequest &inviteRequest)
 {
-    os << "InviteRequest = { NickName: " << inviteRequest.mNickName << ", ChannelName: " << inviteRequest.mChannelName
+    ss << "InviteRequest = { NickName: " << inviteRequest.mNickName << ", ChannelName: " << inviteRequest.mChannelName
        << " }";
 
-    return os;
+    return ss;
 }

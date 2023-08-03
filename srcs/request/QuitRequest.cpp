@@ -20,9 +20,9 @@ const std::string &QuitRequest::GetReason() const
     return mReason;
 }
 
-std::ostream &operator<<(std::ostream &os, const QuitRequest &quitRequest)
+std::stringstream &operator<<(std::stringstream &ss, const QuitRequest &quitRequest)
 {
-    os << "QuitRequest = { Reason: " << quitRequest.mReason << " }";
+    ss << "QuitRequest = { Reason: " << quitRequest.mReason << " }";
 
-    return os;
+    return ss;
 }

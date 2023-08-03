@@ -7,19 +7,19 @@ class PrivmsgRequest : public Request
 {
 
   public:
-    PrivmsgRequest(handle_t socket, const std::vector<std::string> &targets, const std::string &message);
+    PrivmsgRequest(handle_t socket, const std::vector< std::string > &targets, const std::string &message);
 
     bool Accept(visitor_pattern::Visitor *visitor);
 
     void AddTarget(const std::string &target);
     void SetMessage(const std::string &message);
 
-    std::vector<std::string> &GetTargets();
+    std::vector< std::string > &GetTargets();
     const std::string &GetMessage() const;
 
-    friend std::ostream &operator<<(std::ostream &os, PrivmsgRequest &privmsgRequest);
+    friend std::stringstream &operator<<(std::stringstream &ss, PrivmsgRequest &privmsgRequest);
 
   private:
-    std::vector<std::string> mTargets;
+    std::vector< std::string > mTargets;
     std::string mMessage;
 };

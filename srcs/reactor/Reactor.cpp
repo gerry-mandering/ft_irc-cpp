@@ -11,7 +11,7 @@ Reactor::~Reactor()
 
 EventHandler *Reactor::getHandler(handle_t handle) const
 {
-    std::map<handle_t, EventHandler *>::const_iterator it = m_handlers.find(handle);
+    std::map< handle_t, EventHandler * >::const_iterator it = m_handlers.find(handle);
 
     if (it == m_handlers.end())
         return (NULL);
@@ -26,7 +26,7 @@ void Reactor::setDemultiplexer(Demultiplexer *demultiplexer)
 int Reactor::registerHandler(EventHandler *handler, eEventType type)
 {
     int handle = handler->getHandle();
-    std::map<handle_t, EventHandler *>::iterator it = m_handlers.find(handle);
+    std::map< handle_t, EventHandler * >::iterator it = m_handlers.find(handle);
 
     // TODO: 민석2 디멀티플렉서에서 핸들러 개수 관리 방법 고민
     if (it == m_handlers.end())
@@ -41,7 +41,7 @@ int Reactor::registerHandler(EventHandler *handler, eEventType type)
 int Reactor::unregisterHandler(EventHandler *handler)
 {
     int handle = handler->getHandle();
-    std::map<handle_t, EventHandler *>::iterator it = m_handlers.find(handle);
+    std::map< handle_t, EventHandler * >::iterator it = m_handlers.find(handle);
     int stat = 0;
 
     if (it != m_handlers.end())
