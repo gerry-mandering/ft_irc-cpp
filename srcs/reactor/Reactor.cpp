@@ -7,6 +7,8 @@ Reactor::Reactor() : m_numHandlers(0) {}
 Reactor::~Reactor()
 {
     delete m_demultiplexer;
+    for (std::map< handle_t, EventHandler * >::iterator it = m_handlers.begin(); it != m_handlers.end(); ++it)
+        delete it->second;
 }
 
 EventHandler *Reactor::getHandler(handle_t handle) const
