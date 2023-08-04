@@ -8,7 +8,7 @@
 
 #define PORT_LEN 5
 #define PASSWORD_LEN 15
-#define MAX_PORT 65535
+#define MAX_PORT 49151
 #define MIN_PORT 1024
 
 static int stringToint(const std::string &str)

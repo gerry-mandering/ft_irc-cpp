@@ -206,8 +206,7 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         LOG_DEBUG("JoinRequest is valid: pass all condition");
         return true;
     }
-    // TODO: 메시지 형식 만들것, 세분화 할 필요 없다고 생각함
-    // client->InsertResponse("에러코드 + 메시지");
+    client->AddResponseToBuf(buildCannotJoinChannelMsg(client->GetNickName(), joinRequest->getChannelName()));
     LOG_DEBUG("JoinRequest is not valid");
 
     return false;
@@ -863,6 +862,16 @@ std::string Validator::buildKeySetMsg(const std::string &nickName, const std::st
     errorMessage << ":" << envManager->GetServerName() << " 467 " << nickName << " " << channelName
                  << " :Channel key already set";
 
+    return errorMessage.str();
+}
+
+std::string Validator::buildCannotJoinChannelMsg(const std::string &nickName, const std::string &channelName) const
+{
+    EnvManager *envManager = EnvManager::GetInstance();
+
+    std::stringstream errorMessage;
+    errorMessage << ":" << envManager->GetServerName() << " 461 " << nickName << " " << channelName
+                 << " :Cannot join channel";
     return errorMessage.str();
 }
 

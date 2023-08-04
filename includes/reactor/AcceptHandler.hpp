@@ -17,6 +17,5 @@ class AcceptHandler : public EventHandler
 
     virtual handle_t getHandle(void) const;
     virtual int handleRead(void);
-    virtual int handleWrite(void);
-    virtual int handleError(void);
+    virtual int handleDisconnect(void);
 };
