@@ -2,6 +2,7 @@
 #include "ClientRepository.hpp"
 #include "LoggingHandler.hpp"
 #include "ParseException.hpp"
+#include "disconnect.h"
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
@@ -111,7 +112,7 @@ int StreamHandler::handleWrite(void)
 
 int StreamHandler::handleDisconnect(void)
 {
-    // disconnect(m_handle);
+    disconnect(m_handle);
     return (CODE_OK);
 }
 

@@ -51,8 +51,6 @@ int Reactor::unregisterHandler(EventHandler *handler)
         --m_numHandlers;
         m_demultiplexer->setNumHandlers(m_numHandlers);
     }
-    stat |= unregisterEvent(handler, READ_EVENT);
-    stat |= unregisterEvent(handler, WRITE_EVENT);
     return (stat);
 }
 

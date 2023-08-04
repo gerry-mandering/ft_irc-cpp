@@ -1,6 +1,7 @@
 #include "Executor.hpp"
 #include "ChannelRepository.hpp"
 #include "Reactor.hpp"
+#include "disconnect.h"
 
 bool Executor::Visit(CapRequest *capRequest) const
 {
@@ -305,7 +306,9 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
-    // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
+    disconnect(client->GetSocket());
+    EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
+    delete handler;
 
     LOG_TRACE("QuitRequest Executed");
 
