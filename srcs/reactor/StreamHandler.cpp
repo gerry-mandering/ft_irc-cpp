@@ -68,6 +68,8 @@ int StreamHandler::handleRead(void)
             Executor *executor = Executor::GetInstance();
             request->Accept(executor);
         }
+
+        delete request;
     }
     return (OK);
 }

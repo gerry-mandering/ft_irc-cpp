@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 
 template < typename T >
 class SharedPtr
@@ -37,12 +38,12 @@ class SharedPtr
 
     T *GetPtr() const { return mPtr; }
 
-    friend std::ostream &operator<<(std::ostream &os, SharedPtr< T > &sharedPtr)
+    friend std::stringstream &operator<<(std::stringstream &ss, SharedPtr< T > &sharedPtr)
     {
-        os << "Address pointed : " << sharedPtr.getPtr() << "\n"
-           << "count: " << *(sharedPtr.count) << "\n";
+        ss << "Address pointed : " << sharedPtr.mPtr << "\n"
+           << "count: " << *(sharedPtr.mReferenceCount) << "\n";
 
-        return os;
+        return ss;
     }
 
   private:
