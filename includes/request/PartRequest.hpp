@@ -20,6 +20,5 @@ class PartRequest : public Request
 
   private:
     std::string mChannelName;
-    std::string mReason; // TODO 생성시 std::string()으로 빈 문자열 넣어주기 Executer 구현시 빈
-                         // 문자열 비교 사용함
+    std::string mReason;
 };

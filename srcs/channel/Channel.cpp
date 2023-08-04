@@ -161,12 +161,12 @@ bool Channel::CheckClientIsInvited(const std::string &nickName)
     return false;
 }
 
-void Channel::AddToInvitedClient(SharedPtr< Client > invitedClient)
+void Channel::SetInvitedClient(SharedPtr< Client > invitedClient)
 {
     mInvitedClients.push_back(invitedClient);
 }
 
-void Channel::RemoveFromInvitedClient(const std::string &nickName)
+void Channel::RemoveInvitedClient(const std::string &nickName)
 {
     std::vector< SharedPtr< Client > >::iterator iter;
 

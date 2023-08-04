@@ -37,9 +37,8 @@ class Channel
     void SetOperator(SharedPtr< Client > newOperator);
     void RemoveOperator(const std::string &nickName);
 
-    // TODO 메소드 명 변경
-    void AddToInvitedClient(SharedPtr< Client > invitedClient);
-    void RemoveFromInvitedClient(const std::string &nickName);
+    void SetInvitedClient(SharedPtr< Client > invitedClient);
+    void RemoveInvitedClient(const std::string &nickName);
     bool CheckClientIsInvited(const std::string &nickName);
 
     void SetTopic(const std::string &topic);

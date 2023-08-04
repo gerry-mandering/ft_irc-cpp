@@ -35,7 +35,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
     std::string invitationMessage = buildInvitationMsg(client, targetNickName, channelName);
     targetClient->AddResponseToBuf(invitationMessage);
 
-    channel->AddToInvitedClient(targetClient);
+    channel->SetInvitedClient(targetClient);
 
     LOG_TRACE("InviteRequest Executed");
 
@@ -74,7 +74,7 @@ bool Executor::Visit(JoinRequest *joinRequest) const
     if (channel->IsInviteOnlyMode())
     {
         LOG_DEBUG("Channel is invite only mode, so client should be removed from invited client list while entering");
-        channel->RemoveFromInvitedClient(client->GetNickName());
+        channel->RemoveInvitedClient(client->GetNickName());
     }
     std::string responseMessage = buildJoinMsg(client.GetPtr(), channel.GetPtr());
     client->AddResponseToBuf(responseMessage);
@@ -297,6 +297,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 
         channel->BroadcastMessage(quitMessage);
         channel->RemoveClient(client->GetNickName());
+
+        // TODO 마지막 사람이면 채널 삭제, part도
 
         LOG_TRACE("QuitRequest Executing - BroadcastMessage");
     }
