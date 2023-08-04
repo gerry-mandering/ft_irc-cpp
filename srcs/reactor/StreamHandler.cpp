@@ -74,10 +74,10 @@ int StreamHandler::handleRead(void)
 
 int StreamHandler::handleWrite(void)
 {
-    SharedPtr< Client > client = ClientRepository::GetInstance()->FindBySocket(m_handle);
+    Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle).GetPtr();
     ssize_t nwrite;
 
-    if (!client.GetPtr())
+    if (!client)
     {
         LOG_ERROR("StreamHandler write event but no client found" << std::strerror(errno));
         exit(EXIT_FAILURE);

@@ -4,6 +4,7 @@
 #include "Reactor.hpp"
 #include "def.h"
 #include "parser.h"
+#include <csignal>
 #include <iostream>
 #include <string>
 
@@ -46,14 +47,23 @@ static void init_server(const std::string &portStr, const std::string &password)
 }
 
 // TODO
-// static void CheckLeaks()
-//{
-//     system("leaks ircserver");
-// }
+static void CheckLeaks()
+{
+    system("leaks ircserver");
+}
+
+static void signalHandler(int signum)
+{
+    if (signum == SIGINT)
+    {
+        CheckLeaks();
+        std::exit(EXIT_FAILURE);
+    }
+}
 
 int main(int argc, char **argv)
 {
-    // TODO: singleton atexit 처리 고민할것
+    std::signal(SIGINT, signalHandler);
     if (argc != 3)
     {
         std::cerr << "Usage: <port> <password>\n";
@@ -87,7 +97,7 @@ int main(int argc, char **argv)
     }
 
     // TODO
-    //    std::atexit(CheckLeaks);
+    std::atexit(CheckLeaks);
 
     return (0);
 }

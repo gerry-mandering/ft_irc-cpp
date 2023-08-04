@@ -9,9 +9,9 @@ namespace Parser
 
 Client *findRegisteredClient(handle_t socket)
 {
-    SharedPtr< Client > client = ClientRepository::GetInstance()->FindBySocket(socket);
+    Client *client = ClientRepository::GetInstance()->FindBySocket(socket).GetPtr();
 
-    if (!client.GetPtr())
+    if (!client)
     {
         LOG_INFO(__func__ << " Client not found");
         return (NULL);
@@ -21,7 +21,7 @@ Client *findRegisteredClient(handle_t socket)
         LOG_INFO(__func__ << " Client not registered");
         return (NULL);
     }
-    return client.GetPtr();
+    return client;
 }
 
 ParseException::ParseException(handle_t socket, const std::string &msg) throw() : m_socket(socket), m_msg(msg) {}

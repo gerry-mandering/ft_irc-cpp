@@ -12,7 +12,7 @@ bool Executor::Visit(CapRequest *capRequest) const
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    SharedPtr< Client > client = inviteRequest->GetClient();
+    Client *client = inviteRequest->GetClient().GetPtr();
 
     const std::string &nickName = client->GetNickName();
     const std::string &targetNickName = inviteRequest->GetNickName();
@@ -32,7 +32,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
     SharedPtr< Client > targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 초대를 받은 사람에게 초대장 메세지 보내기
-    std::string invitationMessage = buildInvitationMsg(client.GetPtr(), targetNickName, channelName);
+    std::string invitationMessage = buildInvitationMsg(client, targetNickName, channelName);
     targetClient->AddResponseToBuf(invitationMessage);
 
     channel->AddToInvitedClient(targetClient);
@@ -87,7 +87,7 @@ bool Executor::Visit(KickRequest *kickRequest) const
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     Channel *channel = channelRepository->FindByName(channelName);
 
-    SharedPtr< Client > client = kickRequest->GetClient();
+    Client *client = kickRequest->GetClient().GetPtr();
     std::string responseMessage;
 
     std::vector< std::string > targets = kickRequest->GetTargets();
@@ -95,7 +95,7 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        responseMessage = buildKickoutMsg(client.GetPtr(), channelName, *iter, kickRequest->GetMessage());
+        responseMessage = buildKickoutMsg(client, channelName, *iter, kickRequest->GetMessage());
 
         channel->BroadcastMessage(responseMessage);
         channel->RemoveClient(*iter);
@@ -108,7 +108,7 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
 bool Executor::Visit(ModeRequest *modeRequest) const
 {
-    SharedPtr< Client > client = modeRequest->GetClient();
+    Client *client = modeRequest->GetClient().GetPtr();
     const std::string &channelName = modeRequest->GetChannelName();
     const std::string &sign = modeRequest->GetSign();
     const std::string &modeChar = modeRequest->GetModeChar();
@@ -150,7 +150,7 @@ bool Executor::Visit(ModeRequest *modeRequest) const
         channel->ToggleProtectedTopicMode();
     }
 
-    responseMessage = buildModeChangedMsg(client.GetPtr(), channelName, sign, modeChar, modeArgument);
+    responseMessage = buildModeChangedMsg(client, channelName, sign, modeChar, modeArgument);
     channel->BroadcastMessage(responseMessage);
 
     LOG_TRACE("ModeRequest Executed");
@@ -209,8 +209,8 @@ bool Executor::Visit(PartRequest *partRequest) const
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     Channel *channel = channelRepository->FindByName(channelName);
 
-    SharedPtr< Client > client = partRequest->GetClient();
-    std::string partMessage = buildPartMsg(client.GetPtr(), channelName, partRequest->GetReason());
+    Client *client = partRequest->GetClient().GetPtr();
+    std::string partMessage = buildPartMsg(client, channelName, partRequest->GetReason());
 
     channel->BroadcastMessage(partMessage);
     channel->RemoveClient(client->GetNickName());
@@ -226,7 +226,7 @@ bool Executor::Visit(PartRequest *partRequest) const
 
 bool Executor::Visit(PassRequest *passRequest) const
 {
-    SharedPtr< Client > client = passRequest->GetClient();
+    Client *client = passRequest->GetClient().GetPtr();
 
     client->SetPasswordEntered();
 
@@ -251,7 +251,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
-    SharedPtr< Client > client = privmsgRequest->GetClient();
+    Client *client = privmsgRequest->GetClient().GetPtr();
     std::string privateMessage;
 
     std::vector< std::string > targets = privmsgRequest->GetTargets();
@@ -259,7 +259,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        privateMessage = buildPrivateMsg(client.GetPtr(), *iter, privmsgRequest->GetMessage());
+        privateMessage = buildPrivateMsg(client, *iter, privmsgRequest->GetMessage());
 
         if (iter->front() == '#')
         {
@@ -270,7 +270,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
         }
         else
         {
-            SharedPtr< Client > targetClient = clientRepository->FindByNickName(*iter);
+            Client *targetClient = clientRepository->FindByNickName(*iter).GetPtr();
             targetClient->AddResponseToBuf(privateMessage);
 
             LOG_TRACE("PrivmsgRequest Executing - DirectMessage");
@@ -284,16 +284,16 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
 bool Executor::Visit(QuitRequest *quitRequest) const
 {
-    SharedPtr< Client > client = quitRequest->GetClient();
+    Client *client = quitRequest->GetClient().GetPtr();
 
-    std::string closingLinkMessage = buildClosingLinkMsg(client.GetPtr(), quitRequest->GetReason());
+    std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
 
     client->AddResponseToBuf(closingLinkMessage);
 
     Channel *channel = client->GetChannel();
     if (channel)
     {
-        std::string quitMessage = buildQuitMsg(client.GetPtr(), quitRequest->GetReason());
+        std::string quitMessage = buildQuitMsg(client, quitRequest->GetReason());
 
         channel->BroadcastMessage(quitMessage);
         channel->RemoveClient(client->GetNickName());
@@ -331,7 +331,7 @@ bool Executor::Visit(TopicRequest *topicRequest) const
 
 bool Executor::Visit(UserRequest *userRequest) const
 {
-    SharedPtr< Client > client = userRequest->GetClient();
+    Client *client = userRequest->GetClient().GetPtr();
 
     client->SetUserName(userRequest->GetUserName());
     client->SetHostName(userRequest->GetHostName());
@@ -341,7 +341,7 @@ bool Executor::Visit(UserRequest *userRequest) const
 
     if (client->HasEnteredNickName() && client->HasEnteredPassword())
     {
-        client->AddResponseToBuf(buildWelcomeMsg(client.GetPtr()));
+        client->AddResponseToBuf(buildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("UserRequest Executing - SetRegistered");
