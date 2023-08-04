@@ -1,6 +1,5 @@
 #pragma once
 
-class CapRequest;
 class InviteRequest;
 class JoinRequest;
 class KickRequest;
@@ -21,7 +20,6 @@ class Visitor
 {
 
   public:
-    virtual bool Visit(CapRequest *capRequest) const = 0;
     virtual bool Visit(InviteRequest *inviteRequest) const = 0;
     virtual bool Visit(JoinRequest *joinRequest) const = 0;
     virtual bool Visit(KickRequest *kickRequest) const = 0;

@@ -2,13 +2,6 @@
 #include "ChannelRepository.hpp"
 #include "Reactor.hpp"
 
-bool Executor::Visit(CapRequest *capRequest) const
-{
-    LOG_TRACE("CapRequest Executed");
-
-    return true;
-}
-
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
     ClientRepository *clientRepository = ClientRepository::GetInstance();
