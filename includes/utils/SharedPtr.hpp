@@ -38,6 +38,8 @@ class SharedPtr
 
     T *GetPtr() const { return mPtr; }
 
+    void Reset() { release(); }
+
     friend std::stringstream &operator<<(std::stringstream &ss, SharedPtr< T > &sharedPtr)
     {
         ss << "Address pointed : " << sharedPtr.mPtr << "\n"
