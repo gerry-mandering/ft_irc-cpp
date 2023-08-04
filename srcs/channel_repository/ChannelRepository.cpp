@@ -1,8 +1,8 @@
 #include "ChannelRepository.hpp"
 
-Channel *ChannelRepository::CreateChannel(const std::string &name)
+SharedPtr< Channel > ChannelRepository::CreateChannel(const std::string &name)
 {
-    Channel *channel = new Channel(name);
+    SharedPtr< Channel > channel(new Channel(name));
 
     mChannels[name] = channel;
 
@@ -11,17 +11,18 @@ Channel *ChannelRepository::CreateChannel(const std::string &name)
     return channel;
 }
 
-Channel *ChannelRepository::FindByName(const std::string &name)
+SharedPtr< Channel > ChannelRepository::FindByName(const std::string &name)
 {
     if (mChannels.find(name) != mChannels.end())
     {
         LOG_TRACE("ChannelRepository FindByName() - Found");
+
         return mChannels[name];
     }
 
     LOG_TRACE("ChannelRepository FindByName() - NotFound");
 
-    return NULL;
+    return SharedPtr< Channel >();
 }
 
 int ChannelRepository::GetNumberOfChannels() const

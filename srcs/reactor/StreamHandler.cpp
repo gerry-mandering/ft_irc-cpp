@@ -66,13 +66,15 @@ int StreamHandler::handleRead(void)
             Executor *executor = Executor::GetInstance();
             request->Accept(executor);
         }
+
+        delete request;
     }
     return (CODE_OK);
 }
 
 int StreamHandler::handleWrite(void)
 {
-    Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle);
+    Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle).GetPtr();
     ssize_t nwrite;
 
     if (!client)

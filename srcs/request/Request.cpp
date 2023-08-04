@@ -5,11 +5,11 @@ Request::Request(handle_t socket) : mSocket(socket)
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     mClient = clientRepository->FindBySocket(socket);
 
-    if (!mClient)
+    if (!mClient.GetPtr())
         mClient = clientRepository->CreateClient(socket);
 }
 
-Client *Request::GetClient() const
+SharedPtr< Client > Request::GetClient() const
 {
     return mClient;
 }
