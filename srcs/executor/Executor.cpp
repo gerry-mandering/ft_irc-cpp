@@ -5,6 +5,7 @@
 
 bool Executor::Visit(CapRequest *capRequest) const
 {
+    (void)capRequest;
     LOG_TRACE("CapRequest Executed");
 
     return true;

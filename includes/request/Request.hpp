@@ -14,7 +14,7 @@ class Request
 
   public:
     Request(handle_t socket);
-    virtual ~Request() {}
+    virtual ~Request() { (void)mSocket; }
 
     virtual bool Accept(visitor_pattern::Visitor *visitor) = 0;
 

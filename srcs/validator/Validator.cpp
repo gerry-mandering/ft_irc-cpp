@@ -77,6 +77,7 @@ bool notAlreadyInChan(Client *client, Channel *channel)
 
 bool Validator::Visit(CapRequest *capRequest) const
 {
+    (void)capRequest;
     return true;
 }
 
@@ -621,6 +622,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
 
 bool Validator::Visit(QuitRequest *quitRequest) const
 {
+    (void)quitRequest;
     LOG_TRACE("QuitRequest Validated");
 
     return true;

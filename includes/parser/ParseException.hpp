@@ -55,7 +55,7 @@ class InvalidFormat : public ParseException
   public:
     InvalidFormat(handle_t socket, const std::string &msg, eInvaldFormat type) throw();
     virtual void handleError() const throw();
-    virtual ~InvalidFormat() throw() {}
+    virtual ~InvalidFormat() throw() { (void)type; }
 };
 
 class IgnoreExceptionCase : public ParseException

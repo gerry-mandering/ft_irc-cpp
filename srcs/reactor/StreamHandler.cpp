@@ -23,7 +23,6 @@ int StreamHandler::handleRead(void)
 {
     char tmpBuf[TMP_BUF_SIZE];
     ssize_t nread;
-    size_t crlf_pos;
     std::string requestStr;
 
     std::memset(tmpBuf, 0, sizeof(tmpBuf));
@@ -94,13 +93,13 @@ int StreamHandler::handleWrite(void)
         LOG_WARN("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
         return (CODE_OK);
     }
-    if (nwrite < m_writeBuf.size())
+    if ((size_t)nwrite < m_writeBuf.size())
     {
         LOG_INFO("Partial write");
         m_writeBuf = m_writeBuf.substr(nwrite);
         return (CODE_OK);
     }
-    if (nwrite == m_writeBuf.size())
+    if ((size_t)nwrite == m_writeBuf.size())
     {
         LOG_DEBUG("StreamHandler write success fully: " << m_writeBuf);
         m_writeBuf.clear();
