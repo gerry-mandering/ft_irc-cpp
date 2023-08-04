@@ -286,9 +286,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 {
     Client *client = quitRequest->GetClient().GetPtr();
 
-    std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
-
-    client->AddResponseToBuf(closingLinkMessage);
+    // std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
+    // client->AddResponseToBuf(closingLinkMessage);
 
     Channel *channel = client->GetChannel();
     if (channel)
@@ -454,18 +453,18 @@ std::string Executor::buildTopicChangedMsg(Client *client, const std::string &ch
     return topicChangedMessage.str();
 }
 
-std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
-{
-    std::stringstream closingLinkMessage;
-    closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
+// std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
+// {
+//     std::stringstream closingLinkMessage;
+//     closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
 
-    if (reason.empty())
-        closingLinkMessage << "[Client exited]";
-    else
-        closingLinkMessage << "[Quit: " << reason << "]";
+//     if (reason.empty())
+//         closingLinkMessage << "[Client exited]";
+//     else
+//         closingLinkMessage << "[Quit: " << reason << "]";
 
-    return closingLinkMessage.str();
-}
+//     return closingLinkMessage.str();
+// }
 
 std::string Executor::buildQuitMsg(Client *client, const std::string &reason) const
 {
