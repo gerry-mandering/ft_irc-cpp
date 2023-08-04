@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "Channel.hpp"
 
 const std::string Client::CRLF = "\r\n";
 
