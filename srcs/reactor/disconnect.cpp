@@ -27,7 +27,7 @@ void disconnect(handle_t socket)
         return;
     }
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
-    // TODO: shared ptr로 반환 받기
+    // TODO: shared ptr로 변환 (클라이언트 삭제할 때 채널 없을 수도..?)
     Channel *channel = client->GetChannel();
     if (!channel)
     {
