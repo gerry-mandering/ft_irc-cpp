@@ -14,14 +14,14 @@ class ClientRepository : public TSingleton< ClientRepository >
     ClientRepository();
     ~ClientRepository();
 
-    Client *CreateClient(handle_t socket);
-    void AddClientToNickNameMap(Client *client);
+    SharedPtr< Client > CreateClient(handle_t socket);
+    void AddClientToNickNameMap(SharedPtr< Client > client);
 
     void RemoveClient(handle_t socket, const std::string &nickName);
     void RemoveClientFromNickNameMap(const std::string &nickName);
 
-    Client *FindBySocket(handle_t socket);
-    Client *FindByNickName(std::string nickName);
+    SharedPtr< Client > FindBySocket(handle_t socket);
+    SharedPtr< Client > FindByNickName(std::string nickName);
 
     int GetNumberOfClients() const;
 

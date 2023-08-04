@@ -25,7 +25,8 @@ class SharedPtr
             release();
             mPtr = other.mPtr;
             mReferenceCount = other.mReferenceCount;
-            (*mReferenceCount)++;
+            if (mReferenceCount)
+                (*mReferenceCount)++;
         }
         return *this;
     }

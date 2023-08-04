@@ -98,9 +98,9 @@ bool Channel::CheckClientIsOperator(const std::string &nickName)
     return false;
 }
 
-void Channel::SetClient(Client *newClient)
+void Channel::SetClient(SharedPtr< Client > newClient)
 {
-    mClients.push_back(SharedPtr< Client >(newClient));
+    mClients.push_back(newClient);
 }
 
 void Channel::RemoveClient(const std::string &nickName)
@@ -123,9 +123,9 @@ void Channel::RemoveClient(const std::string &nickName)
     }
 }
 
-void Channel::SetOperator(Client *newOperator)
+void Channel::SetOperator(SharedPtr< Client > newOperator)
 {
-    mOperators.push_back(SharedPtr< Client >(newOperator));
+    mOperators.push_back(newOperator);
 }
 
 void Channel::RemoveOperator(const std::string &nickName)
@@ -161,9 +161,9 @@ bool Channel::CheckClientIsInvited(const std::string &nickName)
     return false;
 }
 
-void Channel::AddToInvitedClient(Client *invitedClient)
+void Channel::AddToInvitedClient(SharedPtr< Client > invitedClient)
 {
-    mInvitedClients.push_back(SharedPtr< Client >(invitedClient));
+    mInvitedClients.push_back(invitedClient);
 }
 
 void Channel::RemoveFromInvitedClient(const std::string &nickName)

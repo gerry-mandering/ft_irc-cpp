@@ -6,6 +6,7 @@
 #include "EnvManager.hpp"
 #include "LoggingHandler.hpp"
 #include "RequestConcrete.hpp"
+#include "SharedPtr.hpp"
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
 #include <cstdlib>

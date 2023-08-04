@@ -31,13 +31,14 @@ class Channel
     bool CheckClientIsExist(const std::string &nickName);
     bool CheckClientIsOperator(const std::string &nickName);
 
-    void SetClient(Client *newClient);
+    void SetClient(SharedPtr< Client > newClient);
     void RemoveClient(const std::string &nickName);
 
-    void SetOperator(Client *newOperator);
+    void SetOperator(SharedPtr< Client > newOperator);
     void RemoveOperator(const std::string &nickName);
 
-    void AddToInvitedClient(Client *invitedClient);
+    // TODO 메소드 명 변경
+    void AddToInvitedClient(SharedPtr< Client > invitedClient);
     void RemoveFromInvitedClient(const std::string &nickName);
     bool CheckClientIsInvited(const std::string &nickName);
 
