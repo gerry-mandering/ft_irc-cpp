@@ -14,6 +14,8 @@ class ChannelRepository : public TSingleton< ChannelRepository >
     SharedPtr< Channel > CreateChannel(const std::string &name);
     SharedPtr< Channel > FindByName(const std::string &name);
 
+    void RemoveChannel(const std::string &name);
+
     int GetNumberOfChannels() const;
 
   private:
