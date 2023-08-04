@@ -1,8 +1,7 @@
 #include "Executor.hpp"
 #include "ChannelRepository.hpp"
 #include "Reactor.hpp"
-#include "color.h"
-#include <unistd.h>
+#include "disconnect.h"
 
 bool Executor::Visit(CapRequest *capRequest) const
 {
@@ -291,9 +290,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 {
     Client *client = quitRequest->GetClient().GetPtr();
 
-    std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
-
-    client->AddResponseToBuf(closingLinkMessage);
+    // std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
+    // client->AddResponseToBuf(closingLinkMessage);
 
     Channel *channel = client->GetChannel();
     if (channel)
@@ -311,16 +309,9 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
-    // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
-    // int socket = client->GetSocket();
-    // if (close(socket) < 0)
-    // {
-    //     std::cerr << BBLU << "close failed: " << socket << " " << std::strerror(errno) << "\n" << COLOR_RESET;
-    // }
-    // else
-    // {
-    //     std::cout << BBLU << "close success: " << socket << "\n" << COLOR_RESET;
-    // }
+    disconnect(client->GetSocket());
+    EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
+    delete handler;
 
     LOG_TRACE("QuitRequest Executed");
 
@@ -468,18 +459,18 @@ std::string Executor::buildTopicChangedMsg(Client *client, const std::string &ch
     return topicChangedMessage.str();
 }
 
-std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
-{
-    std::stringstream closingLinkMessage;
-    closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
+// std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
+// {
+//     std::stringstream closingLinkMessage;
+//     closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
 
-    if (reason.empty())
-        closingLinkMessage << "[Client exited]";
-    else
-        closingLinkMessage << "[Quit: " << reason << "]";
+//     if (reason.empty())
+//         closingLinkMessage << "[Client exited]";
+//     else
+//         closingLinkMessage << "[Quit: " << reason << "]";
 
-    return closingLinkMessage.str();
-}
+//     return closingLinkMessage.str();
+// }
 
 std::string Executor::buildQuitMsg(Client *client, const std::string &reason) const
 {
