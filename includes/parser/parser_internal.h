@@ -72,6 +72,7 @@ bool invalidModeType(const std::string &modeType);
 bool notNeedOptionalToken(const std::string &sign, const std::string &modeType);
 bool modeExceptionCase(const std::string &nickname, const std::string &modeToken);
 bool invalidOptionalToken(const std::string &modeType, const std::string &optionalToken);
+bool ShouldIgnoreCommand(const std::string &tcpStreams);
 
 Request *parseRequest(const std::string &tcpStream, handle_t socket);
 Request *parsePass(const std::string &tcpStream, handle_t socket);
