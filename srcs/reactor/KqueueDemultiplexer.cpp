@@ -91,7 +91,6 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
         // 클라이언트 프로세스가 종료되면 해당 플래그로 온다
         if (event.flags & EV_EOF || event.flags & EV_ERROR)
         {
-            // TODO: EV_EOF 플래그 검사(예외처리), disconnect 여기에서 호출
             LOG_TRACE(__func__ << " EOF event");
             handler->handleDisconnect();
             delete handler;

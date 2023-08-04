@@ -12,8 +12,8 @@
 
 void disconnect(handle_t socket)
 {
-    // TODO: 추후 삭제
-    std::cerr << RED << "disconnect" << COLOR_RESET << std::endl;
+    LOG_INFO(RED << "[ " << socket << " ]: "
+                 << "disconnect" << COLOR_RESET);
     Reactor *reactor = Reactor::GetInstance();
     EventHandler *handler = reactor->getHandler(socket);
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -23,7 +23,7 @@ void disconnect(handle_t socket)
     close(socket);
     if (!client.GetPtr())
     {
-        LOG_INFO("Client not found for socket " << socket);
+        LOG_INFO(__func__ << " Client not found for socket " << socket);
         return;
     }
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
@@ -31,15 +31,16 @@ void disconnect(handle_t socket)
     Channel *channel = client->GetChannel();
     if (!channel)
     {
-        LOG_INFO("Client is not in any channel");
+        LOG_INFO(__func__ << " Client is not in any channel");
         return;
     }
     if (channel->GetClientCount() == 1)
     {
-        LOG_INFO("Client is the only one in channel " << channel->GetName());
+        LOG_INFO(__func__ << " Client leave and remove channel " << channel->GetName());
         ChannelRepository *channelRepository = ChannelRepository::GetInstance();
         channelRepository->RemoveChannel(channel->GetName());
         return;
     }
+    LOG_INFO(__func__ << " Client leave and not remove channel " << channel->GetName());
     channel->RemoveClient(client->GetNickName());
 }
