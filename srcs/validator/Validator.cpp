@@ -99,7 +99,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     // 채널이 없는 경우
     if (!channel)
@@ -192,7 +192,7 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         return false;
     }
 
-    channel = channelRepo->FindByName(joinRequest->getChannelName());
+    channel = channelRepo->FindByName(joinRequest->getChannelName()).GetPtr();
     // 채널에 처음 입장할 때(즉 생성)
     if (channel == NULL)
     {
@@ -230,7 +230,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     // 채널이 없는 경우
     if (!channel)
@@ -344,7 +344,7 @@ bool Validator::Visit(ModeRequest *modeRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     // 채널이 없는 경우
     if (!channel)
@@ -444,7 +444,7 @@ bool Validator::Visit(PartRequest *partRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     // 채널이 없는 경우
     if (!channel)
@@ -558,7 +558,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
     {
         if (iter->front() == '#')
         {
-            Channel *targetChannel = channelRepository->FindByName(*iter);
+            Channel *targetChannel = channelRepository->FindByName(*iter).GetPtr();
 
             // 채널이 없는 경우
             if (!targetChannel)
@@ -645,7 +645,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     // 채널이 없는 경우
     if (!channel)

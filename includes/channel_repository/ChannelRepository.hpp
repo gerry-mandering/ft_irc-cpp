@@ -11,8 +11,8 @@ class ChannelRepository : public TSingleton< ChannelRepository >
 {
 
   public:
-    Channel *CreateChannel(const std::string &name);
-    Channel *FindByName(const std::string &name);
+    SharedPtr< Channel > CreateChannel(const std::string &name);
+    SharedPtr< Channel > FindByName(const std::string &name);
 
     int GetNumberOfChannels() const;
 

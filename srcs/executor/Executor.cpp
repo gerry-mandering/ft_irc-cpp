@@ -23,7 +23,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
     client->AddResponseToBuf(replyInvitingMessage);
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     // 채널에 속한 클라이언트들에게 초대 알리기
     std::string InvitedIntoChannelMessage = buildInvitedIntoChannelMsg(nickName, targetNickName, channelName);
@@ -46,14 +46,13 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
 bool Executor::Visit(JoinRequest *joinRequest) const
 {
     ChannelRepository *channelRepo = ChannelRepository::GetInstance();
-    Channel *channel;
+    SharedPtr< Channel > channel = channelRepo->FindByName(joinRequest->getChannelName());
     SharedPtr< Client > client = joinRequest->GetClient();
 
     LOG_TRACE("JoinRequest Executing");
 
-    channel = channelRepo->FindByName(joinRequest->getChannelName());
     // 채널에 처음 입장할 때
-    if (!channel)
+    if (!channel.GetPtr())
     {
         LOG_TRACE("First Join: create new channel");
 
@@ -63,20 +62,22 @@ bool Executor::Visit(JoinRequest *joinRequest) const
 
         channel->SetClient(client);
         channel->SetOperator(client);
+        client->SetChannel(channel);
 
-        std::string responseMessage = buildJoinMsg(client.GetPtr(), channel);
+        std::string responseMessage = buildJoinMsg(client.GetPtr(), channel.GetPtr());
         client->AddResponseToBuf(responseMessage);
 
         return true;
     }
     LOG_TRACE("Join already existing channel");
     channel->SetClient(client);
+    client->SetChannel(channel);
     if (channel->IsInviteOnlyMode())
     {
         LOG_DEBUG("Channel is invite only mode, so client should be removed from invited client list while entering");
         channel->RemoveFromInvitedClient(client->GetNickName());
     }
-    std::string responseMessage = buildJoinMsg(client.GetPtr(), channel);
+    std::string responseMessage = buildJoinMsg(client.GetPtr(), channel.GetPtr());
     client->AddResponseToBuf(responseMessage);
     return true;
 }
@@ -85,7 +86,7 @@ bool Executor::Visit(KickRequest *kickRequest) const
 {
     const std::string &channelName = kickRequest->GetChannelName();
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     Client *client = kickRequest->GetClient().GetPtr();
     std::string responseMessage;
@@ -115,7 +116,7 @@ bool Executor::Visit(ModeRequest *modeRequest) const
     const std::string &modeArgument = modeRequest->GetModeArgument();
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     std::string responseMessage;
 
@@ -207,14 +208,14 @@ bool Executor::Visit(PartRequest *partRequest) const
 {
     const std::string &channelName = partRequest->GetChannelName();
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName);
+    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
 
     Client *client = partRequest->GetClient().GetPtr();
     std::string partMessage = buildPartMsg(client, channelName, partRequest->GetReason());
 
     channel->BroadcastMessage(partMessage);
     channel->RemoveClient(client->GetNickName());
-    client->SetChannel(NULL);
+    client->ResetChannel();
     // TODO Shared Ptr 이면 delete?
 
     // TODO channel에 사용자가 다 나가면 repository에서 비워주고 channel delete
@@ -263,7 +264,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
         if (iter->front() == '#')
         {
-            Channel *targetChannel = channelRepository->FindByName(*iter);
+            Channel *targetChannel = channelRepository->FindByName(*iter).GetPtr();
             targetChannel->BroadcastMessageExcludingRequestor(privateMessage, client->GetNickName());
 
             LOG_TRACE("PrivmsgRequest Executing - BroadcastMessage");
@@ -314,7 +315,7 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 bool Executor::Visit(TopicRequest *topicRequest) const
 {
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(topicRequest->GetChannelName());
+    Channel *channel = channelRepository->FindByName(topicRequest->GetChannelName()).GetPtr();
 
     std::string topic = topicRequest->GetTopic();
     channel->SetTopic(topic);

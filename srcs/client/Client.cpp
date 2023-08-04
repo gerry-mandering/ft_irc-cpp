@@ -34,9 +34,14 @@ handle_t Client::GetSocket() const
     return mSocket;
 }
 
-void Client::SetChannel(Channel *channel)
+void Client::SetChannel(SharedPtr< Channel > channel)
 {
-    mChannel = SharedPtr< Channel >(channel);
+    mChannel = channel;
+}
+
+void Client::ResetChannel()
+{
+    mChannel.Reset();
 }
 
 Channel *Client::GetChannel() const

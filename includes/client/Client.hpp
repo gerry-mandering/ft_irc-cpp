@@ -20,7 +20,8 @@ class Client
     std::string GetClientInfo() const;
     handle_t GetSocket() const;
 
-    void SetChannel(Channel *channel); // FIXME
+    void SetChannel(SharedPtr< Channel > channel);
+    void ResetChannel();
     Channel *GetChannel() const;
 
     void SetNickName(const std::string &nickName);
