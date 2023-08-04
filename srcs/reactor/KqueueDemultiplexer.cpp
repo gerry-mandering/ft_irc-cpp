@@ -93,8 +93,9 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
         {
             // TODO: EV_EOF 플래그 검사(예외처리), disconnect 여기에서 호출
             LOG_TRACE(__func__ << " EOF event");
-            close(event.ident);
-            // handler->handleDisconnect();
+            // disconnect(socket);
+            // close(event.ident);
+            handler->handleDisconnect();
             continue;
         }
         if (event.filter == EVFILT_READ)

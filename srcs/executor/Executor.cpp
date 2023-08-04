@@ -1,6 +1,8 @@
 #include "Executor.hpp"
 #include "ChannelRepository.hpp"
 #include "Reactor.hpp"
+#include "color.h"
+#include <unistd.h>
 
 bool Executor::Visit(CapRequest *capRequest) const
 {
@@ -307,6 +309,15 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
     // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
+    // int socket = client->GetSocket();
+    // if (close(socket) < 0)
+    // {
+    //     std::cerr << BBLU << "close failed: " << socket << " " << std::strerror(errno) << "\n" << COLOR_RESET;
+    // }
+    // else
+    // {
+    //     std::cout << BBLU << "close success: " << socket << "\n" << COLOR_RESET;
+    // }
 
     LOG_TRACE("QuitRequest Executed");
 
