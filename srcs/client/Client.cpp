@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "Channel.hpp"
 
 const std::string Client::CRLF = "\r\n";
 
@@ -8,6 +9,8 @@ Client::Client(handle_t socket)
 {
     LOG_TRACE("Client constructor called | " << *this);
 }
+
+Client::~Client() {}
 
 void Client::AddResponseToBuf(const std::string &response)
 {
@@ -30,14 +33,19 @@ handle_t Client::GetSocket() const
     return mSocket;
 }
 
-void Client::SetChannel(Channel *channel)
+void Client::SetChannel(SharedPtr< Channel > channel)
 {
     mChannel = channel;
 }
 
+void Client::ResetChannel()
+{
+    mChannel.Reset();
+}
+
 Channel *Client::GetChannel() const
 {
-    return mChannel;
+    return mChannel.GetPtr();
 }
 
 void Client::SetNickName(const std::string &nickName)
@@ -132,8 +140,8 @@ bool Client::HasEnteredUserInfo() const
 
 std::stringstream &operator<<(std::stringstream &ss, const Client &client)
 {
-    ss << "Client = { Socket: " << client.mSocket << ", Channel: " << client.mChannel
-       << ", NickName: " << client.mNickName << ", UserName: " << client.mUserName << ", HostName: " << client.mHostName
+    ss << "Client = { Socket: " << client.mSocket << ", NickName: " << client.mNickName
+       << ", UserName: " << client.mUserName << ", HostName: " << client.mHostName
        << ", ServerName: " << client.mServerName << ", RealName: " << client.mRealName
        << ", RegistrationFlags: " << std::bitset< 4 >(client.mRegistrationFlags) << " }";
 

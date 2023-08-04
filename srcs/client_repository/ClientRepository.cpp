@@ -4,9 +4,9 @@ ClientRepository::ClientRepository() {}
 
 ClientRepository::~ClientRepository() {}
 
-Client *ClientRepository::CreateClient(handle_t socket)
+SharedPtr< Client > ClientRepository::CreateClient(handle_t socket)
 {
-    Client *client = new Client(socket);
+    SharedPtr< Client > client(new Client(socket));
 
     mSocketToClients[socket] = client;
 
@@ -15,19 +15,19 @@ Client *ClientRepository::CreateClient(handle_t socket)
     return client;
 }
 
-void ClientRepository::AddClientToNickNameMap(Client *client)
+void ClientRepository::AddClientToNickNameMap(SharedPtr< Client > client)
 {
-    mNickNameToClients[client->GetNickName()] = client;
+    mNickNameToClients[client->GetNickName()] = SharedPtr< Client >(client);
 
     LOG_TRACE("ClientRepository AddClientToNickNameMap()");
 }
 
 void ClientRepository::RemoveClient(handle_t socket, const std::string &nickName)
 {
-    std::map< handle_t, Client * >::iterator socketIter = mSocketToClients.find(socket);
+    std::map< handle_t, SharedPtr< Client > >::iterator socketIter = mSocketToClients.find(socket);
     mSocketToClients.erase(socketIter);
 
-    std::map< std::string, Client * >::iterator nickNameIter = mNickNameToClients.find(nickName);
+    std::map< std::string, SharedPtr< Client > >::iterator nickNameIter = mNickNameToClients.find(nickName);
 
     if (nickNameIter != mNickNameToClients.end())
         mNickNameToClients.erase(nickNameIter);
@@ -37,14 +37,14 @@ void ClientRepository::RemoveClient(handle_t socket, const std::string &nickName
 
 void ClientRepository::RemoveClientFromNickNameMap(const std::string &nickName)
 {
-    std::map< std::string, Client * >::iterator iter = mNickNameToClients.find(nickName);
+    std::map< std::string, SharedPtr< Client > >::iterator iter = mNickNameToClients.find(nickName);
 
     mNickNameToClients.erase(iter);
 
     LOG_TRACE("ClientRepository RemoveClientFromNickNameMap()");
 }
 
-Client *ClientRepository::FindBySocket(handle_t socket)
+SharedPtr< Client > ClientRepository::FindBySocket(handle_t socket)
 {
     if (mSocketToClients.find(socket) != mSocketToClients.end())
     {
@@ -54,10 +54,10 @@ Client *ClientRepository::FindBySocket(handle_t socket)
 
     LOG_TRACE("ClientRepository FindBySocket() - NotFound");
 
-    return NULL;
+    return SharedPtr< Client >();
 }
 
-Client *ClientRepository::FindByNickName(std::string nickName)
+SharedPtr< Client > ClientRepository::FindByNickName(std::string nickName)
 {
     if (mNickNameToClients.find(nickName) != mNickNameToClients.end())
     {
@@ -67,7 +67,7 @@ Client *ClientRepository::FindByNickName(std::string nickName)
 
     LOG_TRACE("ClientRepository FindByNickName() - NotFound");
 
-    return NULL;
+    return SharedPtr< Client >();
 }
 
 int ClientRepository::GetNumberOfClients() const

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SharedPtr.hpp"
 #include "parser_internal.h"
 #include <exception>
 #include <string>

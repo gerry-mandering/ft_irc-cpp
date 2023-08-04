@@ -4,6 +4,7 @@
 #include "ClientRepository.hpp"
 #include "EventHandler.hpp"
 #include "LoggingHandler.hpp"
+#include "SharedPtr.hpp"
 #include "VisitorPattern.hpp"
 #include <iostream>
 #include <sstream>
@@ -13,15 +14,13 @@ class Request
 
   public:
     Request(handle_t socket);
+    virtual ~Request() {}
 
     virtual bool Accept(visitor_pattern::Visitor *visitor) = 0;
 
-    Client *GetClient() const;
-
-  protected:
-    virtual ~Request() {}
+    SharedPtr< Client > GetClient() const;
 
   private:
     handle_t mSocket;
-    Client *mClient;
+    SharedPtr< Client > mClient;
 };

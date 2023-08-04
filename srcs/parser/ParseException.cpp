@@ -9,7 +9,7 @@ namespace Parser
 
 Client *findRegisteredClient(handle_t socket)
 {
-    Client *client = ClientRepository::GetInstance()->FindBySocket(socket);
+    Client *client = ClientRepository::GetInstance()->FindBySocket(socket).GetPtr();
 
     if (!client)
     {

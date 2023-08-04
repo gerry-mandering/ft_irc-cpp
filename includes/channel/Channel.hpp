@@ -1,16 +1,19 @@
 #pragma once
 
-#include "Client.hpp"
+#include "SharedPtr.hpp"
 #include <algorithm>
 #include <bitset>
 #include <iostream>
 #include <vector>
+
+class Client;
 
 class Channel
 {
 
   public:
     Channel(const std::string &name);
+    ~Channel();
 
     const std::string &GetName() const;
     std::string GetClientsList();
@@ -28,14 +31,14 @@ class Channel
     bool CheckClientIsExist(const std::string &nickName);
     bool CheckClientIsOperator(const std::string &nickName);
 
-    void SetClient(Client *newClient);
+    void SetClient(SharedPtr< Client > newClient);
     void RemoveClient(const std::string &nickName);
 
-    void SetOperator(Client *newOperator);
+    void SetOperator(SharedPtr< Client > newOperator);
     void RemoveOperator(const std::string &nickName);
 
-    void AddToInvitedClient(Client *invitedClient);
-    void RemoveFromInvitedClient(const std::string &nickName);
+    void SetInvitedClient(SharedPtr< Client > invitedClient);
+    void RemoveInvitedClient(const std::string &nickName);
     bool CheckClientIsInvited(const std::string &nickName);
 
     void SetTopic(const std::string &topic);
@@ -62,10 +65,10 @@ class Channel
 
     std::string mName;
 
-    std::vector< Client * > mClients;
-    std::vector< Client * > mOperators;
+    std::vector< SharedPtr< Client > > mClients;
+    std::vector< SharedPtr< Client > > mOperators;
 
-    std::vector< Client * > mInvitedClients;
+    std::vector< SharedPtr< Client > > mInvitedClients;
     std::string mTopic;
     std::string mKey;
     int mClientLimit;
