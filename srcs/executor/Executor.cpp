@@ -101,6 +101,9 @@ bool Executor::Visit(KickRequest *kickRequest) const
         channel->RemoveClient(*iter);
     }
 
+    if (channel->GetClientCount() == 0)
+        channelRepository->RemoveChannel(channelName);
+
     LOG_TRACE("KickRequest Executed");
 
     return true;
@@ -215,9 +218,9 @@ bool Executor::Visit(PartRequest *partRequest) const
     channel->BroadcastMessage(partMessage);
     channel->RemoveClient(client->GetNickName());
     client->ResetChannel();
-    // TODO Shared Ptr 이면 delete?
 
-    // TODO channel에 사용자가 다 나가면 repository에서 비워주고 channel delete
+    if (channel->GetClientCount() == 0)
+        channelRepository->RemoveChannel(channelName);
 
     LOG_TRACE("PartRequest Executed");
 
