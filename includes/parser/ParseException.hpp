@@ -58,12 +58,12 @@ class InvalidFormat : public ParseException
     virtual ~InvalidFormat() throw() {}
 };
 
-class modeException : public ParseException
+class IgnoreExceptionCase : public ParseException
 {
   public:
-    modeException(handle_t socket, const std::string &msg) throw();
+    IgnoreExceptionCase(handle_t socket, const std::string &msg) throw();
     virtual void handleError() const throw();
-    virtual ~modeException() throw() {}
+    virtual ~IgnoreExceptionCase() throw() {}
 };
 
 } // namespace Parser

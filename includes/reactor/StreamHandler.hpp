@@ -28,7 +28,7 @@ class StreamHandler : public EventHandler
     virtual handle_t getHandle(void) const;
     virtual int handleRead(void);
     virtual int handleWrite(void);
-    virtual int handleError(void);
+    virtual int handleDisconnect(void);
 
     bool hasRequest(std::string &requestStr);
     void addResponseToBuf(const std::string &response);

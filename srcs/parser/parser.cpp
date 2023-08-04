@@ -20,6 +20,8 @@ Request *parseRequest(const std::string &tcpStreams, handle_t socket)
 
     ss >> command;
     LOG_TRACE(__func__ << " command: " << command);
+    if (ShouldIgnoreCommand(tcpStreams))
+        throw IgnoreExceptionCase(socket, "Command: " + command);
     it = parsers.find(command);
     if (it != parsers.end())
         return (it->second)(tcpStreams, socket);
@@ -117,8 +119,9 @@ Request *parseMode(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command >> channel >> modeToken))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-    if (modeExceptionCase(channel, modeToken))
-        throw modeException(socket, MSG_MODE_EXCEPTION + command);
+    // TODO: 추후 삭제
+    // if (modeExceptionCase(channel, modeToken))
+    //     throw IgnoreExceptionCase(socket, MSG_MODE_EXCEPTION + command);
     sign = modeToken.front();
     modeType = modeToken.substr(1);
     if (invalidSign(sign) || invalidModeType(modeType))

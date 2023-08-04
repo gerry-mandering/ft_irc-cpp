@@ -27,6 +27,6 @@ class EventHandler
     virtual int handleRead(void) { return 0; }
     virtual int handleWrite(void) { return 0; }
     // TODO: Error 처리 구현
-    virtual int handleError(void) { return 0; }
+    virtual int handleDisconnect(void) { return 0; }
     inline virtual void addResponseToBuf(const std::string &response) {}
 };

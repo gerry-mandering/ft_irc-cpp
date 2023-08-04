@@ -98,7 +98,12 @@ void InvalidFormat::handleError() const throw()
     }
 }
 
-modeException::modeException(handle_t socket, const std::string &msg) throw() : ParseException(socket, msg) {}
+IgnoreExceptionCase::IgnoreExceptionCase(handle_t socket, const std::string &msg) throw() : ParseException(socket, msg)
+{
+}
 
-void modeException::handleError() const throw() {}
+void IgnoreExceptionCase::handleError() const throw()
+{
+    LOG_TRACE(__func__ << " Ignore exception case: " << m_msg);
+}
 } // namespace Parser

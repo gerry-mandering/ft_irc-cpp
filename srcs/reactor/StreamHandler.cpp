@@ -109,9 +109,10 @@ int StreamHandler::handleWrite(void)
     return (CODE_OK);
 }
 
-int StreamHandler::handleError(void)
+int StreamHandler::handleDisconnect(void)
 {
-    return (0);
+    // disconnect(m_handle);
+    return (CODE_OK);
 }
 
 bool StreamHandler::hasRequest(std::string &requestStr)

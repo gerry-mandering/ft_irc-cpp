@@ -48,12 +48,9 @@ int AcceptHandler::handleRead(void)
     return (Reactor::GetInstance()->registerHandler(new StreamHandler(newHandle), READ_EVENT));
 }
 
-int AcceptHandler::handleWrite(void)
+int AcceptHandler::handleDisconnect(void)
 {
-    return CODE_OK;
-}
-
-int AcceptHandler::handleError(void)
-{
+    LOG_ERROR(__func__ << " Fatal error: passive socket got error");
+    exit(EXIT_FAILURE);
     return CODE_OK;
 }
