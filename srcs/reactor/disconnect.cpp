@@ -10,17 +10,13 @@
 #include "color.h"
 #include <unistd.h>
 
-void disconnect(handle_t socket)
+void disconnectClient(handle_t socket)
 {
     LOG_INFO(RED << "[ " << socket << " ]: "
-                 << "disconnect" << COLOR_RESET);
-    Reactor *reactor = Reactor::GetInstance();
-    EventHandler *handler = reactor->getHandler(socket);
+                 << "disconnectClient" << COLOR_RESET);
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     SharedPtr< Client > client = clientRepository->FindBySocket(socket);
 
-    reactor->unregisterHandler(handler);
-    close(socket);
     if (!client)
     {
         LOG_INFO(" Client not found for socket " << socket);
@@ -43,4 +39,14 @@ void disconnect(handle_t socket)
     }
     LOG_INFO(" Client leave and not remove channel " << channel->GetName());
     channel->RemoveClient(client->GetNickName());
+}
+
+void removeHandler(handle_t socket)
+{
+    Reactor *reactor = Reactor::GetInstance();
+    EventHandler *handler = reactor->getHandler(socket);
+
+    close(socket);
+    reactor->unregisterHandler(handler);
+    delete handler;
 }

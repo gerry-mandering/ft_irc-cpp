@@ -2,4 +2,5 @@
 
 typedef int handle_t;
 
-void disconnect(handle_t handle);
+void disconnectClient(handle_t handle);
+void removeHandler(handle_t handle);

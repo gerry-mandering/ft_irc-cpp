@@ -330,9 +330,8 @@ bool Validator::Visit(NickRequest *nickRequest) const
     // Connection Password를 입력하지 않고 Register 하려는 경우
     if (client->HasEnteredUserInfo() && !client->HasEnteredPassword())
     {
-        disconnect(client->GetSocket());
-        EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
-        delete handler;
+        disconnectClient(client->GetSocket());
+        removeHandler(client->GetSocket());
 
         LOG_TRACE("NickRequest Invalid - AccessDenied");
 
@@ -416,9 +415,8 @@ bool Validator::Visit(PassRequest *passRequest) const
     // 비밀번호가 일치하지 않는 경우
     if (passRequest->GetPassword() != envManager->GetConnectionPassord())
     {
-        disconnect(client->GetSocket());
-        EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
-        delete handler;
+        disconnectClient(client->GetSocket());
+        removeHandler(client->GetSocket());
 
         LOG_TRACE("PassRequest Invalid - AccessDenied");
 
@@ -638,9 +636,8 @@ bool Validator::Visit(UserRequest *userRequest) const
     // Connection Password를 입력하지 않고 Register 하려는 경우
     if (client->HasEnteredNickName() && !client->HasEnteredPassword())
     {
-        disconnect(client->GetSocket());
-        EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
-        delete handler;
+        disconnectClient(client->GetSocket());
+        removeHandler(client->GetSocket());
 
         LOG_TRACE("UserRequest Invalid - AccessDenied");
 

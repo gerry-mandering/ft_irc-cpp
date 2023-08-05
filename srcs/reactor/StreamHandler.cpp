@@ -91,7 +91,7 @@ int StreamHandler::handleWrite(void)
     nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
     if (nwrite < 0)
     {
-        LOG_INFO("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
+        LOG_INFO("StreamHandler write failed: write again or disconnectClient: " << std::strerror(errno));
         return (CODE_OK);
     }
     if ((size_t)nwrite < m_writeBuf.size())
@@ -112,7 +112,7 @@ int StreamHandler::handleWrite(void)
 
 int StreamHandler::handleDisconnect(void)
 {
-    disconnect(m_handle);
+    disconnectClient(m_handle);
     return (CODE_OK);
 }
 

@@ -292,9 +292,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
         LOG_TRACE("QuitRequest Executing - BroadcastMessage");
     }
 
-    disconnect(client->GetSocket());
-    EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
-    delete handler;
+    disconnectClient(client->GetSocket());
+    removeHandler(client->GetSocket());
 
     LOG_TRACE("QuitRequest Executed");
 

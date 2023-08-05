@@ -2,6 +2,7 @@
 #include "LoggingHandler.hpp"
 #include "SyscallException.hpp"
 #include "color.h"
+#include "disconnect.h"
 #include "wrapper.h"
 #include <iostream>
 #include <unistd.h>
@@ -86,7 +87,7 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
         if (event.flags & EV_EOF || event.flags & EV_ERROR)
         {
             handler->handleDisconnect();
-            delete handler;
+            removeHandler(handler->getHandle());
             continue;
         }
         if (event.filter == EVFILT_READ)
