@@ -1,7 +1,4 @@
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(INCLUDE_PATH) $(ASAN)
-# TODO: 플래그 사용하기!!!!!!!!!!!!!!!!!!
-
-# CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
 
 VALID_LOG_LEVELS := TRACE DEBUG INFO WARN ERROR
 LOG_VALUE := $(filter $(LOG),$(VALID_LOG_LEVELS))
@@ -10,7 +7,6 @@ ifeq ($(LOG_VALUE),)
     LOG_VALUE := OFF
 endif
 
-# $(info $$LOG_VALUE is [${LOG_VALUE}])
 CXXFLAGS += -DLOGGING -D LOG_LEVEL=LEVEL_$(LOG_VALUE)
 
 NAME = ircserver
@@ -65,10 +61,8 @@ TEST_OBJS := $(TEST_SRCS:.cpp=.o)
  					$(DIR_SRCS)/$(DIR_PARSER)/*.cpp \
  					$(DIR_SRCS)/$(DIR_LOGGER)/*.cpp) \
 
-# SRCS := $(filter-out $(DRIVER) $(VAR),$(SRCS))
 OBJS := $(SRCS:.cpp=.o)
 
-# INCLUDE_PATH = $(addprefix -I, $(DIR_INCLUDES))
 INCLUDE_PATH := $(addprefix -I, $(DIR_INCLUDES) \
 								$(DIR_INCLUDES)/$(DIR_CHANNEL) \
 								$(DIR_INCLUDES)/$(DIR_CHANNEL_REPOSITORY) \
@@ -86,9 +80,6 @@ INCLUDE_PATH := $(addprefix -I, $(DIR_INCLUDES) \
 								$(DIR_INCLUDES)/$(DIR_LOGGER)) \
 
 all: $(NAME)
-
-# $(NAME): $(OBJS) main.cpp
-# 	$(LINK.cc) $^ -o $(NAME)
 
 $(NAME): $(OBJS) $(DRIVER_OBJ)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $^

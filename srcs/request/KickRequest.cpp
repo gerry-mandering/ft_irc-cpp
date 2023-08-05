@@ -42,7 +42,6 @@ const std::string &KickRequest::GetMessage() const
     return mMessage;
 }
 
-// TODO const 아니여도 ㄱㅊ?
 std::stringstream &operator<<(std::stringstream &ss, KickRequest &kickRequest)
 {
     ss << "KickRequest = { ChannelName: " << kickRequest.mChannelName << ", NickNames: ";

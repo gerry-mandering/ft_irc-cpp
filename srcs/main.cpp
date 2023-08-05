@@ -44,7 +44,6 @@ static bool invalid_input(const std::string &port, const std::string &password)
     return (false);
 }
 
-// TODO: 로깅 핸들러 추가 처리
 static void init_server(const std::string &portStr, const std::string &password)
 {
     int portInt = stringToint(portStr);

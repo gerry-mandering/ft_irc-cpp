@@ -23,7 +23,6 @@ std::string Client::GetClientInfo() const
 {
     std::stringstream clientInfo;
 
-    // TODO hostname 수정
     clientInfo << mNickName << "!" << mUserName << "@" << mHostName;
     return clientInfo.str();
 }
