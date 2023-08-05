@@ -65,11 +65,7 @@ bool Executor::Visit(JoinRequest *joinRequest) const
     LOG_TRACE("Join already existing channel");
     channel->SetClient(client);
     client->SetChannel(channel);
-    if (channel->IsInviteOnlyMode())
-    {
-        LOG_DEBUG("Channel is invite only mode, so client should be removed from invited client list while entering");
-        channel->RemoveInvitedClient(client->GetNickName());
-    }
+    channel->RemoveInvitedClient(client->GetNickName());
     std::string responseMessage = buildJoinMsg(client, channel);
     client->AddResponseToBuf(responseMessage);
     return true;
