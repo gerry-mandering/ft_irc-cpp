@@ -2,6 +2,7 @@
 #include "ClientRepository.hpp"
 #include "LoggingHandler.hpp"
 #include "ParseException.hpp"
+#include "disconnect.h"
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
@@ -22,7 +23,6 @@ int StreamHandler::handleRead(void)
 {
     char tmpBuf[TMP_BUF_SIZE];
     ssize_t nread;
-    size_t crlf_pos;
     std::string requestStr;
 
     std::memset(tmpBuf, 0, sizeof(tmpBuf));
@@ -35,8 +35,8 @@ int StreamHandler::handleRead(void)
     }
     if (nread == 0)
     {
-        LOG_DEBUG("StreamHandler read eof: " << std::strerror(errno));
-        // TODO: disconnect(구현 자유롭게 하면 될듯 되도록 disconnect 하도록)
+        LOG_WARN("StreamHandler read eof: " << std::strerror(errno));
+        // nread가 0이면 여기로 안오고 무조건 EOF로 플래그에 먼저 잡힘
         return (CODE_OK);
     }
     std::string tcpStreams(tmpBuf);
@@ -93,13 +93,13 @@ int StreamHandler::handleWrite(void)
         LOG_WARN("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
         return (CODE_OK);
     }
-    if (nwrite < m_writeBuf.size())
+    if ((size_t)nwrite < m_writeBuf.size())
     {
         LOG_INFO("Partial write");
         m_writeBuf = m_writeBuf.substr(nwrite);
         return (CODE_OK);
     }
-    if (nwrite == m_writeBuf.size())
+    if ((size_t)nwrite == m_writeBuf.size())
     {
         LOG_DEBUG("StreamHandler write success fully: " << m_writeBuf);
         m_writeBuf.clear();
@@ -111,7 +111,7 @@ int StreamHandler::handleWrite(void)
 
 int StreamHandler::handleDisconnect(void)
 {
-    // disconnect(m_handle);
+    disconnect(m_handle);
     return (CODE_OK);
 }
 

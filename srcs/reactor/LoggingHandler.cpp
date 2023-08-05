@@ -40,6 +40,7 @@ int LoggingHandler::handleWrite(void)
     // }
     // m_writeBuf = m_writeBuf.substr(nwrite);
     // return 0;
+    return (0);
 }
 
 // TODO: 로거 핸들 에러 처리

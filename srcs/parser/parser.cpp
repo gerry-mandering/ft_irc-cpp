@@ -119,9 +119,6 @@ Request *parseMode(const std::string &tcpStreams, handle_t socket)
 
     if (!(ss >> command >> channel >> modeToken))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
-    // TODO: 추후 삭제
-    // if (modeExceptionCase(channel, modeToken))
-    //     throw IgnoreExceptionCase(socket, MSG_MODE_EXCEPTION + command);
     sign = modeToken.front();
     modeType = modeToken.substr(1);
     if (invalidSign(sign) || invalidModeType(modeType))

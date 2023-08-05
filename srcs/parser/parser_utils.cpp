@@ -143,14 +143,6 @@ bool notNeedOptionalToken(const std::string &sign, const std::string &modeType)
     return (modeType == "i" || modeType == "t" || (sign == "-" && modeType == "l"));
 }
 
-// TODO: 추후 삭제
-// bool modeExceptionCase(const std::string &nickname, const std::string &modeToken)
-// {
-//     // irssi에서 인증할 때 보내는 메시지 (무시해야 함)
-//     if (nickname.front() != '#' && modeToken == "+i")
-//         return true;
-// }
-
 bool ShouldIgnoreCommand(const std::string &tcpStreams)
 {
     std::stringstream ss(tcpStreams);

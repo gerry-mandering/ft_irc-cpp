@@ -57,7 +57,7 @@ static void init_server(const std::string &portStr, const std::string &password)
     reactor->registerHandler(acceptHandler, READ_EVENT);
 }
 
-// TODO
+// TODO: 추후 삭제
 static void CheckLeaks()
 {
     system("leaks ircserver");
@@ -106,8 +106,8 @@ int main(int argc, char **argv)
         }
     }
 
-    // TODO
-    std::atexit(CheckLeaks);
+    // TODO: 반드시 삭제
+    // std::atexit(CheckLeaks);
 
     return (0);
 }

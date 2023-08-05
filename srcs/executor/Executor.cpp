@@ -1,6 +1,7 @@
 #include "Executor.hpp"
 #include "ChannelRepository.hpp"
 #include "Reactor.hpp"
+#include "disconnect.h"
 
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
@@ -282,9 +283,8 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 {
     Client *client = quitRequest->GetClient().GetPtr();
 
-    std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
-
-    client->AddResponseToBuf(closingLinkMessage);
+    // std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
+    // client->AddResponseToBuf(closingLinkMessage);
 
     Channel *channel = client->GetChannel();
     if (channel)
@@ -302,7 +302,9 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
-    // TODO 소켓 닫아주기 - Client 소멸자에서 하는 방식으로 구성?
+    disconnect(client->GetSocket());
+    EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
+    delete handler;
 
     LOG_TRACE("QuitRequest Executed");
 
@@ -448,19 +450,6 @@ std::string Executor::buildTopicChangedMsg(Client *client, const std::string &ch
     topicChangedMessage << ":" << client->GetClientInfo() << " TOPIC " << channelName << " :" << topic;
 
     return topicChangedMessage.str();
-}
-
-std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
-{
-    std::stringstream closingLinkMessage;
-    closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
-
-    if (reason.empty())
-        closingLinkMessage << "[Client exited]";
-    else
-        closingLinkMessage << "[Quit: " << reason << "]";
-
-    return closingLinkMessage.str();
 }
 
 std::string Executor::buildQuitMsg(Client *client, const std::string &reason) const

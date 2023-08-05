@@ -1,11 +1,17 @@
-#CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(INCLUDE_PATH) $(ASAN)
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(INCLUDE_PATH) $(ASAN)
 # TODO: 플래그 사용하기!!!!!!!!!!!!!!!!!!
 
-CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
+# CXXFLAGS = -std=c++98 $(INCLUDE_PATH) $(ASAN)
 
-ifdef LOG
-CXXFLAGS += -DLOGGING -D LOG_LEVEL=LEVEL_$(LOG)
+VALID_LOG_LEVELS := TRACE DEBUG INFO WARN ERROR
+LOG_VALUE := $(filter $(LOG),$(VALID_LOG_LEVELS))
+
+ifeq ($(LOG_VALUE),)
+    LOG_VALUE := OFF
 endif
+
+# $(info $$LOG_VALUE is [${LOG_VALUE}])
+CXXFLAGS += -DLOGGING -D LOG_LEVEL=LEVEL_$(LOG_VALUE)
 
 NAME = ircserver
 

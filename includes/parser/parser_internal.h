@@ -70,7 +70,6 @@ void commaToknizer(const std::string &targets, std::vector< std::string > &targe
 bool invalidSign(const std::string &sign);
 bool invalidModeType(const std::string &modeType);
 bool notNeedOptionalToken(const std::string &sign, const std::string &modeType);
-bool modeExceptionCase(const std::string &nickname, const std::string &modeToken);
 bool invalidOptionalToken(const std::string &modeType, const std::string &optionalToken);
 bool ShouldIgnoreCommand(const std::string &tcpStreams);
 

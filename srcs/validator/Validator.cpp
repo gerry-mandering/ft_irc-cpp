@@ -594,6 +594,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
 
 bool Validator::Visit(QuitRequest *quitRequest) const
 {
+    (void)quitRequest;
     LOG_TRACE("QuitRequest Validated");
 
     return true;
