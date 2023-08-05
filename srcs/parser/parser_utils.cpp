@@ -154,19 +154,12 @@ bool ShouldIgnoreCommand(const std::string &tcpStreams)
         return true;
     if (command == "MODE")
     {
-        std::cerr << __func__ << " " << tcpStreams << "\n";
         // 채널에 대한 mode 명령어만 존재하므로 채널명에 어긋나면 바로 ignore exception
         if (channel.front() != '#')
-        {
-            std::cerr << "channel: " << channel << "\n";
             return true;
-        }
         // irssi에서 임의로 MODE #hi, MODE #hi b 등을 보내므로 무시
         if (modeToken.empty() || modeToken == "b")
-        {
-            std::cerr << "modeToken: " << modeToken << "\n";
             return true;
-        }
     }
     return (false);
 }

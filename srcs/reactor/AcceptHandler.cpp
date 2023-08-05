@@ -40,7 +40,7 @@ int AcceptHandler::handleRead(void)
     newHandle = accept(m_handle, (struct sockaddr *)&addr, &addrSize);
     if (newHandle < 0)
     {
-        LOG_WARN(__func__ << " accept failed");
+        LOG_WARN(" accept failed");
         return (ERROR_GENERIC);
     }
     LOG_TRACE("new connection: " << newHandle);
@@ -50,7 +50,7 @@ int AcceptHandler::handleRead(void)
 
 int AcceptHandler::handleDisconnect(void)
 {
-    LOG_ERROR(__func__ << " Fatal error: passive socket got error");
+    LOG_ERROR(" Fatal error: passive socket got error");
     exit(EXIT_FAILURE);
     return CODE_OK;
 }

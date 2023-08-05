@@ -23,7 +23,7 @@ void disconnect(handle_t socket)
     close(socket);
     if (!client)
     {
-        LOG_INFO(__func__ << " Client not found for socket " << socket);
+        LOG_INFO(" Client not found for socket " << socket);
         return;
     }
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
@@ -31,16 +31,16 @@ void disconnect(handle_t socket)
     SharedPtr< Channel > channel = client->GetChannel();
     if (!channel)
     {
-        LOG_INFO(__func__ << " Client is not in any channel");
+        LOG_INFO(" Client is not in any channel");
         return;
     }
     if (channel->GetClientCount() == 1)
     {
-        LOG_INFO(__func__ << " Client leave and remove channel " << channel->GetName());
+        LOG_INFO(" Client leave and remove channel " << channel->GetName());
         ChannelRepository *channelRepository = ChannelRepository::GetInstance();
         channelRepository->RemoveChannel(channel->GetName());
         return;
     }
-    LOG_INFO(__func__ << " Client leave and not remove channel " << channel->GetName());
+    LOG_INFO(" Client leave and not remove channel " << channel->GetName());
     channel->RemoveClient(client->GetNickName());
 }

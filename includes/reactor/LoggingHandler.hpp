@@ -94,7 +94,7 @@ inline LoggingHandler &operator<<(LoggingHandler &logger, T content)
     std::stringstream ss;
     ss << content;
     if (ss.fail())
-        LOG_ERROR(__func__ << " Loggin failed conten type is invalid");
+        LOG_ERROR(" Loggin failed conten type is invalid");
     logger.addWriteBuf(ss.str());
     return (logger);
 }

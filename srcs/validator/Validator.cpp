@@ -1,58 +1,5 @@
 #include "Validator.hpp"
 
-using namespace ft_validator;
-
-namespace ft_validator
-{
-bool inviteModeOK(SharedPtr< Channel > channel, const std::string &nickName)
-{
-    if (!channel->IsInviteOnlyMode())
-    {
-        LOG_DEBUG("Joining channel is not in invite only mode");
-        return true;
-    }
-    LOG_DEBUG("Joining channel is in invite only mode");
-    return (channel->CheckClientIsInvited(nickName));
-}
-
-// 로그 찍기 위해 exp 분할
-bool keyModeOK(SharedPtr< Channel > channel, const std::string &key)
-{
-    if (!channel->IsKeyMode() || channel->IsInviteOnlyMode())
-    {
-        LOG_DEBUG(__func__ << " Joining channel is not in key mode or invite only mode");
-        return true;
-    }
-    LOG_DEBUG("Joining channel is in key mode");
-    return (channel->GetKey() == key);
-    // return (!channel->IsKeyMode() || channel->GetKey() == key);
-}
-
-bool limitModeOK(SharedPtr< Channel > channel)
-{
-    if (!channel->IsClientLimitMode())
-    {
-        LOG_DEBUG("Joining channel is not in limit mode");
-        return true;
-    }
-    LOG_DEBUG("Joining channel is in limit mode");
-    return (channel->GetClientLimit() > channel->GetClientCount());
-    // return (!channel->IsClientLimitMode() || channel->GetClientLimit() > channel->GetClientCount());
-}
-
-bool notAlreadyInChan(SharedPtr< Client > client, SharedPtr< Channel > channel)
-{
-    if (!channel->CheckClientIsExist(client->GetNickName()))
-    {
-        LOG_DEBUG("Client is not in channel");
-        return true;
-    }
-    LOG_DEBUG("Client is already in channel");
-    return (false);
-    // return (!channel->CheckClientIsExist(client->GetNickName()));
-}
-} // namespace ft_validator
-
 bool Validator::Visit(InviteRequest *inviteRequest) const
 {
     SharedPtr< Client > client = inviteRequest->GetClient();
@@ -987,4 +934,56 @@ bool Validator::validateProtectedTopicMode(SharedPtr< Channel > channel, ModeReq
     LOG_TRACE("ModeRequest Validated");
 
     return true;
+}
+
+bool Validator::inviteModeOK(SharedPtr< Channel > channel, const std::string &nickName) const
+{
+    if (!channel->IsInviteOnlyMode())
+    {
+        LOG_DEBUG("Joining channel is not in invite only mode");
+        return true;
+    }
+
+    LOG_DEBUG("Joining channel is in invite only mode");
+
+    return (channel->CheckClientIsInvited(nickName));
+}
+
+bool Validator::keyModeOK(SharedPtr< Channel > channel, const std::string &key) const
+{
+    if (!channel->IsKeyMode() || channel->IsInviteOnlyMode())
+    {
+        LOG_DEBUG(" Joining channel is not in key mode or invite only mode");
+        return true;
+    }
+
+    LOG_DEBUG("Joining channel is in key mode");
+
+    return (channel->GetKey() == key);
+}
+
+bool Validator::limitModeOK(SharedPtr< Channel > channel) const
+{
+    if (!channel->IsClientLimitMode())
+    {
+        LOG_DEBUG("Joining channel is not in limit mode");
+        return true;
+    }
+
+    LOG_DEBUG("Joining channel is in limit mode");
+
+    return (channel->GetClientLimit() > channel->GetClientCount());
+}
+
+bool Validator::notAlreadyInChan(SharedPtr< Client > client, SharedPtr< Channel > channel) const
+{
+    if (!channel->CheckClientIsExist(client->GetNickName()))
+    {
+        LOG_DEBUG("Client is not in channel");
+        return true;
+    }
+
+    LOG_DEBUG("Client is already in channel");
+
+    return false;
 }
