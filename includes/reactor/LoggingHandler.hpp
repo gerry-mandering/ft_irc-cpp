@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-#define LEVEL_OFF -1
+#define LEVEL_OFF 0xffffffff
 #define LEVEL_TRACE 0
 #define LEVEL_DEBUG 1
 #define LEVEL_INFO 2
