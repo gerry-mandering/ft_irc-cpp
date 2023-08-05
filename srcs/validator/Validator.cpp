@@ -330,10 +330,9 @@ bool Validator::Visit(NickRequest *nickRequest) const
     // Connection Password를 입력하지 않고 Register 하려는 경우
     if (client->HasEnteredUserInfo() && !client->HasEnteredPassword())
     {
-        std::string errorMessage;
-        errorMessage = buildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
-
-        client->AddResponseToBuf(errorMessage);
+        disconnect(client->GetSocket());
+        EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
+        delete handler;
 
         LOG_TRACE("NickRequest Invalid - AccessDenied");
 
@@ -417,8 +416,9 @@ bool Validator::Visit(PassRequest *passRequest) const
     // 비밀번호가 일치하지 않는 경우
     if (passRequest->GetPassword() != envManager->GetConnectionPassord())
     {
-        std::string errorMessage = buildAccessDeniedMsg(client->GetUserName(), client->GetHostName());
-        client->AddResponseToBuf(errorMessage);
+        disconnect(client->GetSocket());
+        EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
+        delete handler;
 
         LOG_TRACE("PassRequest Invalid - AccessDenied");
 
@@ -638,8 +638,9 @@ bool Validator::Visit(UserRequest *userRequest) const
     // Connection Password를 입력하지 않고 Register 하려는 경우
     if (client->HasEnteredNickName() && !client->HasEnteredPassword())
     {
-        std::string errorMessage = buildAccessDeniedMsg(userRequest->GetUserName(), userRequest->GetHostName());
-        client->AddResponseToBuf(errorMessage);
+        disconnect(client->GetSocket());
+        EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
+        delete handler;
 
         LOG_TRACE("UserRequest Invalid - AccessDenied");
 
@@ -658,17 +659,6 @@ std::string Validator::buildAlreadyRegisteredMsg(const std::string &nickName) co
 
     errorMessage << ":" << envManager->GetServerName() << " 462 " << (nickName.empty() ? "*" : nickName)
                  << ":You may not reregister";
-
-    return errorMessage.str();
-}
-
-// TODO 원래는 GetHostName()이 아니라 아이피 주소로 출력됨 방법 찾기
-// TODO AccessDenied 는 연결을 끊어야 함!!!!!
-std::string Validator::buildAccessDeniedMsg(const std::string &userName, const std::string &hostName) const
-{
-    std::stringstream errorMessage;
-    errorMessage << "Error :Closing link: (" << (userName.empty() ? "*" : userName) << "@"
-                 << (hostName.empty() ? "*" : hostName) << ") [Access denied by configuration]";
 
     return errorMessage.str();
 }

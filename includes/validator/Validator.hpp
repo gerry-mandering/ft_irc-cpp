@@ -9,6 +9,7 @@
 #include "RequestConcrete.hpp"
 #include "SingletonTemplate.hpp"
 #include "VisitorPattern.hpp"
+#include "disconnect.h"
 #include <cstdlib>
 #include <sstream>
 #include <string>
@@ -32,7 +33,6 @@ class Validator : public TSingleton< Validator >, public visitor_pattern::Visito
 
   private:
     std::string buildAlreadyRegisteredMsg(const std::string &nickName) const;
-    std::string buildAccessDeniedMsg(const std::string &userName, const std::string &hostName) const;
     std::string buildNickNameInUseMsg(const std::string &nickName, const std::string &newNickName) const;
     std::string buildNotRegisteredMsg(const std::string &commandType, const std::string &nickName) const;
     std::string buildNoSuchChannelMsg(const std::string &nickName, const std::string &channelName) const;
