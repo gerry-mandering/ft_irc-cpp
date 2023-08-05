@@ -63,8 +63,10 @@ int StreamHandler::handleRead(void)
         Validator *validator = Validator::GetInstance();
         if (request->Accept(validator))
         {
+            LOG_DEBUG("Request is valid, execute it");
             Executor *executor = Executor::GetInstance();
             request->Accept(executor);
+            LOG_DEBUG("Request executed");
         }
         delete request;
         if (m_disconnectFlag)
