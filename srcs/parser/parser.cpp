@@ -81,8 +81,7 @@ Request *parseQuit(const std::string &tcpStreams, handle_t socket)
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     LOG_TRACE(" command: " << command);
     if (!(ss >> headOfLast))
-        // TODO: 디폴트 매개변수
-        return (new QuitRequest(socket, ""));
+        return (new QuitRequest(socket, std::string()));
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + 1));
@@ -129,7 +128,7 @@ Request *parseMode(const std::string &tcpStreams, handle_t socket)
     {
         if (!optionalToken.empty())
             throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
-        return (new ModeRequest(socket, channel, sign, modeType, ""));
+        return (new ModeRequest(socket, channel, sign, modeType, std::string()));
     }
     if (optionalToken.empty())
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
@@ -151,7 +150,7 @@ Request *parseJoin(const std::string &tcpStreams, handle_t socket)
     if (channel.length() > MAX_CHANNEL_LEN || channel.front() != '#' || !isalnum(channel.substr(1)))
         throw InvalidFormat(socket, MSG_INVALID_CHANNEL + command, INVALID_CHANNEL);
     if (!(ss >> key))
-        return (new JoinRequest(socket, channel, ""));
+        return (new JoinRequest(socket, channel, std::string()));
     if (ss >> junk)
         throw TooManyParams(socket, MSG_TOO_MANY_PARAMS + command);
     return (new JoinRequest(socket, channel, key));
@@ -166,7 +165,7 @@ Request *parsePart(const std::string &tcpStreams, handle_t socket)
     if (!(ss >> command >> channel))
         throw NotEnoughParams(socket, MSG_NOT_ENOUGH_PARAMS + command);
     if (!(ss >> headOfLast))
-        return (new PartRequest(socket, channel, ""));
+        return (new PartRequest(socket, channel, std::string()));
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     message = tcpStreams.substr(tcpStreams.find(':', command.size() + channel.size() + 2));
@@ -221,7 +220,7 @@ Request *parseKick(const std::string &tcpStreams, handle_t socket)
     LOG_TRACE(" targetList size: " << targetList.size());
     LOG_TRACE(targetList);
     if (!(ss >> headOfLast))
-        return (new KickRequest(socket, channel, targetList, ""));
+        return (new KickRequest(socket, channel, targetList, std::string()));
     if (headOfLast.front() != ':')
         throw InvalidFormat(socket, MSG_INVALID_MSG + command, INVALID_MSG);
     preLastTokenLen = command.size() + channel.size() + targets.size() + numSpace;
