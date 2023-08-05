@@ -108,6 +108,9 @@ void Channel::RemoveClient(const std::string &nickName)
     if (CheckClientIsOperator(nickName))
         RemoveOperator(nickName);
 
+    if (CheckClientIsInvited(nickName))
+        RemoveInvitedClient(nickName);
+
     std::vector< SharedPtr< Client > >::iterator iter;
 
     iter = mClients.begin();
