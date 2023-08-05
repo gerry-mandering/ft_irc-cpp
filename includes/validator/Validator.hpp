@@ -13,13 +13,6 @@
 #include <sstream>
 #include <string>
 
-namespace ft_validator
-{
-bool keyModeOK(SharedPtr< Channel > channel, const std::string &key);
-bool limitModeOK(SharedPtr< Channel > channel);
-bool notAlreadyInChan(SharedPtr< Client > client, SharedPtr< Channel > channel);
-} // namespace ft_validator
-
 class Validator : public TSingleton< Validator >, public visitor_pattern::Visitor
 {
 
@@ -59,4 +52,9 @@ class Validator : public TSingleton< Validator >, public visitor_pattern::Visito
     bool validateInviteOnlyMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
     bool validateKeyMode(SharedPtr< Client > client, SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
     bool validateProtectedTopicMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
+
+    bool inviteModeOK(SharedPtr< Channel > channel, const std::string &nickName) const;
+    bool keyModeOK(SharedPtr< Channel > channel, const std::string &key) const;
+    bool limitModeOK(SharedPtr< Channel > channel) const;
+    bool notAlreadyInChan(SharedPtr< Client > client, SharedPtr< Channel > channel) const;
 };

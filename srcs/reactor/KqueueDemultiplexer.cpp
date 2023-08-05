@@ -36,7 +36,7 @@ int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
     // hanlder가 이미 이벤트를 감시중이라면 굳이 새로 등록하지 않는다
     if (handler->getEventFlag() & type)
     {
-        LOG_WARN(__func__ << " [ " << handler->getHandle() << " ] already monitor " << eventTypeToString(type));
+        LOG_WARN(" [ " << handler->getHandle() << " ] already monitor " << eventTypeToString(type));
         return (CODE_OK);
     }
     if (m_changePos >= m_changeList.size())
@@ -58,7 +58,7 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
     // handler가 이미 이벤트를 감시하고 있지 않다면 굳이 삭제하지 않는다
     if ((handler->getEventFlag() & type) == OFF_EVENT)
     {
-        LOG_WARN(__func__ << " [ " << handler->getHandle() << " ] already not monitor " << eventTypeToString(type));
+        LOG_WARN(" [ " << handler->getHandle() << " ] already not monitor " << eventTypeToString(type));
         return (CODE_OK);
     }
     if (m_changePos >= m_changeList.size())
@@ -91,19 +91,19 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
         // 클라이언트 프로세스가 종료되면 해당 플래그로 온다
         if (event.flags & EV_EOF || event.flags & EV_ERROR)
         {
-            LOG_TRACE(__func__ << " EOF event");
+            LOG_TRACE(" EOF event");
             handler->handleDisconnect();
             delete handler;
             continue;
         }
         if (event.filter == EVFILT_READ)
         {
-            LOG_TRACE(__func__ << " READ event");
+            LOG_TRACE(" READ event");
             handler->handleRead();
         }
         if (event.filter == EVFILT_WRITE)
         {
-            LOG_TRACE(__func__ << " WRITE event");
+            LOG_TRACE(" WRITE event");
             handler->handleWrite();
         }
         LOG_TRACE("event loop");
