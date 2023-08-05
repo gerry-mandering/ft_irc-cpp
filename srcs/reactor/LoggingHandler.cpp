@@ -46,7 +46,8 @@ int LoggingHandler::handleWrite(void)
 // TODO: 로거 핸들 에러 처리
 int LoggingHandler::handleDisconnect(void)
 {
-    return 0;
+    std::cerr << BRED << "LoggingHandler Disconnect\n";
+    exit(EXIT_FAILURE);
 }
 
 std::string LoggingHandler::logLevelToString(int level)
