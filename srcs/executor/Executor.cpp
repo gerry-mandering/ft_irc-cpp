@@ -286,14 +286,11 @@ bool Executor::Visit(QuitRequest *quitRequest) const
     {
         std::string quitMessage = buildQuitMsg(client, quitRequest->GetReason());
 
-        channel->BroadcastMessage(quitMessage);
+        channel->BroadcastMessageExcludingRequestor(quitMessage, client->GetNickName());
         channel->RemoveClient(client->GetNickName());
 
         LOG_TRACE("QuitRequest Executing - BroadcastMessage");
     }
-
-    ClientRepository *clientRepository = ClientRepository::GetInstance();
-    clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
 
     disconnect(client->GetSocket());
     EventHandler *handler = Reactor::GetInstance()->getHandler(client->GetSocket());
