@@ -15,7 +15,8 @@ class EventHandler
 {
   protected:
     eEventType m_eventFlag;
-    EventHandler(eEventType type) : m_eventFlag(type) {}
+    bool m_disconnectFlag;
+    EventHandler(eEventType type) : m_eventFlag(type), m_disconnectFlag(false) {}
 
   public:
     virtual ~EventHandler() {}
@@ -28,4 +29,5 @@ class EventHandler
     virtual int handleWrite(void) { return 0; }
     virtual int handleDisconnect(void) { return 0; }
     inline virtual void addResponseToBuf(const std::string &response) { (void)response; }
+    void setDisconnectFlag(bool flag) { m_disconnectFlag = flag; }
 };

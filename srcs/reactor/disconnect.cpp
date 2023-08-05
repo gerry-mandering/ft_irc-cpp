@@ -16,7 +16,9 @@ void disconnectClient(handle_t socket)
                  << "disconnectClient" << COLOR_RESET);
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     SharedPtr< Client > client = clientRepository->FindBySocket(socket);
+    EventHandler *handler = Reactor::GetInstance()->getHandler(socket);
 
+    handler->setDisconnectFlag(true);
     if (!client)
     {
         LOG_INFO(" Client not found for socket " << socket);

@@ -66,10 +66,9 @@ int StreamHandler::handleRead(void)
             Executor *executor = Executor::GetInstance();
             request->Accept(executor);
         }
-        delete request;
-
-        if (requestStr.substr(0, 4) == "QUIT")
+        if (m_disconnectFlag)
             return (CLIENT_DISCONNECT);
+        delete request;
     }
     return (CODE_OK);
 }
