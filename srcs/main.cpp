@@ -61,24 +61,24 @@ static void init_server(const std::string &portStr, const std::string &password)
     LOG_DEBUG("init server success");
 }
 
-// TODO: 추후 삭제
-static void CheckLeaks()
-{
-    system("leaks ircserver");
-}
+// // TODO: 추후 삭제
+// static void CheckLeaks()
+// {
+//     system("leaks ircserver");
+// }
 
-static void signalHandler(int signum)
-{
-    if (signum == SIGINT)
-    {
-        CheckLeaks();
-        std::exit(EXIT_FAILURE);
-    }
-}
+// static void signalHandler(int signum)
+// {
+//     if (signum == SIGINT)
+//     {
+//         CheckLeaks();
+//         std::exit(EXIT_FAILURE);
+//     }
+// }
 
 int main(int argc, char **argv)
 {
-    std::signal(SIGINT, signalHandler);
+    // std::signal(SIGINT, signalHandler);
     if (argc != 3)
     {
         std::cerr << "Usage: <port> <password>\n";
@@ -96,7 +96,6 @@ int main(int argc, char **argv)
     }
     catch (const std::exception &e)
     {
-        // TODO: 에러 발생시 출력문, 종료여부 고민
         std::cerr << e.what() << "\n";
         return (EXIT_FAILURE);
     }
