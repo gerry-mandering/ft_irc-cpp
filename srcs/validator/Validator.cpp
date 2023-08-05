@@ -331,7 +331,6 @@ bool Validator::Visit(NickRequest *nickRequest) const
     if (client->HasEnteredUserInfo() && !client->HasEnteredPassword())
     {
         disconnectClient(client->GetSocket());
-        removeHandler(client->GetSocket());
 
         LOG_TRACE("NickRequest Invalid - AccessDenied");
 
@@ -416,7 +415,6 @@ bool Validator::Visit(PassRequest *passRequest) const
     if (passRequest->GetPassword() != envManager->GetConnectionPassord())
     {
         disconnectClient(client->GetSocket());
-        removeHandler(client->GetSocket());
 
         LOG_TRACE("PassRequest Invalid - AccessDenied");
 
@@ -637,7 +635,6 @@ bool Validator::Visit(UserRequest *userRequest) const
     if (client->HasEnteredNickName() && !client->HasEnteredPassword())
     {
         disconnectClient(client->GetSocket());
-        removeHandler(client->GetSocket());
 
         LOG_TRACE("UserRequest Invalid - AccessDenied");
 

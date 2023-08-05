@@ -87,11 +87,14 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
         if (event.flags & EV_EOF || event.flags & EV_ERROR)
         {
             handler->handleDisconnect();
-            removeHandler(handler->getHandle());
+            Reactor::GetInstance()->unregisterHandler(handler);
             continue;
         }
         if (event.filter == EVFILT_READ)
-            handler->handleRead();
+        {
+            if (handler->handleRead() == CLIENT_DISCONNECT)
+                Reactor::GetInstance()->unregisterHandler(handler);
+        }
         if (event.filter == EVFILT_WRITE)
             handler->handleWrite();
     }

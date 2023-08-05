@@ -23,7 +23,6 @@ void disconnectClient(handle_t socket)
         return;
     }
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
-    // TODO: shared ptr로 변환 (클라이언트 삭제할 때 채널 없을 수도..?)
     SharedPtr< Channel > channel = client->GetChannel();
     if (!channel)
     {
@@ -40,14 +39,4 @@ void disconnectClient(handle_t socket)
     }
     LOG_INFO(" Client leave and not remove channel " << channel->GetName());
     channel->RemoveClient(client->GetNickName());
-}
-
-void removeHandler(handle_t socket)
-{
-    Reactor *reactor = Reactor::GetInstance();
-    EventHandler *handler = reactor->getHandler(socket);
-
-    close(socket);
-    reactor->unregisterHandler(handler);
-    delete handler;
 }

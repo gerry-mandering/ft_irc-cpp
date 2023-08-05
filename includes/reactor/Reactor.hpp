@@ -8,11 +8,12 @@
 enum
 {
     CODE_OK = 0,
+    CLIENT_DISCONNECT,
     ERROR_GENERIC,
     ERROR_IO
 };
 
-class Reactor : public TSingleton<Reactor>
+class Reactor : public TSingleton< Reactor >
 {
   private:
     Demultiplexer *m_demultiplexer;

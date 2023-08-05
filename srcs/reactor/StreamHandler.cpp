@@ -43,7 +43,7 @@ int StreamHandler::handleRead(void)
     LOG_TRACE("[ " << m_handle << " ]"
                    << " sent data: " << tcpStreams);
     m_readBuf += tcpStreams;
-    while (hasRequest(requestStr) != false)
+    while (hasRequest(requestStr))
     {
         Request *request;
 
@@ -66,8 +66,10 @@ int StreamHandler::handleRead(void)
             Executor *executor = Executor::GetInstance();
             request->Accept(executor);
         }
-
         delete request;
+
+        if (requestStr.substr(0, 4) == "QUIT")
+            return (CLIENT_DISCONNECT);
     }
     return (CODE_OK);
 }
@@ -137,7 +139,8 @@ bool StreamHandler::hasRequest(std::string &requestStr)
 
 void StreamHandler::addResponseToBuf(const std::string &responseStr)
 {
-    LOG_DEBUG("Add response to handler's wrbuf: " << responseStr);
+    LOG_DEBUG("[ " << m_handle << " ]: "
+                   << "Add response to handler's wrbuf: " << responseStr);
     Reactor::GetInstance()->registerEvent(this, WRITE_EVENT);
     m_writeBuf += responseStr;
 }

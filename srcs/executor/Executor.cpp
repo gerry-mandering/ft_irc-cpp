@@ -289,11 +289,10 @@ bool Executor::Visit(QuitRequest *quitRequest) const
         channel->BroadcastMessageExcludingRequestor(quitMessage, client->GetNickName());
         channel->RemoveClient(client->GetNickName());
 
-        LOG_TRACE("QuitRequest Executing - BroadcastMessage");
+        LOG_DEBUG("QuitRequest Executing");
     }
 
     disconnectClient(client->GetSocket());
-    removeHandler(client->GetSocket());
 
     LOG_TRACE("QuitRequest Executed");
 

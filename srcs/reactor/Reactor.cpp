@@ -1,6 +1,6 @@
 #include "Reactor.hpp"
 #include "KqueueDemultiplexer.hpp"
-#include <iostream>
+#include <unistd.h>
 
 Reactor::Reactor() : m_numHandlers(0) {}
 
@@ -51,6 +51,8 @@ int Reactor::unregisterHandler(EventHandler *handler)
         --m_numHandlers;
         m_demultiplexer->setNumHandlers(m_numHandlers);
     }
+    close(handle);
+    delete handler;
     return (stat);
 }
 
