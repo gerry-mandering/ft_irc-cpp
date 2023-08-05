@@ -4,10 +4,9 @@
 #include <ctime>
 #include <fcntl.h>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <unistd.h>
-
-#include <iostream>
 
 LoggingHandler::LoggingHandler() : EventHandler(OFF_EVENT), m_handle(STDOUT_FILENO)
 {
