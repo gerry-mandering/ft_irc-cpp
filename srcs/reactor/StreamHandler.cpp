@@ -86,17 +86,17 @@ int StreamHandler::handleWrite(void)
     if (m_writeBuf.empty())
     {
         LOG_WARN("StreamHandler write event but buf is empty ");
-        return CODE_OK
+        return CODE_OK;
     }
     nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
     if (nwrite < 0)
     {
-        LOG_WARN("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
+        LOG_INFO("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
         return (CODE_OK);
     }
     if ((size_t)nwrite < m_writeBuf.size())
     {
-        LOG_INFO("Partial write");
+        LOG_INFO("StreamHandler Partial write, nwrite: " << nwrite);
         m_writeBuf = m_writeBuf.substr(nwrite);
         return (CODE_OK);
     }
