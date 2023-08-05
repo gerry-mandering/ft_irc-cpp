@@ -74,7 +74,7 @@ static void signalHandler(int signum)
 
 int main(int argc, char **argv)
 {
-    std::signal(SIGINT, signalHandler);
+    //    std::signal(SIGINT, signalHandler);
     if (argc != 3)
     {
         std::cerr << "Usage: <port> <password>\n";
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
     }
 
     // TODO: 반드시 삭제
-    // std::atexit(CheckLeaks);
+    //    std::atexit(CheckLeaks);
 
     return (0);
 }

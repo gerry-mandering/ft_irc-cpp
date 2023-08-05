@@ -40,12 +40,12 @@ class SharedPtr
 
     T *GetPtr() const { return mPtr; }
 
-    void Reset() { release(); }
-
     friend std::stringstream &operator<<(std::stringstream &ss, SharedPtr< T > &sharedPtr)
     {
-        ss << "Address pointed : " << sharedPtr.mPtr << "\n"
-           << "count: " << *(sharedPtr.mReferenceCount) << "\n";
+        ss << "Address pointed : " << sharedPtr.mPtr << "\n";
+
+        if (sharedPtr.mReferenceCount)
+            ss << "count: " << *(sharedPtr.mReferenceCount) << "\n";
 
         return ss;
     }

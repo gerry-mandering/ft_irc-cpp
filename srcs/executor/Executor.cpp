@@ -294,8 +294,6 @@ bool Executor::Visit(QuitRequest *quitRequest) const
         channel->BroadcastMessage(quitMessage);
         channel->RemoveClient(client->GetNickName());
 
-        // TODO 마지막 사람이면 채널 삭제, part도
-
         LOG_TRACE("QuitRequest Executing - BroadcastMessage");
     }
 
