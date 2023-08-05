@@ -58,19 +58,19 @@ static void init_server(const std::string &portStr, const std::string &password)
 }
 
 // TODO: 추후 삭제
-static void CheckLeaks()
-{
-    system("leaks ircserver");
-}
-
-static void signalHandler(int signum)
-{
-    if (signum == SIGINT)
-    {
-        CheckLeaks();
-        std::exit(EXIT_FAILURE);
-    }
-}
+// static void CheckLeaks()
+//{
+//    system("leaks ircserver");
+//}
+//
+// static void signalHandler(int signum)
+//{
+//    if (signum == SIGINT)
+//    {
+//        CheckLeaks();
+//        std::exit(EXIT_FAILURE);
+//    }
+//}
 
 int main(int argc, char **argv)
 {
