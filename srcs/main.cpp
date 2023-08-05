@@ -111,8 +111,5 @@ int main(int argc, char **argv)
         }
     }
 
-    // TODO: 반드시 삭제
-    //    std::atexit(CheckLeaks);
-
     return (0);
 }
