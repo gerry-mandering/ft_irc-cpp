@@ -34,6 +34,7 @@ void disconnectClient(handle_t socket)
     {
         LOG_INFO(" Client leave and remove channel " << channel->GetName());
         ChannelRepository *channelRepository = ChannelRepository::GetInstance();
+        channel->RemoveClient(client->GetNickName());
         channelRepository->RemoveChannel(channel->GetName());
         return;
     }
