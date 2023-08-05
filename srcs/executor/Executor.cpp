@@ -283,8 +283,6 @@ bool Executor::Visit(QuitRequest *quitRequest) const
         std::string quitMessage = buildQuitMsg(client, quitRequest->GetReason());
 
         channel->BroadcastMessageExcludingRequestor(quitMessage, client->GetNickName());
-        channel->RemoveClient(client->GetNickName());
-
         LOG_DEBUG("QuitRequest Executing");
     }
 
