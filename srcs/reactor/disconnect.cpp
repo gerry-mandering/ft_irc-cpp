@@ -21,14 +21,14 @@ void disconnect(handle_t socket)
 
     reactor->unregisterHandler(handler);
     close(socket);
-    if (!client.GetPtr())
+    if (!client)
     {
         LOG_INFO(__func__ << " Client not found for socket " << socket);
         return;
     }
     clientRepository->RemoveClient(client->GetSocket(), client->GetNickName());
     // TODO: shared ptr로 변환 (클라이언트 삭제할 때 채널 없을 수도..?)
-    Channel *channel = client->GetChannel();
+    SharedPtr< Channel > channel = client->GetChannel();
     if (!channel)
     {
         LOG_INFO(__func__ << " Client is not in any channel");

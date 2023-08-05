@@ -7,19 +7,19 @@
 namespace Parser
 {
 
-Client *findRegisteredClient(handle_t socket)
+SharedPtr< Client > findRegisteredClient(handle_t socket)
 {
-    Client *client = ClientRepository::GetInstance()->FindBySocket(socket).GetPtr();
+    SharedPtr< Client > client = ClientRepository::GetInstance()->FindBySocket(socket);
 
     if (!client)
     {
         LOG_INFO(__func__ << " Client not found");
-        return (NULL);
+        return (SharedPtr< Client >());
     }
     if (!client->HasRegistered())
     {
         LOG_INFO(__func__ << " Client not registered");
-        return (NULL);
+        return (SharedPtr< Client >());
     }
     return client;
 }
@@ -41,10 +41,10 @@ InvalidCommand::InvalidCommand(handle_t socket, const std::string &msg, const st
 // irc.local 421 dah HI :Unknown command
 void InvalidCommand::handleError() const throw()
 {
-    Client *client = findRegisteredClient(m_socket);
+    SharedPtr< Client > client = findRegisteredClient(m_socket);
     std::stringstream ss;
 
-    if (client != NULL)
+    if (client)
     {
         ss << "421 " << m_command << " :Unknown command\r\n";
         std::string responseMsg = ss.str();
@@ -57,9 +57,9 @@ NotEnoughParams::NotEnoughParams(handle_t socket, const std::string &msg) throw(
 
 void NotEnoughParams::handleError() const throw()
 {
-    Client *client = findRegisteredClient(m_socket);
+    SharedPtr< Client > client = findRegisteredClient(m_socket);
 
-    if (client != NULL)
+    if (client)
     {
         std::string responseMsg = "461 parameters :Not enough parameters\r\n";
         LOG_TRACE(__func__ << " build response message: " << responseMsg);
@@ -71,9 +71,9 @@ TooManyParams::TooManyParams(handle_t socket, const std::string &msg) throw() : 
 
 void TooManyParams::handleError() const throw()
 {
-    Client *client = findRegisteredClient(m_socket);
+    SharedPtr< Client > client = findRegisteredClient(m_socket);
 
-    if (client != NULL)
+    if (client)
     {
         std::string responseMsg = "461 parameters :Too many parameters\r\n";
         LOG_TRACE(__func__ << " build response message: " << responseMsg);
@@ -88,9 +88,9 @@ InvalidFormat::InvalidFormat(handle_t socket, const std::string &msg, eInvaldFor
 
 void InvalidFormat::handleError() const throw()
 {
-    Client *client = findRegisteredClient(m_socket);
+    SharedPtr< Client > client = findRegisteredClient(m_socket);
 
-    if (client != NULL)
+    if (client)
     {
         std::string responseMsg = "461 parameters :Invalid format\r\n";
         LOG_TRACE(__func__ << " build response message: " << responseMsg);

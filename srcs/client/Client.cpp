@@ -43,9 +43,9 @@ void Client::ResetChannel()
     mChannel.Reset();
 }
 
-Channel *Client::GetChannel() const
+SharedPtr< Channel > Client::GetChannel() const
 {
-    return mChannel.GetPtr();
+    return mChannel;
 }
 
 void Client::SetNickName(const std::string &nickName)

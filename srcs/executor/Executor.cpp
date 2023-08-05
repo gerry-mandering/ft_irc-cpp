@@ -6,7 +6,7 @@
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    Client *client = inviteRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = inviteRequest->GetClient();
 
     const std::string &nickName = client->GetNickName();
     const std::string &targetNickName = inviteRequest->GetNickName();
@@ -17,7 +17,7 @@ bool Executor::Visit(InviteRequest *inviteRequest) const
     client->AddResponseToBuf(replyInvitingMessage);
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     // 채널에 속한 클라이언트들에게 초대 알리기
     std::string InvitedIntoChannelMessage = buildInvitedIntoChannelMsg(nickName, targetNickName, channelName);
@@ -45,7 +45,7 @@ bool Executor::Visit(JoinRequest *joinRequest) const
     LOG_TRACE("JoinRequest Executing");
 
     // 채널에 처음 입장할 때
-    if (!channel.GetPtr())
+    if (!channel)
     {
         LOG_TRACE("First Join: create new channel");
 
@@ -57,7 +57,7 @@ bool Executor::Visit(JoinRequest *joinRequest) const
         channel->SetOperator(client);
         client->SetChannel(channel);
 
-        std::string responseMessage = buildJoinMsg(client.GetPtr(), channel.GetPtr());
+        std::string responseMessage = buildJoinMsg(client, channel);
         client->AddResponseToBuf(responseMessage);
 
         return true;
@@ -70,7 +70,7 @@ bool Executor::Visit(JoinRequest *joinRequest) const
         LOG_DEBUG("Channel is invite only mode, so client should be removed from invited client list while entering");
         channel->RemoveInvitedClient(client->GetNickName());
     }
-    std::string responseMessage = buildJoinMsg(client.GetPtr(), channel.GetPtr());
+    std::string responseMessage = buildJoinMsg(client, channel);
     client->AddResponseToBuf(responseMessage);
     return true;
 }
@@ -79,9 +79,9 @@ bool Executor::Visit(KickRequest *kickRequest) const
 {
     const std::string &channelName = kickRequest->GetChannelName();
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
-    Client *client = kickRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = kickRequest->GetClient();
     std::string responseMessage;
 
     std::vector< std::string > targets = kickRequest->GetTargets();
@@ -105,14 +105,14 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
 bool Executor::Visit(ModeRequest *modeRequest) const
 {
-    Client *client = modeRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = modeRequest->GetClient();
     const std::string &channelName = modeRequest->GetChannelName();
     const std::string &sign = modeRequest->GetSign();
     const std::string &modeChar = modeRequest->GetModeChar();
     const std::string &modeArgument = modeRequest->GetModeArgument();
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     std::string responseMessage;
 
@@ -176,9 +176,9 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
     if (client->HasRegistered())
     {
-        std::string nickChangedMessage = buildNickChangedMsg(client.GetPtr(), nickRequest->GetNickName());
+        std::string nickChangedMessage = buildNickChangedMsg(client, nickRequest->GetNickName());
 
-        Channel *channel = client->GetChannel();
+        SharedPtr< Channel > channel = client->GetChannel();
         if (channel)
             channel->BroadcastMessage(nickChangedMessage);
         else
@@ -189,7 +189,7 @@ bool Executor::Visit(NickRequest *nickRequest) const
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
     {
-        client->AddResponseToBuf(buildWelcomeMsg(client.GetPtr()));
+        client->AddResponseToBuf(buildWelcomeMsg(client));
         client->SetRegistered();
 
         LOG_TRACE("NickRequest Executing - SetRegistered");
@@ -204,9 +204,9 @@ bool Executor::Visit(PartRequest *partRequest) const
 {
     const std::string &channelName = partRequest->GetChannelName();
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
-    Client *client = partRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = partRequest->GetClient();
     std::string partMessage = buildPartMsg(client, channelName, partRequest->GetReason());
 
     channel->BroadcastMessage(partMessage);
@@ -223,7 +223,7 @@ bool Executor::Visit(PartRequest *partRequest) const
 
 bool Executor::Visit(PassRequest *passRequest) const
 {
-    Client *client = passRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = passRequest->GetClient();
 
     client->SetPasswordEntered();
 
@@ -248,7 +248,7 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
-    Client *client = privmsgRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = privmsgRequest->GetClient();
     std::string privateMessage;
 
     std::vector< std::string > targets = privmsgRequest->GetTargets();
@@ -260,14 +260,14 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
         if (iter->front() == '#')
         {
-            Channel *targetChannel = channelRepository->FindByName(*iter).GetPtr();
+            SharedPtr< Channel > targetChannel = channelRepository->FindByName(*iter);
             targetChannel->BroadcastMessageExcludingRequestor(privateMessage, client->GetNickName());
 
             LOG_TRACE("PrivmsgRequest Executing - BroadcastMessage");
         }
         else
         {
-            Client *targetClient = clientRepository->FindByNickName(*iter).GetPtr();
+            SharedPtr< Client > targetClient = clientRepository->FindByNickName(*iter);
             targetClient->AddResponseToBuf(privateMessage);
 
             LOG_TRACE("PrivmsgRequest Executing - DirectMessage");
@@ -281,12 +281,12 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 
 bool Executor::Visit(QuitRequest *quitRequest) const
 {
-    Client *client = quitRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = quitRequest->GetClient();
 
     // std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
     // client->AddResponseToBuf(closingLinkMessage);
 
-    Channel *channel = client->GetChannel();
+    SharedPtr< Channel > channel = client->GetChannel();
     if (channel)
     {
         std::string quitMessage = buildQuitMsg(client, quitRequest->GetReason());
@@ -314,13 +314,13 @@ bool Executor::Visit(QuitRequest *quitRequest) const
 bool Executor::Visit(TopicRequest *topicRequest) const
 {
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(topicRequest->GetChannelName()).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(topicRequest->GetChannelName());
 
     std::string topic = topicRequest->GetTopic();
     channel->SetTopic(topic);
 
     std::string topicChangedMessage =
-        buildTopicChangedMsg(topicRequest->GetClient().GetPtr(), topicRequest->GetChannelName(), topic);
+        buildTopicChangedMsg(topicRequest->GetClient(), topicRequest->GetChannelName(), topic);
 
     channel->BroadcastMessage(topicChangedMessage);
 
@@ -331,7 +331,7 @@ bool Executor::Visit(TopicRequest *topicRequest) const
 
 bool Executor::Visit(UserRequest *userRequest) const
 {
-    Client *client = userRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = userRequest->GetClient();
 
     client->SetUserName(userRequest->GetUserName());
     client->SetHostName(userRequest->GetHostName());
@@ -352,7 +352,7 @@ bool Executor::Visit(UserRequest *userRequest) const
     return true;
 }
 
-std::string Executor::buildNickChangedMsg(Client *client, const std::string &nickName) const
+std::string Executor::buildNickChangedMsg(SharedPtr< Client > client, const std::string &nickName) const
 {
     std::stringstream nickChangedMessage;
 
@@ -362,7 +362,7 @@ std::string Executor::buildNickChangedMsg(Client *client, const std::string &nic
     return nickChangedMessage.str();
 }
 
-std::string Executor::buildWelcomeMsg(Client *client) const
+std::string Executor::buildWelcomeMsg(SharedPtr< Client > client) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -424,7 +424,7 @@ std::string Executor::buildInvitedIntoChannelMsg(const std::string &nickName, co
     return replyMessage.str();
 }
 
-std::string Executor::buildInvitationMsg(Client *client, const std::string &targetNickName,
+std::string Executor::buildInvitationMsg(SharedPtr< Client > client, const std::string &targetNickName,
                                          const std::string &channelName) const
 {
     std::stringstream invitationMessage;
@@ -433,8 +433,8 @@ std::string Executor::buildInvitationMsg(Client *client, const std::string &targ
     return invitationMessage.str();
 }
 
-std::string Executor::buildKickoutMsg(Client *client, const std::string &channelName, const std::string &targetNickName,
-                                      const std::string &message) const
+std::string Executor::buildKickoutMsg(SharedPtr< Client > client, const std::string &channelName,
+                                      const std::string &targetNickName, const std::string &message) const
 {
     std::stringstream kickoutMessage;
     kickoutMessage << ":" << client->GetClientInfo() << " KICK " << channelName << " " << targetNickName << " "
@@ -443,7 +443,7 @@ std::string Executor::buildKickoutMsg(Client *client, const std::string &channel
     return kickoutMessage.str();
 }
 
-std::string Executor::buildTopicChangedMsg(Client *client, const std::string &channelName,
+std::string Executor::buildTopicChangedMsg(SharedPtr< Client > client, const std::string &channelName,
                                            const std::string &topic) const
 {
     std::stringstream topicChangedMessage;
@@ -452,7 +452,7 @@ std::string Executor::buildTopicChangedMsg(Client *client, const std::string &ch
     return topicChangedMessage.str();
 }
 
-std::string Executor::buildQuitMsg(Client *client, const std::string &reason) const
+std::string Executor::buildQuitMsg(SharedPtr< Client > client, const std::string &reason) const
 {
     std::stringstream quitMessage;
     quitMessage << ":" << client->GetClientInfo() << " Quit :";
@@ -465,7 +465,8 @@ std::string Executor::buildQuitMsg(Client *client, const std::string &reason) co
     return quitMessage.str();
 }
 
-std::string Executor::buildPrivateMsg(Client *client, const std::string &target, const std::string &message) const
+std::string Executor::buildPrivateMsg(SharedPtr< Client > client, const std::string &target,
+                                      const std::string &message) const
 {
     std::stringstream privateMessage;
     privateMessage << ":" << client->GetClientInfo() << " PRIVMSG " << target << " " << message;
@@ -484,7 +485,8 @@ std::string Executor::buildPongMsg(const std::string &token) const
     return pongMessage.str();
 }
 
-std::string Executor::buildPartMsg(Client *client, const std::string &channelName, const std::string &reason) const
+std::string Executor::buildPartMsg(SharedPtr< Client > client, const std::string &channelName,
+                                   const std::string &reason) const
 {
     std::stringstream partMessage;
     partMessage << ":" << client->GetClientInfo() << " PART " << channelName;
@@ -495,8 +497,9 @@ std::string Executor::buildPartMsg(Client *client, const std::string &channelNam
     return partMessage.str();
 }
 
-std::string Executor::buildModeChangedMsg(Client *client, const std::string &channelName, const std::string &sign,
-                                          const std::string &modeChar, const std::string &modeArgument) const
+std::string Executor::buildModeChangedMsg(SharedPtr< Client > client, const std::string &channelName,
+                                          const std::string &sign, const std::string &modeChar,
+                                          const std::string &modeArgument) const
 {
     std::stringstream modeChangedMessage;
     modeChangedMessage << ":" << client->GetClientInfo() << " MODE " << channelName;
@@ -509,7 +512,7 @@ std::string Executor::buildModeChangedMsg(Client *client, const std::string &cha
     return modeChangedMessage.str();
 }
 
-std::string Executor::buildJoinMsg(Client *client, Channel *channel) const
+std::string Executor::buildJoinMsg(SharedPtr< Client > client, SharedPtr< Channel > channel) const
 {
     EnvManager *envManager = EnvManager::GetInstance();
     const std::string &channelName = channel->GetName();

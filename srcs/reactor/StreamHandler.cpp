@@ -74,7 +74,7 @@ int StreamHandler::handleRead(void)
 
 int StreamHandler::handleWrite(void)
 {
-    Client *client = ClientRepository::GetInstance()->FindBySocket(m_handle).GetPtr();
+    SharedPtr< Client > client = ClientRepository::GetInstance()->FindBySocket(m_handle);
     ssize_t nwrite;
 
     if (!client)

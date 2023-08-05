@@ -22,7 +22,7 @@ class Client
 
     void SetChannel(SharedPtr< Channel > channel);
     void ResetChannel();
-    Channel *GetChannel() const;
+    SharedPtr< Channel > GetChannel() const;
 
     void SetNickName(const std::string &nickName);
     void SetUserName(const std::string &userName);
