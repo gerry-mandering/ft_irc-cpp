@@ -42,7 +42,6 @@ class Executor : public TSingleton< Executor >, public visitor_pattern::Visitor
                                 const std::string &targetNickName, const std::string &message) const;
     std::string buildTopicChangedMsg(SharedPtr< Client > client, const std::string &channelName,
                                      const std::string &topic) const;
-    // std::string buildClosingLinkMsg(SharedPtr< Client > client, const std::string &reason) const;
     std::string buildQuitMsg(SharedPtr< Client > client, const std::string &reason) const;
     std::string buildPrivateMsg(SharedPtr< Client > client, const std::string &target,
                                 const std::string &message) const;

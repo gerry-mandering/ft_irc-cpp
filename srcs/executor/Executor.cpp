@@ -160,7 +160,6 @@ bool Executor::Visit(NickRequest *nickRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     SharedPtr< Client > client = nickRequest->GetClient();
 
-    // TODO NickNameToClients 맵에 넣어주는 시점 적당한지 검증해야함
     if (!client->HasEnteredNickName())
     {
         client->SetNickName(nickRequest->GetNickName());
@@ -282,10 +281,6 @@ bool Executor::Visit(PrivmsgRequest *privmsgRequest) const
 bool Executor::Visit(QuitRequest *quitRequest) const
 {
     SharedPtr< Client > client = quitRequest->GetClient();
-
-    // std::string closingLinkMessage = buildClosingLinkMsg(client, quitRequest->GetReason());
-    // client->AddResponseToBuf(closingLinkMessage);
-
     SharedPtr< Channel > channel = client->GetChannel();
     if (channel)
     {
