@@ -36,6 +36,8 @@ class SharedPtr
 
     T *operator->() const { return mPtr; }
 
+    operator bool() const { return mPtr; }
+
     T *GetPtr() const { return mPtr; }
 
     void Reset() { release(); }
