@@ -79,7 +79,6 @@ int StreamHandler::handleWrite(void)
     SharedPtr< Client > client = ClientRepository::GetInstance()->FindBySocket(m_handle);
     ssize_t nwrite;
 
-    // TODO: exit 하는 상황 없애기
     if (!client)
     {
         LOG_WARN("StreamHandler write event but no client found " << std::strerror(errno));

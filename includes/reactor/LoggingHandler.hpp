@@ -20,7 +20,6 @@
 #define LOG_LEVEL LEVEL_OFF
 #endif
 
-// TODO: 로거 리액터에 등록
 #define LOGGER_REGISTER_EVENT Reactor::GetInstance()->registerEvent(LoggingHandler::GetInstance(), WRITE_EVENT);
 
 #define LOG_TRACE(log)                                                                                                 \

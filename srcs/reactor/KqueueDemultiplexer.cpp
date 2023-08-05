@@ -24,16 +24,6 @@ void KqueueDemultiplexer::setNumHandlers(size_t nHandlers)
         m_kEventList.resize(m_numHandlers * 2);
 }
 
-// TODO: 추후 삭제
-__attribute__((unused)) static std::string eventTypeToString(eEventType type)
-{
-    if (type == READ_EVENT)
-        return ("READ_EVENT");
-    if (type == WRITE_EVENT)
-        return ("WRITE_EVENT");
-    return ("UNKNOWN");
-}
-
 int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
 {
     if (type == OFF_EVENT)

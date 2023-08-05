@@ -41,7 +41,6 @@ int LoggingHandler::handleWrite(void)
     return CODE_OK;
 }
 
-// TODO: 로거 핸들 에러 처리
 int LoggingHandler::handleDisconnect(void)
 {
     std::cerr << BRED << "LoggingHandler Disconnect\n";
