@@ -1,25 +1,3 @@
-/*
- * PASS, NICK, USER, CAP 빼고는 다 Registered 안되어 있으면 NotRegisteredMsg
- *
- * <Validator 구현 완료 명령어>
- *
- * PASS
- * NICK
- * USER
- * TOPIC
- * PING
- * PART
- * PRIVMSG
- * QUIT
- * INVITE
- * KICK
- *
- * <Validator 미완료 명령어>
- * JOIN
- * MODE
- *
- * */
-
 #include "Validator.hpp"
 
 using namespace ft_validator;
@@ -74,12 +52,6 @@ bool notAlreadyInChan(Client *client, Channel *channel)
     // return (!channel->CheckClientIsExist(client->GetNickName()));
 }
 } // namespace ft_validator
-
-bool Validator::Visit(CapRequest *capRequest) const
-{
-    (void)capRequest;
-    return true;
-}
 
 bool Validator::Visit(InviteRequest *inviteRequest) const
 {

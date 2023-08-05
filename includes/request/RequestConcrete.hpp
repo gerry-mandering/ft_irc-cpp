@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CapRequest.hpp"
 #include "InviteRequest.hpp"
 #include "JoinRequest.hpp"
 #include "KickRequest.hpp"

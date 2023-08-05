@@ -24,7 +24,6 @@ class Validator : public TSingleton< Validator >, public visitor_pattern::Visito
 {
 
   public:
-    bool Visit(CapRequest *capRequest) const;
     bool Visit(InviteRequest *inviteRequest) const;
     bool Visit(JoinRequest *joinRequest) const;
     bool Visit(KickRequest *kickRequest) const;

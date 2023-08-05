@@ -3,14 +3,6 @@
 #include "Reactor.hpp"
 #include "disconnect.h"
 
-bool Executor::Visit(CapRequest *capRequest) const
-{
-    (void)capRequest;
-    LOG_TRACE("CapRequest Executed");
-
-    return true;
-}
-
 bool Executor::Visit(InviteRequest *inviteRequest) const
 {
     ClientRepository *clientRepository = ClientRepository::GetInstance();
@@ -459,19 +451,6 @@ std::string Executor::buildTopicChangedMsg(Client *client, const std::string &ch
 
     return topicChangedMessage.str();
 }
-
-// std::string Executor::buildClosingLinkMsg(Client *client, const std::string &reason) const
-// {
-//     std::stringstream closingLinkMessage;
-//     closingLinkMessage << "ERROR: Closing link: " << client->GetUserName() << "@" << client->GetHostName() << ") ";
-
-//     if (reason.empty())
-//         closingLinkMessage << "[Client exited]";
-//     else
-//         closingLinkMessage << "[Quit: " << reason << "]";
-
-//     return closingLinkMessage.str();
-// }
 
 std::string Executor::buildQuitMsg(Client *client, const std::string &reason) const
 {

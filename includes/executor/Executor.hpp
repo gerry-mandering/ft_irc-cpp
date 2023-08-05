@@ -16,7 +16,6 @@ class Executor : public TSingleton< Executor >, public visitor_pattern::Visitor
 {
 
   public:
-    bool Visit(CapRequest *capRequest) const;
     bool Visit(InviteRequest *inviteRequest) const;
     bool Visit(JoinRequest *joinRequest) const;
     bool Visit(KickRequest *kickRequest) const;
