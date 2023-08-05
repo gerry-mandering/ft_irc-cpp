@@ -5,7 +5,7 @@ Request::Request(handle_t socket) : mSocket(socket)
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     mClient = clientRepository->FindBySocket(socket);
 
-    if (!mClient.GetPtr())
+    if (!mClient)
         mClient = clientRepository->CreateClient(socket);
 }
 

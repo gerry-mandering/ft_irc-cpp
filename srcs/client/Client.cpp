@@ -4,7 +4,7 @@
 const std::string Client::CRLF = "\r\n";
 
 Client::Client(handle_t socket)
-    : mSocket(socket), mChannel(NULL), mNickName(std::string()), mUserName(std::string()), mHostName(std::string()),
+    : mSocket(socket), mNickName(std::string()), mUserName(std::string()), mHostName(std::string()),
       mServerName(std::string()), mRealName(std::string()), mRegistrationFlags(0)
 {
     LOG_TRACE("Client constructor called | " << *this);
@@ -40,12 +40,12 @@ void Client::SetChannel(SharedPtr< Channel > channel)
 
 void Client::ResetChannel()
 {
-    mChannel.Reset();
+    mChannel = SharedPtr< Channel >();
 }
 
-Channel *Client::GetChannel() const
+SharedPtr< Channel > Client::GetChannel() const
 {
-    return mChannel.GetPtr();
+    return mChannel;
 }
 
 void Client::SetNickName(const std::string &nickName)

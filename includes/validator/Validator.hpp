@@ -15,9 +15,9 @@
 
 namespace ft_validator
 {
-bool keyModeOK(Channel *channel, const std::string &key);
-bool limitModeOK(Channel *channel);
-bool notAlreadyInChan(Client *client, Channel *channel);
+bool keyModeOK(SharedPtr< Channel > channel, const std::string &key);
+bool limitModeOK(SharedPtr< Channel > channel);
+bool notAlreadyInChan(SharedPtr< Client > client, SharedPtr< Channel > channel);
 } // namespace ft_validator
 
 class Validator : public TSingleton< Validator >, public visitor_pattern::Visitor
@@ -54,9 +54,9 @@ class Validator : public TSingleton< Validator >, public visitor_pattern::Visito
     std::string buildKeySetMsg(const std::string &nickName, const std::string &channelName) const;
     std::string buildCannotJoinChannelMsg(const std::string &nickName, const std::string &channelName) const;
 
-    bool validateOperUserMode(Client *client, Channel *channel, ModeRequest *modeRequest) const;
-    bool validateClientLimitMode(Channel *channel, ModeRequest *modeRequest) const;
-    bool validateInviteOnlyMode(Channel *channel, ModeRequest *modeRequest) const;
-    bool validateKeyMode(Client *client, Channel *channel, ModeRequest *modeRequest) const;
-    bool validateProtectedTopicMode(Channel *channel, ModeRequest *modeRequest) const;
+    bool validateOperUserMode(SharedPtr< Client > client, SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
+    bool validateClientLimitMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
+    bool validateInviteOnlyMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
+    bool validateKeyMode(SharedPtr< Client > client, SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
+    bool validateProtectedTopicMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const;
 };

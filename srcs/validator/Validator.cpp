@@ -4,7 +4,7 @@ using namespace ft_validator;
 
 namespace ft_validator
 {
-bool inviteModeOK(Channel *channel, const std::string &nickName)
+bool inviteModeOK(SharedPtr< Channel > channel, const std::string &nickName)
 {
     if (!channel->IsInviteOnlyMode())
     {
@@ -16,7 +16,7 @@ bool inviteModeOK(Channel *channel, const std::string &nickName)
 }
 
 // 로그 찍기 위해 exp 분할
-bool keyModeOK(Channel *channel, const std::string &key)
+bool keyModeOK(SharedPtr< Channel > channel, const std::string &key)
 {
     if (!channel->IsKeyMode() || channel->IsInviteOnlyMode())
     {
@@ -28,7 +28,7 @@ bool keyModeOK(Channel *channel, const std::string &key)
     // return (!channel->IsKeyMode() || channel->GetKey() == key);
 }
 
-bool limitModeOK(Channel *channel)
+bool limitModeOK(SharedPtr< Channel > channel)
 {
     if (!channel->IsClientLimitMode())
     {
@@ -40,7 +40,7 @@ bool limitModeOK(Channel *channel)
     // return (!channel->IsClientLimitMode() || channel->GetClientLimit() > channel->GetClientCount());
 }
 
-bool notAlreadyInChan(Client *client, Channel *channel)
+bool notAlreadyInChan(SharedPtr< Client > client, SharedPtr< Channel > channel)
 {
     if (!channel->CheckClientIsExist(client->GetNickName()))
     {
@@ -55,7 +55,7 @@ bool notAlreadyInChan(Client *client, Channel *channel)
 
 bool Validator::Visit(InviteRequest *inviteRequest) const
 {
-    Client *client = inviteRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = inviteRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &targetNickName = inviteRequest->GetNickName();
     const std::string &channelName = inviteRequest->GetChannelName();
@@ -72,7 +72,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     // 채널이 없는 경우
     if (!channel)
@@ -88,7 +88,7 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     }
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    Client *targetClient = clientRepository->FindByNickName(targetNickName).GetPtr();
+    SharedPtr< Client > targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 해당 닉네임을 가진 유저가 없는 경우
     if (!targetClient)
@@ -151,8 +151,8 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
     ChannelRepository *channelRepo = ChannelRepository::GetInstance();
-    Channel *channel;
-    Client *client = joinRequest->GetClient().GetPtr();
+    SharedPtr< Channel > channel;
+    SharedPtr< Client > client = joinRequest->GetClient();
 
     // Registered 하지 않은 경우
     if (!client->HasRegistered())
@@ -165,9 +165,9 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         return false;
     }
 
-    channel = channelRepo->FindByName(joinRequest->getChannelName()).GetPtr();
+    channel = channelRepo->FindByName(joinRequest->getChannelName());
     // 채널에 처음 입장할 때(즉 생성)
-    if (channel == NULL)
+    if (!channel)
     {
         LOG_DEBUG("JoinRequest is valid: Channel name is not exist");
         return true;
@@ -186,7 +186,7 @@ bool Validator::Visit(JoinRequest *joinRequest) const
 
 bool Validator::Visit(KickRequest *kickRequest) const
 {
-    Client *client = kickRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = kickRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = kickRequest->GetChannelName();
 
@@ -202,7 +202,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     // 채널이 없는 경우
     if (!channel)
@@ -226,7 +226,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
-        Client *targetClient = clientRepository->FindByNickName(*iter).GetPtr();
+        SharedPtr< Client > targetClient = clientRepository->FindByNickName(*iter);
 
         // 닉네임이 존재하지 않는 경우
         if (!targetClient)
@@ -299,7 +299,7 @@ bool Validator::Visit(KickRequest *kickRequest) const
 
 bool Validator::Visit(ModeRequest *modeRequest) const
 {
-    Client *client = modeRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = modeRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = modeRequest->GetChannelName();
     const std::string &modeChar = modeRequest->GetModeChar();
@@ -316,7 +316,7 @@ bool Validator::Visit(ModeRequest *modeRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     // 채널이 없는 경우
     if (!channel)
@@ -355,7 +355,7 @@ bool Validator::Visit(ModeRequest *modeRequest) const
 // NICK Command 경우의 수 검증 완료
 bool Validator::Visit(NickRequest *nickRequest) const
 {
-    Client *client = nickRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = nickRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &newNickName = nickRequest->GetNickName();
 
@@ -370,7 +370,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
 
     // 이미 해당 닉네임을 사용하는 클라이언트가 존재하는 경우
-    if (clientRepository->FindByNickName(newNickName).GetPtr())
+    if (clientRepository->FindByNickName(newNickName))
     {
         std::string errorMessage = buildNickNameInUseMsg(nickName, newNickName);
         client->AddResponseToBuf(errorMessage);
@@ -400,7 +400,7 @@ bool Validator::Visit(NickRequest *nickRequest) const
 
 bool Validator::Visit(PartRequest *partRequest) const
 {
-    Client *client = partRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = partRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = partRequest->GetChannelName();
 
@@ -416,7 +416,7 @@ bool Validator::Visit(PartRequest *partRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     // 채널이 없는 경우
     if (!channel)
@@ -452,7 +452,7 @@ bool Validator::Visit(PartRequest *partRequest) const
 // User Command 경우의 수 검증 완료
 bool Validator::Visit(PassRequest *passRequest) const
 {
-    Client *client = passRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = passRequest->GetClient();
 
     // Registered 한 경우
     if (client->HasRegistered())
@@ -485,7 +485,7 @@ bool Validator::Visit(PassRequest *passRequest) const
 
 bool Validator::Visit(PingRequest *pingRequest) const
 {
-    Client *client = pingRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = pingRequest->GetClient();
 
     // Registered 하지 않은 경우
     if (!client->HasRegistered())
@@ -505,7 +505,7 @@ bool Validator::Visit(PingRequest *pingRequest) const
 
 bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
 {
-    Client *client = privmsgRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = privmsgRequest->GetClient();
     const std::string &nickName = client->GetNickName();
 
     // Registered 하지 않은 경우
@@ -530,7 +530,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
     {
         if (iter->front() == '#')
         {
-            Channel *targetChannel = channelRepository->FindByName(*iter).GetPtr();
+            SharedPtr< Channel > targetChannel = channelRepository->FindByName(*iter);
 
             // 채널이 없는 경우
             if (!targetChannel)
@@ -559,7 +559,7 @@ bool Validator::Visit(PrivmsgRequest *privmsgRequest) const
         }
         else
         {
-            Client *targetClient = clientRepository->FindByNickName(*iter).GetPtr();
+            SharedPtr< Client > targetClient = clientRepository->FindByNickName(*iter);
 
             // 닉네임이 존재하지 않는 경우
             if (!targetClient)
@@ -602,7 +602,7 @@ bool Validator::Visit(QuitRequest *quitRequest) const
 
 bool Validator::Visit(TopicRequest *topicRequest) const
 {
-    Client *client = topicRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = topicRequest->GetClient();
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = topicRequest->GetChannelName();
 
@@ -618,7 +618,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
     }
 
     ChannelRepository *channelRepository = ChannelRepository::GetInstance();
-    Channel *channel = channelRepository->FindByName(channelName).GetPtr();
+    SharedPtr< Channel > channel = channelRepository->FindByName(channelName);
 
     // 채널이 없는 경우
     if (!channel)
@@ -675,7 +675,7 @@ bool Validator::Visit(TopicRequest *topicRequest) const
 // User Command 경우의 수 검증 완료
 bool Validator::Visit(UserRequest *userRequest) const
 {
-    Client *client = userRequest->GetClient().GetPtr();
+    SharedPtr< Client > client = userRequest->GetClient();
 
     // 이미 UserInfo를 입력한 경우
     if (client->HasEnteredUserInfo())
@@ -848,14 +848,15 @@ std::string Validator::buildCannotJoinChannelMsg(const std::string &nickName, co
     return errorMessage.str();
 }
 
-bool Validator::validateOperUserMode(Client *client, Channel *channel, ModeRequest *modeRequest) const
+bool Validator::validateOperUserMode(SharedPtr< Client > client, SharedPtr< Channel > channel,
+                                     ModeRequest *modeRequest) const
 {
     const std::string &nickName = client->GetNickName();
     const std::string &channelName = modeRequest->GetChannelName();
     const std::string &targetNickName = modeRequest->GetModeArgument();
 
     ClientRepository *clientRepository = ClientRepository::GetInstance();
-    Client *targetClient = clientRepository->FindByNickName(targetNickName).GetPtr();
+    SharedPtr< Client > targetClient = clientRepository->FindByNickName(targetNickName);
 
     // 채널 operator 권한을 부여할 클라이언트가 존재하지 않는 경우
     if (!targetClient)
@@ -895,7 +896,7 @@ bool Validator::validateOperUserMode(Client *client, Channel *channel, ModeReque
     return true;
 }
 
-bool Validator::validateClientLimitMode(Channel *channel, ModeRequest *modeRequest) const
+bool Validator::validateClientLimitMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const
 {
     const std::string &sign = modeRequest->GetSign();
 
@@ -924,7 +925,7 @@ bool Validator::validateClientLimitMode(Channel *channel, ModeRequest *modeReque
     return true;
 }
 
-bool Validator::validateInviteOnlyMode(Channel *channel, ModeRequest *modeRequest) const
+bool Validator::validateInviteOnlyMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const
 {
     const std::string &sign = modeRequest->GetSign();
 
@@ -940,7 +941,8 @@ bool Validator::validateInviteOnlyMode(Channel *channel, ModeRequest *modeReques
     return true;
 }
 
-bool Validator::validateKeyMode(Client *client, Channel *channel, ModeRequest *modeRequest) const
+bool Validator::validateKeyMode(SharedPtr< Client > client, SharedPtr< Channel > channel,
+                                ModeRequest *modeRequest) const
 {
     const std::string &sign = modeRequest->GetSign();
 
@@ -971,7 +973,7 @@ bool Validator::validateKeyMode(Client *client, Channel *channel, ModeRequest *m
     return true;
 }
 
-bool Validator::validateProtectedTopicMode(Channel *channel, ModeRequest *modeRequest) const
+bool Validator::validateProtectedTopicMode(SharedPtr< Channel > channel, ModeRequest *modeRequest) const
 {
     const std::string &sign = modeRequest->GetSign();
 
