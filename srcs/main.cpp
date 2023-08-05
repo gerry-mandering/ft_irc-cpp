@@ -1,6 +1,7 @@
 #include "AcceptHandler.hpp"
 #include "EnvManager.hpp"
 #include "KqueueDemultiplexer.hpp"
+#include "LoggingHandler.hpp"
 #include "Reactor.hpp"
 #include "parser.h"
 #include <csignal>
@@ -53,8 +54,12 @@ static void init_server(const std::string &portStr, const std::string &password)
     EnvManager::GetInstance()->SetConnectionPassword(password);
     Reactor *reactor = Reactor::GetInstance();
     reactor->setDemultiplexer(new KqueueDemultiplexer());
+    LoggingHandler *loggingHandler = new LoggingHandler();
+    reactor->registerHandler(loggingHandler, OFF_EVENT);
+    LOG_DEBUG("init logging handler");
     AcceptHandler *acceptHandler = new AcceptHandler(portInt, password);
     reactor->registerHandler(acceptHandler, READ_EVENT);
+    LOG_DEBUG("init server success");
 }
 
 // TODO: 추후 삭제

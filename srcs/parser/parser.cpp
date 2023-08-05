@@ -19,8 +19,8 @@ Request *parseRequest(const std::string &tcpStreams, handle_t socket)
     std::string command;
 
     ss >> command;
-    LOG_TRACE(" command: " << command);
-    if (ShouldIgnoreCommand(tcpStreams))
+    LOG_TRACE("parseRequest command: " << command);
+    if (ShouldIgnoreCommand(tcpStreams) || command.empty())
         throw IgnoreExceptionCase(socket, "Command: " + command);
     it = parsers.find(command);
     if (it != parsers.end())

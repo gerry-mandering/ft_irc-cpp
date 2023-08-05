@@ -77,25 +77,26 @@ int StreamHandler::handleWrite(void)
     SharedPtr< Client > client = ClientRepository::GetInstance()->FindBySocket(m_handle);
     ssize_t nwrite;
 
+    // TODO: exit 하는 상황 없애기
     if (!client)
     {
-        LOG_ERROR("StreamHandler write event but no client found" << std::strerror(errno));
-        exit(EXIT_FAILURE);
+        LOG_WARN("StreamHandler write event but no client found " << std::strerror(errno));
+        return CODE_OK;
     }
     if (m_writeBuf.empty())
     {
-        LOG_ERROR("StreamHandler write event but buf is empty");
-        exit(EXIT_FAILURE);
+        LOG_WARN("StreamHandler write event but buf is empty ");
+        return CODE_OK;
     }
     nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
     if (nwrite < 0)
     {
-        LOG_WARN("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
+        LOG_INFO("StreamHandler write failed: write again or disconnect: " << std::strerror(errno));
         return (CODE_OK);
     }
     if ((size_t)nwrite < m_writeBuf.size())
     {
-        LOG_INFO("Partial write");
+        LOG_INFO("StreamHandler Partial write, nwrite: " << nwrite);
         m_writeBuf = m_writeBuf.substr(nwrite);
         return (CODE_OK);
     }

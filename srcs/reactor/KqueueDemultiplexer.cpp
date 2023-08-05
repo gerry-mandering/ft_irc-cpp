@@ -1,6 +1,7 @@
 #include "KqueueDemultiplexer.hpp"
 #include "LoggingHandler.hpp"
 #include "SyscallException.hpp"
+#include "color.h"
 #include "wrapper.h"
 #include <iostream>
 #include <unistd.h>
@@ -22,7 +23,8 @@ void KqueueDemultiplexer::setNumHandlers(size_t nHandlers)
         m_kEventList.resize(m_numHandlers * 2);
 }
 
-static std::string eventTypeToString(eEventType type)
+// TODO: 추후 삭제
+__attribute__((unused)) static std::string eventTypeToString(eEventType type)
 {
     if (type == READ_EVENT)
         return ("READ_EVENT");
@@ -33,12 +35,11 @@ static std::string eventTypeToString(eEventType type)
 
 int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
 {
+    if (type == OFF_EVENT)
+        return CODE_OK;
     // hanlder가 이미 이벤트를 감시중이라면 굳이 새로 등록하지 않는다
     if (handler->getEventFlag() & type)
-    {
-        LOG_WARN(" [ " << handler->getHandle() << " ] already monitor " << eventTypeToString(type));
         return (CODE_OK);
-    }
     if (m_changePos >= m_changeList.size())
         m_changeList.resize(m_changeList.size() * 2);
     struct kevent &event = m_changeList[m_changePos++];
@@ -49,7 +50,6 @@ int KqueueDemultiplexer::registerEvent(EventHandler *handler, eEventType type)
         EV_SET(&event, handle, EVFILT_WRITE, EV_ADD, 0, 0, handler);
     eEventType newFlag = static_cast< eEventType >(handler->getEventFlag() | type);
     handler->setEventFlag(newFlag);
-    LOG_DEBUG("[ " << handler->getHandle() << " ] register " << eventTypeToString(type));
     return (CODE_OK);
 }
 
@@ -57,10 +57,7 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
 {
     // handler가 이미 이벤트를 감시하고 있지 않다면 굳이 삭제하지 않는다
     if ((handler->getEventFlag() & type) == OFF_EVENT)
-    {
-        LOG_WARN(" [ " << handler->getHandle() << " ] already not monitor " << eventTypeToString(type));
         return (CODE_OK);
-    }
     if (m_changePos >= m_changeList.size())
         m_changeList.resize(m_changeList.size() * 2);
     struct kevent &event = m_changeList[m_changePos++];
@@ -71,7 +68,6 @@ int KqueueDemultiplexer::unregisterEvent(EventHandler *handler, eEventType type)
         EV_SET(&event, handle, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     eEventType newFlag = static_cast< eEventType >(handler->getEventFlag() & ~type);
     handler->setEventFlag(newFlag);
-    LOG_DEBUG("[ " << handler->getHandle() << " ] unregister " << eventTypeToString(type));
     return (CODE_OK);
 }
 
@@ -79,7 +75,6 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
 {
     int numEvents = kevent(m_kq, &m_changeList[0], m_changePos, &m_kEventList[0], m_kEventList.size(), NULL);
     m_changePos = 0;
-    LOG_TRACE("\n>====== numEvents: " << numEvents << " ======<\n");
     if (numEvents < 0)
         return (numEvents);
     for (int i = 0; i < numEvents; ++i)
@@ -87,26 +82,17 @@ int KqueueDemultiplexer::waitEvents(std::map< handle_t, EventHandler * > &handle
         struct kevent &event = m_kEventList[i];
         EventHandler *handler = reinterpret_cast< EventHandler * >(event.udata);
 
-        LOG_TRACE("event ident: " << event.ident);
         // 클라이언트 프로세스가 종료되면 해당 플래그로 온다
         if (event.flags & EV_EOF || event.flags & EV_ERROR)
         {
-            LOG_TRACE(" EOF event");
             handler->handleDisconnect();
             delete handler;
             continue;
         }
         if (event.filter == EVFILT_READ)
-        {
-            LOG_TRACE(" READ event");
             handler->handleRead();
-        }
         if (event.filter == EVFILT_WRITE)
-        {
-            LOG_TRACE(" WRITE event");
             handler->handleWrite();
-        }
-        LOG_TRACE("event loop");
     }
     (void)handlers;
     return (numEvents);
