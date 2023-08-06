@@ -85,7 +85,6 @@ std::string LoggingHandler::buildPrefix(int level)
 
 void LoggingHandler::addWriteBuf(const std::string &str)
 {
-    // std::cerr << "addWriteBuf: " << str << std::endl;
     m_writeBuf += str;
 }
 
