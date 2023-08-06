@@ -94,7 +94,6 @@ bool Validator::Visit(InviteRequest *inviteRequest) const
     return true;
 }
 
-// TODO: InviteOnlyMode 추가에 따른 테스트 진행
 bool Validator::Visit(JoinRequest *joinRequest) const
 {
     ChannelRepository *channelRepo = ChannelRepository::GetInstance();
@@ -300,7 +299,6 @@ bool Validator::Visit(ModeRequest *modeRequest) const
         return validateProtectedTopicMode(channel, modeRequest);
 }
 
-// NICK Command 경우의 수 검증 완료
 bool Validator::Visit(NickRequest *nickRequest) const
 {
     SharedPtr< Client > client = nickRequest->GetClient();
@@ -394,7 +392,6 @@ bool Validator::Visit(PartRequest *partRequest) const
     return true;
 }
 
-// User Command 경우의 수 검증 완료
 bool Validator::Visit(PassRequest *passRequest) const
 {
     SharedPtr< Client > client = passRequest->GetClient();
@@ -616,7 +613,6 @@ bool Validator::Visit(TopicRequest *topicRequest) const
     return true;
 }
 
-// User Command 경우의 수 검증 완료
 bool Validator::Visit(UserRequest *userRequest) const
 {
     SharedPtr< Client > client = userRequest->GetClient();

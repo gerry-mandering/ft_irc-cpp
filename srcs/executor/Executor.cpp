@@ -503,7 +503,6 @@ std::string Executor::buildJoinMsg(SharedPtr< Client > client, SharedPtr< Channe
 
     std::stringstream joinMessage;
     joinMessage << ":" << client->GetClientInfo() << " JOIN " << channelName << "\r\n";
-    // TODO: 토픽이 없을 때
     if (!channel->GetTopic().empty())
     {
         joinMessage << ":" << serverName << " 332 " << nickName << " " << channelName << " " << channel->GetTopic()

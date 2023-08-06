@@ -13,12 +13,12 @@ SharedPtr< Client > findRegisteredClient(handle_t socket)
 
     if (!client)
     {
-        LOG_INFO(__func__ << " Client not found");
+        LOG_INFO("Client not found");
         return (SharedPtr< Client >());
     }
     if (!client->HasRegistered())
     {
-        LOG_INFO(" Client not registered");
+        LOG_INFO("Client not registered");
         return (SharedPtr< Client >());
     }
     return client;
