@@ -83,6 +83,7 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
     std::vector< std::string > targets = kickRequest->GetTargets();
     std::vector< std::string >::iterator iter;
+    ClientRepository *clientRepository = ClientRepository::GetInstance();
 
     for (iter = targets.begin(); iter != targets.end(); iter++)
     {
@@ -90,6 +91,9 @@ bool Executor::Visit(KickRequest *kickRequest) const
 
         channel->BroadcastMessage(responseMessage);
         channel->RemoveClient(*iter);
+
+        SharedPtr< Client > targetClient = clientRepository->FindByNickName(*iter);
+        targetClient->ResetChannel();
     }
 
     if (channel->GetClientCount() == 0)
