@@ -17,10 +17,13 @@ const std::string &Channel::GetName() const
 std::string Channel::GetClientsList()
 {
     std::string clientsList;
+    std::string nickName;
 
     std::vector< SharedPtr< Client > >::iterator iter;
     for (iter = mClients.begin(); iter != mClients.end(); iter++)
     {
+        if (CheckClientIsOperator((*iter)->GetNickName()))
+            clientsList += "@";
         clientsList += (*iter)->GetNickName();
 
         if (iter != mClients.end() - 1)

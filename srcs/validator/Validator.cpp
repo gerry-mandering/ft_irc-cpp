@@ -119,6 +119,7 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         LOG_DEBUG("JoinRequest is valid: Channel name is not exist");
         return true;
     }
+    // inspircd와 동일하게 동작한다. Too many params 찍지 않음.
     if (inviteModeOK(channel, client->GetNickName()) && keyModeOK(channel, joinRequest->getKey()) &&
         limitModeOK(channel) && notAlreadyInChan(client, channel))
     {
