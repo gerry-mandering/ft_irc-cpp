@@ -68,6 +68,7 @@ bool Executor::Visit(JoinRequest *joinRequest) const
     channel->RemoveInvitedClient(client->GetNickName());
     std::string responseMessage = buildJoinMsg(client, channel);
     client->AddResponseToBuf(responseMessage);
+    channel->BroadcastMessageExcludingRequestor(buildNoticeJoinMsg(client, channel->GetName()), client->GetNickName());
     return true;
 }
 
@@ -513,4 +514,12 @@ std::string Executor::buildJoinMsg(SharedPtr< Client > client, SharedPtr< Channe
     joinMessage << ":" << serverName << " 366 " << nickName << " " << channelName << " :End of /Names list.";
 
     return joinMessage.str();
+}
+
+std::string Executor::buildNoticeJoinMsg(SharedPtr< Client > client, const std::string &channelName) const
+{
+    std::stringstream noticeJoinMessage;
+
+    noticeJoinMessage << ":" << client->GetClientInfo() << " JOIN " << channelName << "\r\n";
+    return noticeJoinMessage.str();
 }

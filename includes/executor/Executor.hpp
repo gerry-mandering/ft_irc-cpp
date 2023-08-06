@@ -51,4 +51,5 @@ class Executor : public TSingleton< Executor >, public visitor_pattern::Visitor
     std::string buildModeChangedMsg(SharedPtr< Client > client, const std::string &channelName, const std::string &sign,
                                     const std::string &modeChar, const std::string &modeArgument) const;
     std::string buildJoinMsg(SharedPtr< Client > client, SharedPtr< Channel > channel) const;
+    std::string buildNoticeJoinMsg(SharedPtr< Client > client, const std::string &channelName) const;
 };
