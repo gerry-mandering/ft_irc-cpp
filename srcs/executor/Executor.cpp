@@ -156,19 +156,6 @@ bool Executor::Visit(NickRequest *nickRequest) const
     ClientRepository *clientRepository = ClientRepository::GetInstance();
     SharedPtr< Client > client = nickRequest->GetClient();
 
-    if (!client->HasEnteredNickName())
-    {
-        client->SetNickName(nickRequest->GetNickName());
-        clientRepository->AddClientToNickNameMap(client);
-        client->SetNickNameEntered();
-    }
-    else
-    {
-        clientRepository->RemoveClientFromNickNameMap(client->GetNickName());
-        client->SetNickName(nickRequest->GetNickName());
-        clientRepository->AddClientToNickNameMap(client);
-    }
-
     if (client->HasRegistered())
     {
         std::string nickChangedMessage = buildNickChangedMsg(client, nickRequest->GetNickName());
@@ -180,6 +167,19 @@ bool Executor::Visit(NickRequest *nickRequest) const
             client->AddResponseToBuf(nickChangedMessage);
 
         LOG_TRACE("NickRequest Executing - Registered User Changed NickName");
+    }
+
+    if (!client->HasEnteredNickName())
+    {
+        client->SetNickName(nickRequest->GetNickName());
+        clientRepository->AddClientToNickNameMap(client);
+        client->SetNickNameEntered();
+    }
+    else
+    {
+        clientRepository->RemoveClientFromNickNameMap(client->GetNickName());
+        client->SetNickName(nickRequest->GetNickName());
+        clientRepository->AddClientToNickNameMap(client);
     }
 
     if (!client->HasRegistered() && client->HasEnteredUserInfo() && client->HasEnteredPassword())
