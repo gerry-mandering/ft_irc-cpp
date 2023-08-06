@@ -29,6 +29,15 @@ void ChannelRepository::RemoveChannel(const std::string &name)
 {
     LOG_DEBUG("ChannelRepository RemoveChannel() - " << name);
     std::map< std::string, SharedPtr< Channel > >::iterator iter = mChannels.find(name);
+    if (iter == mChannels.end())
+    {
+        LOG_WARN("ChannelRepository RemoveChannel() - Channel not found");
+        return;
+    }
+    else
+    {
+        LOG_DEBUG("ChannelRepository RemoveChannel() - Channel removed");
+    }
     mChannels.erase(iter);
 }
 

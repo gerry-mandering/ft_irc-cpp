@@ -30,12 +30,14 @@ int StreamHandler::handleRead(void)
     LOG_TRACE("nread: " << nread);
     if (nread < 0)
     {
-        LOG_DEBUG("StreamHandler read failed: " << std::strerror(errno));
+        LOG_DEBUG("[ " << m_handle << " ] "
+                       << "StreamHandler read failed: " << std::strerror(errno));
         return (CODE_OK);
     }
     if (nread == 0)
     {
-        LOG_WARN("StreamHandler read eof: " << std::strerror(errno));
+        LOG_WARN("[ " << m_handle << " ] "
+                      << "StreamHandler read eof: " << std::strerror(errno));
         // nread가 0이면 여기로 안오고 무조건 EOF로 플래그에 먼저 잡힘
         return (CODE_OK);
     }
@@ -82,33 +84,39 @@ int StreamHandler::handleWrite(void)
 
     if (!client)
     {
-        LOG_WARN("StreamHandler write event but no client found " << std::strerror(errno));
+        LOG_WARN("[ " << m_handle << " ] "
+                      << "StreamHandler write event but no client found " << std::strerror(errno));
         return CODE_OK;
     }
     if (m_writeBuf.empty())
     {
-        LOG_WARN("StreamHandler write event but buf is empty ");
+        LOG_WARN("[ " << m_handle << " ] "
+                      << "StreamHandler write event but buf is empty ");
         return CODE_OK;
     }
     nwrite = write(m_handle, m_writeBuf.c_str(), m_writeBuf.size());
     if (nwrite < 0)
     {
-        LOG_INFO("StreamHandler write failed: write again or disconnectClient: " << std::strerror(errno));
+        LOG_INFO("[ " << m_handle << " ] "
+                      << "StreamHandler write failed: write again or disconnectClient: " << std::strerror(errno));
         return (CODE_OK);
     }
     if ((size_t)nwrite < m_writeBuf.size())
     {
-        LOG_INFO("StreamHandler Partial write, nwrite: " << nwrite);
+        LOG_INFO("[ " << m_handle << " ] "
+                      << "StreamHandler Partial write, nwrite: " << nwrite);
         m_writeBuf = m_writeBuf.substr(nwrite);
         return (CODE_OK);
     }
     if ((size_t)nwrite == m_writeBuf.size())
     {
-        LOG_DEBUG("StreamHandler write success fully: " << m_writeBuf);
+        LOG_DEBUG("[ " << m_handle << " ] "
+                       << "StreamHandler write success fully: " << m_writeBuf);
         m_writeBuf.clear();
         return (Reactor::GetInstance()->unregisterEvent(this, WRITE_EVENT));
     }
-    LOG_ERROR("StreamHandler write: should not reach here " << std::strerror(errno));
+    LOG_ERROR("[ " << m_handle << " ] "
+                   << "StreamHandler write: should not reach here " << std::strerror(errno));
     return (CODE_OK);
 }
 
