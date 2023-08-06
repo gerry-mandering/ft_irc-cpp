@@ -111,6 +111,16 @@ bool Validator::Visit(JoinRequest *joinRequest) const
         return false;
     }
 
+    if (client->GetChannel())
+    {
+        std::string errorMessage = buildCannotJoinChannelMsg(client->GetNickName(), joinRequest->getChannelName());
+        client->AddResponseToBuf(errorMessage);
+
+        LOG_DEBUG("JoinRequest Invalid - client already joined channel");
+
+        return false;
+    }
+
     channel = channelRepo->FindByName(joinRequest->getChannelName());
     // 채널에 처음 입장할 때(즉 생성)
     if (!channel)
@@ -120,7 +130,7 @@ bool Validator::Visit(JoinRequest *joinRequest) const
     }
     // inspircd와 동일하게 동작한다. Too many params 찍지 않음.
     if (inviteModeOK(channel, client->GetNickName()) && keyModeOK(channel, joinRequest->getKey()) &&
-        limitModeOK(channel) && notAlreadyInChan(client, channel))
+        limitModeOK(channel))
     {
         LOG_DEBUG("JoinRequest is valid: pass all condition");
         return true;
